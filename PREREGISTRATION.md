@@ -22,6 +22,7 @@ answerable from one table.
 
 | Tag | Date | Commit | Hypotheses covered | Analyses that may cite it |
 |---|---|---|---|---|
+| `argmax-prereg-margin-desc-v1.0` | 2026-08-14 | `739c30b15a32` | MD1, MD2 | The two descriptive claims below, on the 69 unexposed problems of the margin-v1 store listed in `notes/exploration_ledger.md`. No gate claim is covered: the gate question is per-problem and was costed as unaffordable. |
 | `argmax-prereg-threadA-v1.0` | 2026-08-13 | `edfae74728f6` | TA1, TA2a, TA2b | Thread A on the predecessor's stored samples, `notes/thread_a.md` phase 4. No Argmax sampling is covered by this tag. |
 
 ## Hypotheses
@@ -35,6 +36,26 @@ value here.
 | TA1 | On the confirmatory 151, the reconstructed few-sample estimator has lower per-problem regret than `naive_within_k` at k=8 | `per_problem_regret_difference.ci95_upper` (chen minus naive, paired over problems) | 0.0 | less | `argmax-prereg-threadA-v1.0` |
 | TA2a | The same at k=4 | `per_problem_regret_difference.ci95_upper` | 0.0 | less | `argmax-prereg-threadA-v1.0` |
 | TA2b | The same at k=16 | `per_problem_regret_difference.ci95_upper` | 0.0 | less | `argmax-prereg-threadA-v1.0` |
+| MD1 | Among samples whose answer differs from their own problem's plurality, the median answer-token margin exceeds 15 nats | per-problem median of `answer_margin` over dissenting samples, one-sided 95% lower bound across problems | 15.0 | greater | `argmax-prereg-margin-desc-v1.0` |
+| MD2 | Among those same dissenting samples, the fraction with a margin above 10 nats exceeds 0.60 | per-problem fraction of dissenting samples with `answer_margin > 10`, one-sided 95% lower bound across problems | 0.60 | greater | `argmax-prereg-margin-desc-v1.0` |
+
+**MD1 and MD2 are one-sample bounds, deliberately.** The finding they test is
+that a sample contradicting its own problem's plurality still emits its answer
+with near-certainty, because it is certain given the chain it has just written.
+That is a statement about the dissenting group's own distribution, not about a
+difference between two groups, and stating it as a difference would make a
+small gap between saturated distributions carry a claim about saturation.
+
+**The unit is the problem, not the sample.** Each problem contributes one
+median and one fraction; the bound is taken across problems. Problems with
+fewer than three dissenting samples are excluded and the exclusion count is
+reported. On the exposed 129 that rule excluded 7.
+
+**The two-sample equivalence is NOT registered.** It was checked first and does
+not resolve: on the exposed problems the per-problem median-margin difference
+has sd 7.3036, so at n=69 a TOST band must exceed **2.89 nats** to be
+clearable. A band that wide would pass on noise rather than on equality, and
+registering a test built to pass is worse than registering nothing.
 
 TA1 is the decision. TA2a and TA2b are **registered as underpowered and are
 reported, not decided**: their exploratory effects are 0.96 and 0.87 of their
@@ -67,4 +88,9 @@ line.
 |---|---|---|---|---|
 | `ta1_ci_upper` | 0.0 | `notes/thread_a.md` phase 3 | `argmax-prereg-threadA-v1.0` | The paired 95 percent CI on the per-problem regret difference must lie entirely below zero. A point estimate favouring the estimator is not enough. |
 | `ta1_resolution_floor` | 0.0161 | `notes/thread_a.md` phase 2 | `argmax-prereg-threadA-v1.0` | The design's own minimum detectable effect at n=151 and k=8. Registered so that a PASS smaller than the resolution that produced it is visible as such rather than quietly reported as a win. |
+| `md1_threshold` | 15.0 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | Nats. Set below the exposed-set estimate of 20.6155 so it is a prediction, not a restatement, and above the 10-nat line MD2 uses so the two claims are not the same claim twice. 15 nats is 3.3 million to one. |
+| `md2_threshold` | 0.60 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | Set below the exposed-set estimate of 0.7489. Clears only if most dissenting samples are saturated. |
+| `md_resolution_median` | 1.0018 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | Standard error of the per-problem median margin at n=69, from the exposed set's sd of 8.3213. The design's own resolution, registered so a pass inside it is visible. |
+| `md_resolution_fraction` | 0.0278 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | The same for the fraction above 10 nats, from an sd of 0.2309. |
+| `md_alpha` | 0.05 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | One-sided, fixed before the holdout was read. |
 | `ta1_alpha` | 0.05 | `notes/thread_a.md` phase 2 | `argmax-prereg-threadA-v1.0` | Two-sided, conventional, fixed before the confirmatory run. |

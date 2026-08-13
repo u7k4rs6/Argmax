@@ -27,11 +27,12 @@ REPO = Path(__file__).resolve().parents[1]
 PREREG = REPO / "PREREGISTRATION.md"
 
 #: Doc 2 s8.3 fixes the shape, `argmax-prereg-<phase>-v<major>.<minor>`, and
-#: says nothing about the case of the phase name. This pattern was stricter
-#: than the doc and would have rejected `argmax-prereg-threadA-v1.0`, so it is
-#: widened to letters of either case. Widened before any tag existed, and the
-#: shape itself is unchanged.
-TAG_FORMAT = re.compile(r"^argmax-prereg-[A-Za-z0-9]+-v\d+\.\d+$")
+#: constrains neither the case nor the punctuation of the phase name. This
+#: pattern has been widened twice for being stricter than the doc it enforces:
+#: once for `threadA`, once for a hyphenated phase name. Hyphens belong,
+#: because this repo's own phase ids carry them (`margin-v1`). The shape is
+#: unchanged and still anchored, so the version suffix remains unambiguous.
+TAG_FORMAT = re.compile(r"^argmax-prereg-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*-v\d+\.\d+$")
 
 
 def _table_rows(section: str) -> list[list[str]]:
