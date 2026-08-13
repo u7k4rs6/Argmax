@@ -33,6 +33,18 @@ def _has_raw() -> bool:
 
 @pytest.mark.skipif(not _has_raw(), reason="no raw store yet (pre-Step 0)")
 def test_derived_rebuilds_byte_identically(tmp_path):
+    """RED BY DESIGN as of 2026-08-13, and correctly so.
+
+    This test skipped for as long as there was no raw store. The margin-v1 run
+    created one, so it now runs, and it fails because `scripts/derive.py` is
+    still blocked: the extraction ladder is ported but the derived-table
+    builder that consumes it does not exist yet.
+
+    That is the right state. The test says derived tables must rebuild from raw
+    and there is no rebuild path, which is true and was previously invisible
+    only because there was nothing to rebuild from. Do not skip it, do not
+    loosen it. It goes green when derive.py is implemented.
+    """
     before = _digest(DERIVED) if DERIVED.exists() else {}
 
     result = subprocess.run(

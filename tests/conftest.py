@@ -29,6 +29,9 @@ from argmax.schema import OutcomeClass, Sample, SplitMethod
 EXPECTED_SKIPS: dict[str, str] = {
     # The default suite. pytest collects test_*.py only, so falsification.py
     # is not in this run; `make verify` runs it on its own.
+    # No longer skips: the margin-v1 run created a raw store, so this test
+    # runs and fails, because derive.py is still blocked. Left registered so
+    # that a future skip of it is not mistaken for the old condition.
     "tests/test_recompute.py::test_derived_rebuilds_byte_identically": (
         "no raw store yet (pre-Step 0)"
     ),
@@ -52,7 +55,7 @@ EXPECTED_SKIPS: dict[str, str] = {
 }
 
 #: What the default `pytest` invocation must produce, exactly.
-EXPECTED_DEFAULT_SKIP_COUNT = 3
+EXPECTED_DEFAULT_SKIP_COUNT = 2
 
 _OBSERVED: list[tuple[str, str]] = []
 
