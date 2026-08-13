@@ -207,9 +207,24 @@ Raw files are never rewritten, never sorted, never deduplicated in place. A
 corrupted trailing line from an interrupted write is tolerated by the
 reader and reported, not repaired.
 
-Derived tables are Parquet, rebuilt from raw by a pure function. Deleting
-`data/derived/` and running `make derived` must reproduce byte-identical
-files. There is a test for this.
+Derived tables are **JSON Lines**, rebuilt from raw by a pure function, with
+rows sorted by a declared total order before writing. Deleting `data/derived/`
+and running `make derived` must reproduce byte-identical files. There is a test
+for this.
+
+**Why not Parquet.** Parquet was specified here first and does not survive the
+byte-identical requirement: writers embed a producer version string in the file
+metadata and pad pages, so two builds of identical data differ in bytes for
+reasons that have nothing to do with the data. Byte-identical is the stronger
+invariant and it is the one kept, because it catches a second failure Parquet
+equality would not: **nondeterministic row ordering**. A table whose rows are
+correct but arrive in a different order every build is not a pure function of
+raw, and a format-level comparison that normalises order would call it one.
+
+The cost is real and accepted: JSON Lines is larger on disk and slower to scan
+than Parquet, and columnar analysis loads the whole table. The trade is
+recorded here rather than in a docstring, so the document and the code agree
+without something in between mediating.
 
 ### 5.5 Extraction
 

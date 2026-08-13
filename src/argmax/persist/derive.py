@@ -132,10 +132,9 @@ def build(raw_root: Path | None = None, out_dir: Path | None = None) -> dict[str
         )
     )
 
-    # JSON Lines, not Parquet. Doc 2 s5.4 asks for Parquet and the recompute
-    # test asks for byte-identical rebuilds; Parquet writers embed a producer
-    # version string and pad pages, so the second property is the one that has
-    # to win. The format is recorded here rather than silently swapped.
+    # JSON Lines, per doc 2 s5.4, which now specifies the format and the
+    # reason: Parquet cannot be byte-identical across builds, and
+    # byte-identical also catches nondeterministic row ordering.
     path = out_dir / "samples.jsonl"
     with path.open("w", encoding="utf-8") as handle:
         for row in rows:
