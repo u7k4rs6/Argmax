@@ -175,6 +175,22 @@ it is a hypothesis for a future registration rather than a result.
 
 ---
 
+## For the next registration, not this one
+
+The post-hoc section above narrows the mechanism to "predicts beyond k" and
+cannot test it, because both existing baselines stop at k by construction. A
+registration of that hypothesis **needs a non-mixture extrapolating control**:
+fit a simple parametric curve to the k measured points and extrapolate to the
+grid, with no mixture model and no per-problem distribution.
+
+If that control matches the estimator, extrapolation is the mechanism and the
+mixture assumption is inert, which would be a sharper and more deflationary
+result than the one recorded here. The control is registered **with** the
+hypothesis, not added afterwards, because a control introduced after seeing the
+result is not a control.
+
+---
+
 ## How it was run
 
 ### Phase 1. Every free choice fixed on the exploratory split only
