@@ -1,22 +1,31 @@
-"""Five-pass answer extraction.
+"""Instrumentation around the copied five-pass ladder.
 
-    !!! PORT REQUIRED BEFORE ANY ANALYSIS !!!
+The ladder itself is `scoring_verbatim.py`, copied byte for byte from
+`self-consistency-backfire` at tag `backfire-prereg-v1.0`. See PROVENANCE.md.
+Nothing here changes which answer that ladder returns or which pass it fires.
+Everything here is what doc 4 s3.6 requires and the original did not record:
 
-    Doc 2 s5.5 specifies that the ladder is COPIED FROM THE PUBLISHED
-    `self-consistency-backfire` REPO VERBATIM, then instrumented. That repo is
-    not present in this checkout, so the pass bodies below are a structural
-    stand-in with the same ladder shape, NOT the verbatim passes.
+  - `extraction_pass`, which rung fired
+  - `answer_span_chars`, where in `raw_text` the answer letter sits
+  - `answer_span_tokens`, the same span mapped onto the stored logprob array
+  - `extractor_version`, so old records stay interpretable when this changes
 
-    Comparability with the published results depends on these being the same
-    regexes in the same order. Replace each `_pass_*` body with the published
-    implementation before running analysis that is meant to be compared, and
-    bump EXTRACTOR_VERSION when you do.
+`answer_span_tokens` is the field that makes final-answer margin analysis
+possible at all. Per-token logprobs without a span pointing at the answer
+token are an undifferentiated array. It is also the reason the span is
+re-derived rather than taken from the ladder: the published implementation
+uses `findall`, which returns strings and throws the offsets away.
 
-What IS final here is the instrumentation contract: every extraction records
-which pass fired and the span it matched. `answer_span_chars` and
-`answer_span_tokens` are what make final-answer margin analysis possible at
-all: per-token logprobs without a span pointing at the answer token are an
-undifferentiated array.
+## How the span is re-derived without changing behaviour
+
+The ladder decides. Instrumentation then replays the same regex over the same
+slice, with the same "last match wins" rule, and reports where that match
+landed. If the replay disagrees with the ladder about the letter, the span is
+dropped rather than the answer: an absent span is a missing measurement, and a
+changed answer is a changed experiment.
+
+Extraction runs offline over stored raw text, so the ladder can be revised and
+re-run at zero cost. It must never run inside the sampler.
 """
 
 from __future__ import annotations
@@ -25,96 +34,138 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-#: Bump whenever a pass body changes. Old records must stay interpretable, so
-#: the version travels with every extraction rather than being assumed.
-EXTRACTOR_VERSION = "0.0.0-structural-stand-in"
+from argmax.extract.scoring_verbatim import (
+    _PASS1,
+    _PASS2,
+    _PASS3,
+    _PASS4,
+    ANSWER_CHOICES,
+    extract_answer,
+)
 
-LETTERS = "ABCDEFGHIJ"
+#: Identifies the ladder AND the instrumentation, separately. The left side is
+#: the source of the passes; the right side is this wrapper. Bump the right
+#: side when the instrumentation changes and the left side only when the
+#: copied ladder is replaced, which is a different and much larger event.
+EXTRACTOR_VERSION = "scb@backfire-prereg-v1.0:f3754c7+argmax-instr-1"
+
+#: The copied ladder is hard-coded to A-D. A tier with a different option
+#: count cannot be scored by it, and pretending otherwise silently
+#: under-extracts on the options it has never heard of.
+LADDER_N_OPTIONS = len(ANSWER_CHOICES)
+
+#: The verbatim `extract_answer` returns 5 to mean "every regex pass failed,
+#: the caller may now invoke the LLM scorer". Argmax never invokes it: doc 2
+#: s5.5 puts extraction offline, and an extractor that can call an API is an
+#: extractor that can spend credits during analysis. Doc 4 s3.6 wants null
+#: when no pass fired, so 5 maps to None here.
+_LADDER_EXHAUSTED = 5
 
 
 @dataclass(frozen=True)
 class Extraction:
     extracted_answer: str | None
-    extraction_pass: int | None  # 1..5, or None when every pass failed
+    extraction_pass: int | None  # 1..4, or None when the ladder was exhausted
     answer_span_chars: tuple[int, int] | None
     extractor_version: str = EXTRACTOR_VERSION
+    #: What the copied ladder actually returned, before the mapping above.
+    #: Kept so that a pass distribution can be compared against the published
+    #: one without reconstructing the mapping.
+    verbatim_pass_number: int | None = None
 
 
-def _hit(
-    match: re.Match[str] | None, group: int = 1
-) -> tuple[str, tuple[int, int]] | None:
-    if match is None:
+def _last_span(
+    pattern: re.Pattern[str], text: str, offset: int
+) -> tuple[str, int, int] | None:
+    """Last match of `pattern` in `text`, as (letter, start, end) in the original.
+
+    Last, not first, because that is what `findall()[-1]` does in the copied
+    ladder.
+    """
+    matches = list(pattern.finditer(text))
+    if not matches:
         return None
-    return match.group(group).upper(), (match.start(group), match.end(group))
+    m = matches[-1]
+    return m.group(1).upper(), offset + m.start(1), offset + m.end(1)
 
 
-# --- the ladder -------------------------------------------------------------
-# Ordered most explicit to least. Later passes are progressively more
-# permissive, which is why the pass index is recorded: a corpus that resolves
-# mostly on pass 5 is a different measurement from one that resolves on pass 1,
-# and the difference is invisible in the answer alone.
+def _last_line_offset(response: str) -> tuple[str, int] | None:
+    """The last non-empty line, stripped, and where its stripped text starts.
 
-_P1 = re.compile(r"(?i)\banswer\s*[:\-]?\s*\(?([A-J])\)?\b")
-_P2 = re.compile(
-    r"(?i)\b(?:the\s+)?(?:correct\s+)?(?:option|choice)\s*(?:is)?\s*\(?([A-J])\)?\b"
-)
-_P3 = re.compile(r"\\boxed\{\s*\(?([A-J])\)?\s*\}")
-_P4 = re.compile(r"(?m)^\s*\(?([A-J])\)?\s*[.)]?\s*$")
-_P5 = re.compile(r"\b([A-J])\b")
-
-
-def _pass_1(text: str):
-    """Explicit 'Answer: X'."""
-    return _hit(_P1.search(text))
+    The copied ladder strips each line before matching, so an offset computed
+    against the unstripped line would point at the wrong character whenever
+    the line is indented.
+    """
+    cursor = 0
+    found: tuple[str, int] | None = None
+    for raw_line in response.splitlines(keepends=True):
+        stripped = raw_line.strip()
+        if stripped:
+            found = (stripped, cursor + (len(raw_line) - len(raw_line.lstrip())))
+        cursor += len(raw_line)
+    return found
 
 
-def _pass_2(text: str):
-    """'The correct option is X'."""
-    return _hit(_P2.search(text))
-
-
-def _pass_3(text: str):
-    r"""LaTeX \boxed{X}."""
-    return _hit(_P3.search(text))
-
-
-def _pass_4(text: str):
-    """A bare letter alone on the final line."""
-    matches = list(_P4.finditer(text))
-    return _hit(matches[-1]) if matches else None
-
-
-def _pass_5(text: str):
-    """Last standalone letter anywhere. The permissive fallback."""
-    matches = list(_P5.finditer(text))
-    return _hit(matches[-1]) if matches else None
-
-
-_LADDER = (_pass_1, _pass_2, _pass_3, _pass_4, _pass_5)
+def _span_for_pass(response: str, pass_number: int) -> tuple[str, int, int] | None:
+    """Replay the rung that fired, over exactly the slice it ran on."""
+    if pass_number == 1:
+        tail = response[-200:]
+        return _last_span(_PASS1, tail, max(0, len(response) - 200))
+    if pass_number == 2:
+        return _last_span(_PASS2, response, 0)
+    if pass_number == 3:
+        line = _last_line_offset(response)
+        if line is None:
+            return None
+        text, offset = line
+        return _last_span(_PASS3, text, offset)
+    if pass_number == 4:
+        tail = response[-500:]
+        return _last_span(_PASS4, tail, max(0, len(response) - 500))
+    return None
 
 
 def extract(raw_text: str, n_options: int) -> Extraction:
-    """Run the ladder over stored raw text.
+    """Run the copied ladder over stored raw text and record what it did.
 
     Only the visible answer region should be passed in for reasoning models:
-    the hidden chain routinely names every option while thinking, and pass 5
-    would happily return one of those. Split first, then extract.
+    the hidden chain routinely names every option while thinking, and the
+    permissive later passes would happily return one of those. Split first,
+    then extract.
     """
-    valid = set(LETTERS[:n_options])
-    for index, pass_fn in enumerate(_LADDER, start=1):
-        hit = pass_fn(raw_text)
-        if hit is None:
-            continue
-        letter, span = hit
-        if letter not in valid:
-            continue  # a letter outside the option range is not an answer
-        return Extraction(
-            extracted_answer=letter,
-            extraction_pass=index,
-            answer_span_chars=span,
+    if n_options != LADDER_N_OPTIONS:
+        raise ValueError(
+            f"the copied ladder is hard-coded to {LADDER_N_OPTIONS} options "
+            f"(A-D) and cannot score an {n_options}-option problem. Scoring it "
+            "anyway would silently under-extract. See PROVENANCE.md; a wider "
+            "ladder is a new extractor version, not a parameter."
         )
+
+    result = extract_answer(raw_text)
+
+    if result.answer is None:
+        return Extraction(
+            extracted_answer=None,
+            extraction_pass=None,
+            answer_span_chars=None,
+            verbatim_pass_number=result.pass_number,
+        )
+
+    span = _span_for_pass(raw_text, result.pass_number)
+    if span is not None and span[0] != result.answer:
+        # The replay disagrees with the ladder. Report the answer the ladder
+        # chose and no span at all: a wrong span pointing into the logprob
+        # array is worse than an absent one, because the margin analysis it
+        # feeds would look complete.
+        span = None
+
     return Extraction(
-        extracted_answer=None, extraction_pass=None, answer_span_chars=None
+        extracted_answer=result.answer,
+        extraction_pass=(
+            None if result.pass_number == _LADDER_EXHAUSTED else result.pass_number
+        ),
+        answer_span_chars=None if span is None else (span[1], span[2]),
+        verbatim_pass_number=result.pass_number,
     )
 
 
