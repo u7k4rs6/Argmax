@@ -33,17 +33,16 @@ def _has_raw() -> bool:
 
 @pytest.mark.skipif(not _has_raw(), reason="no raw store yet (pre-Step 0)")
 def test_derived_rebuilds_byte_identically(tmp_path):
-    """RED BY DESIGN as of 2026-08-13, and correctly so.
+    """Was RED BY DESIGN on 2026-08-13, until derive.py existed.
 
     This test skipped for as long as there was no raw store. The margin-v1 run
     created one, so it now runs, and it fails because `scripts/derive.py` is
     still blocked: the extraction ladder is ported but the derived-table
     builder that consumes it does not exist yet.
 
-    That is the right state. The test says derived tables must rebuild from raw
-    and there is no rebuild path, which is true and was previously invisible
-    only because there was nothing to rebuild from. Do not skip it, do not
-    loosen it. It goes green when derive.py is implemented.
+    It skipped for as long as there was no raw store, then failed the moment
+    the margin-v1 run created one, because there was no rebuild path. That was
+    the correct state and the assertion below never changed.
     """
     before = _digest(DERIVED) if DERIVED.exists() else {}
 
@@ -55,7 +54,12 @@ def test_derived_rebuilds_byte_identically(tmp_path):
     after = _digest(DERIVED)
     assert after, "derive produced no files"
     if before:
-        assert before == after, "derived tables are not a pure function of raw"
+        assert before == after, (
+            "derived tables are not a pure function of raw. If a sampler is "
+            "running, raw grew between the two builds and this is that, not "
+            "non-determinism: check with a frozen copy of data/raw before "
+            "concluding."
+        )
 
 
 def test_nothing_is_derived_only():
