@@ -1,0 +1,53 @@
+# Second-model replication of the descriptive margin claims. CONFIRMATORY,
+# registered at argmax-prereg-margin-desc-v2.0, which was tagged before this
+# file drew a single sample.
+#
+# Qwen3.5-9B with the thinking phase disabled. It is reasoning-native, and
+# leaving it enabled produces an answer rate of 0.0000 at cap 2048 and at 4096
+# with mean completion equal to the cap exactly. notes/reasoning_wall.md
+# records the three measured walls and why no reasoning-native replication is
+# purchasable on this account.
+
+phase_id: margin-v2
+split: confirmatory
+
+models:
+  - qwen3.5-9b
+
+benchmarks:
+  - gpqa_diamond
+
+# 198 problems at M=16. Not M=64: at $0.000557 per sample the v1 design would
+# cost $7.06 against $2.55 remaining. M=16 costs $1.77.
+#
+# n_grid tops out at M so the endpoint carries a pool bootstrap CI rather than
+# a bare point, which `test_manifest_grid_fits_M` asserts.
+M: 16
+n_grid: [1, 2, 4, 8, 16]
+
+draw_scheme: without_replacement
+n_draws: 1000
+unanswered_sample_policy: exclude
+
+prereg_tag: argmax-prereg-margin-desc-v2.0
+
+# The predecessor's locked template, byte-identical to the one v1 used. The
+# option order is the dataset's own and is not reshuffled: `prompt_hash` is
+# comparable across the two models for the same problem_id, which is what
+# makes this a replication rather than a second experiment.
+prompt_template_id: "scb-locked-v1@e3544f73"
+
+# Measured on this model at this cap with thinking disabled, from the 32-sample
+# cap probe. NOT carried over from Qwen2.5-7B: different model, different
+# length distribution, and the projection is what the spend guard checks.
+projected_tokens:
+  prompt: 295.8
+  completion: 2055.1
+  source: "capfind probe, 32 records at cap 6144 thinking off, configs/pricing/together-2026-08-14.yaml"
+
+rate_per_sec: 16.0
+
+requires:
+  - usage_raw
+  - finish_reason
+  - logprobs

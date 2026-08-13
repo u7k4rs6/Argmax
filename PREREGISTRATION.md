@@ -22,7 +22,7 @@ answerable from one table.
 
 | Tag | Date | Commit | Hypotheses covered | Analyses that may cite it |
 |---|---|---|---|---|
-| `argmax-prereg-margin-desc-v2.0` | 2026-08-14 | `PENDING` | MD3, MD4 | Second-model replication of the descriptive margin claims on `Qwen/Qwen3.5-9B` with the thinking phase disabled, 198 problems at M=16, cap 6144. Design, calibration, stratification check and limitations in `notes/margin_desc_v2.md`. Covers no gate claim, and explicitly does NOT cover MD1 or MD2, which are not testable at M=16. |
+| `argmax-prereg-margin-desc-v2.0` | 2026-08-14 | `a7806343297d` | MD3, MD4 | Second-model replication of the descriptive margin claims on `Qwen/Qwen3.5-9B` with the thinking phase disabled, 198 problems at M=16, cap 6144. Design, calibration, stratification check and limitations in `notes/margin_desc_v2.md`. Covers no gate claim, and explicitly does NOT cover MD1 or MD2, which are not testable at M=16. |
 | `argmax-prereg-margin-desc-v1.0` | 2026-08-14 | `739c30b15a32` | MD1, MD2 | The two descriptive claims below, on the 69 unexposed problems of the margin-v1 store listed in `notes/exploration_ledger.md`. No gate claim is covered: the gate question is per-problem and was costed as unaffordable. |
 | `argmax-prereg-threadA-v1.0` | 2026-08-13 | `edfae74728f6` | TA1, TA2a, TA2b | Thread A on the predecessor's stored samples, `notes/thread_a.md` phase 4. No Argmax sampling is covered by this tag. |
 

@@ -36,6 +36,7 @@ four offline from `raw_text`, which is stored verbatim.
 
 from __future__ import annotations
 
+import json
 import os
 import signal
 import threading
@@ -175,6 +176,17 @@ def run_phase(phase_id: str, split: str, cfg: dict[str, Any]) -> dict[str, Any]:
             "logprobs_style": params.get("logprobs_style"),
             "n": 1,
         }
+        # Provider parameters outside the common set, carried verbatim from the
+        # model config. Qwen3.5-9B needs `chat_template_kwargs` with
+        # `enable_thinking` false, without which it spends the entire cap
+        # inside the thinking phase and answers nothing (notes/reasoning_wall.md).
+        #
+        # This enters `param_hash`. It changes the sampling distribution more
+        # than temperature does, and samples drawn with and without it are not
+        # the same experiment. Serialised sorted so the hash is stable.
+        request_extras = model_cfg.get("request_extras") or {}
+        if request_extras:
+            param_set["request_extras"] = json.dumps(request_extras, sort_keys=True)
         param_hash = keys.param_hash(param_set)
         # The manifest records concurrency; the hash does not. A concurrency
         # change must not orphan an existing sample set, and it must not be
@@ -242,6 +254,7 @@ def run_phase(phase_id: str, split: str, cfg: dict[str, Any]) -> dict[str, Any]:
                 logprobs_depth=params.get("logprobs_depth"),
                 logprobs_style=params.get("logprobs_style", "integer_depth"),
             )
+            payload.update(request_extras)
             response = client.complete(payload)
             body = response.body or {}
             choice = (body.get("choices") or [{}])[0]

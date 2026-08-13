@@ -1,17 +1,41 @@
-# Second model for the MD1/MD2 replication. Different family, comparable scale.
+# Second model for the MD3/MD4 replication, registered at
+# argmax-prereg-margin-desc-v2.0.
+#
+# Same family as the first model, one generation and one size apart, not a
+# cross-family replication. Every non-Qwen candidate in the 7 to 9B range
+# refused serverless requests (see the pricing snapshot's gate_results).
 
 model_slug: qwen3.5-9b
 model_string: "Qwen/Qwen3.5-9B"
 
-model_class: non_reasoning
+# Reasoning-native, sampled with the thinking phase DISABLED. Recorded as its
+# own class rather than as `non_reasoning`, because what is measured here is a
+# reasoning model stepped around, not a model that never had the capability.
+# notes/reasoning_wall.md is the result this records.
+model_class: reasoning_native_thinking_disabled
+
+# Carried verbatim into the request body and INTO param_hash. Without it the
+# model spends the whole cap inside the thinking phase: answer rate 0.0000 at
+# cap 2048 and at 4096, with mean completion equal to the cap exactly.
+# Together also honours `reasoning: {enabled: false}`, which probes
+# indistinguishably; the model card's spelling is used because it names what
+# actually changes, the chat template. Qwen3.5 dropped /think and /nothink.
+request_extras:
+  chat_template_kwargs:
+    enable_thinking: false
 
 params:
   temperature: 0.7        # the published setting, held so the sampling
                           # distribution is the same experiment
   top_p: null
-  max_tokens: 2048        # the published cap. Held constant across conditions
-                          # per doc 2 s7.1; this model has its own answer rate
-                          # and it is reported rather than assumed.
+
+  # NOT the published 2048. Doc 2 s7.1 keys comparability on answer rate, not
+  # on cap: at 2048 with thinking off this model answers 0.8125 with 31
+  # percent truncation, against the v1 reference of 0.9950. 6144 is the
+  # smallest probed cap reaching it (1.0000, zero truncation). 4096 was not
+  # probed with thinking off because the censored fit puts it at 0.9890.
+  max_tokens: 6144
+
   seed: 0
   stop: []
   n: 1
