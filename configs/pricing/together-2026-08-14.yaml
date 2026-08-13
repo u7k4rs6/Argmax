@@ -53,3 +53,43 @@ gate_results:
     same family as the first model and is reasoning-native. Every non-Qwen
     candidate in the 7-9B range is gone from serverless. A cross-family
     replication is not purchasable on this account at any price.
+
+cap_finding:
+  probed_utc: "2026-08-14"
+  ceiling_usd: 0.15
+  spent_usd: 0.1347
+  samples: 148
+  model: "Qwen/Qwen3.5-9B"
+  note: >
+    Probe samples are proper Sample records under their own param_hash, on the
+    8 lowest-id problems already burned for Qwen2.5-7B. The 69-problem holdout
+    is untouched for both models.
+  thinking_control:
+    established_by: "real request, doc 3 section 3.4"
+    honoured:
+      - spelling: 'chat_template_kwargs {"enable_thinking": false}'
+        source: "model card"
+        answer_rate_at_2048: 0.8125
+        mean_completion: 1537.3
+      - spelling: 'reasoning {"enabled": false}'
+        source: "Together chat-completions reference"
+        answer_rate_at_2048: 0.8750
+        mean_completion: 1532.8
+    not_available: "/think and /nothink; the model card records Qwen3.5 dropped them"
+  arms:
+    - {max_tokens: 2048, thinking: true,  n: 20, answer_rate: 0.0000, truncation: 1.0000, mean_completion: 2048.0, usd_per_sample: 0.000542}
+    - {max_tokens: 4096, thinking: true,  n: 32, answer_rate: 0.0000, truncation: 1.0000, mean_completion: 4096.0, usd_per_sample: 0.001067}
+    - {max_tokens: 8192, thinking: true,  n: 32, answer_rate: 0.5938, truncation: 0.4375, mean_completion: 7108.9, usd_per_sample: 0.001820}
+    - {max_tokens: 2048, thinking: false, n: 32, answer_rate: 0.8438, truncation: 0.3125, mean_completion: 1535.0, usd_per_sample: 0.000427}
+    - {max_tokens: 6144, thinking: false, n: 32, answer_rate: 1.0000, truncation: 0.0000, mean_completion: 2055.1, usd_per_sample: 0.000557}
+  chosen:
+    max_tokens: 6144
+    thinking: false
+    rule: >
+      Doc 2 section 7.1 keys comparability on answer rate, not on cap. 6144 is
+      the smallest probed cap reaching the Qwen2.5-7B reference of 0.9950.
+      4096 was not probed with thinking off: the censored lognormal fit over
+      the 2048 arm (median 1592 tokens, sigma 0.4128) puts it at 0.9890.
+    projection_198x16_usd: 1.77
+    credits_remaining_usd: 2.55
+    status: "NOT PURCHASED. Registration drafted and untagged; see notes/margin_desc_v2_draft.md"
