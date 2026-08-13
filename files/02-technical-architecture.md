@@ -401,6 +401,43 @@ about accuracy specifically.
 and 9.1, and neither exists at the time of writing. This section records the
 requirement so that the implementation is owed rather than optional.
 
+### 7.2.1 Why pooling is the recurring hazard here
+
+**A comparison whose unit is the problem is confounded by any per-problem
+property on which its groups differ.** That is the whole argument, and it does
+not depend on how many such properties there are or on what causes them.
+
+This benchmark has at least three, each measured against its own homogeneous
+null:
+
+| property | ratio to null | measured on |
+|---|---|---|
+| per-problem accuracy | **24.9x** | Qwen, 151 confirmatory problems |
+| completion-length mode | **5.65x** | MiniMax, 47 problems |
+| sub-2-nat answer-margin tail | **4.6x** | Qwen, 121 complete problems |
+
+**Whether these are three axes or one difficulty factor surfacing three ways is
+not established.** The evidence is mixed and is reported rather than resolved:
+
+- Within one model, per-problem accuracy against the sub-2-nat tail fraction
+  gives **r = -0.2614** over 127 complete problems, cluster bootstrap
+  **[-0.3912, -0.1156]**, which excludes zero. Harder problems carry more
+  uncertain answer tokens. That is a shared cause, and it accounts for about 7
+  percent of the variance, so it is not the same property twice.
+- Across all three, on the 30 problems where all three exist, pairwise
+  correlations run about 0.3 with every interval crossing zero, and the first
+  principal component explains 0.544 against a 0.333 floor. Suggestive of a
+  common factor, too small a sample to establish one, and one of the three is
+  a different model's behaviour.
+
+**The count affects how many properties must be checked, not whether checking
+is needed.** Under one factor, a group difference on any one property implies a
+difference on the rest, so checking one is nearly enough. Under three axes,
+each must be checked separately. Either way, a comparison that checks none of
+them is confounded by whichever of them its groups happen to differ on, and
+this project has yet to construct a problem-unit comparison where they do not
+differ.
+
 ## 8. Pre-registration and verification
 
 ### 8.1 Split discipline
