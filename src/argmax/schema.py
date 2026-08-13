@@ -37,7 +37,19 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 #: convergence half-width instead, and the paired differences that decide curve
 #: shape are persisted per replicate as `PairedDifference`. A reader that does
 #: not branch on this will compare two different quantities and see a trend.
-SCHEMA_VERSION = 2
+#:
+#: 3: `ProblemRecord` carries `answer_rate` and `answer_rate_by_n`, both
+#: required (doc 4 s4 and s4.1). A truncated sample casts no vote, so the pool
+#: that votes at a token cap is smaller than N and is enriched for samples that
+#: answer fast. Every accuracy therefore travels with the rate that qualifies
+#: it. Records written at version 2 or earlier have no such rate and their
+#: accuracies are unqualified. That is a fact about those records and it is not
+#: backfilled: the rate cannot be recovered from a table that never stored the
+#: counts it is computed from.
+SCHEMA_VERSION = 3
+
+#: The version at which `answer_rate` became required. Readers branch here.
+ANSWER_RATE_SCHEMA_VERSION = 3
 
 
 class Split(StrEnum):
@@ -247,6 +259,18 @@ class ProblemRecord(Strict):
     n_no_answer: int
     n_api_failure: int
 
+    #: n_answered / n_samples_stored. Required, and published beside every
+    #: accuracy this record carries, including when it reads 1.0. See doc 4
+    #: s4.1: the pool that votes is not a random subset of the pool that was
+    #: drawn, it is the subset that finished answering inside the token cap.
+    answer_rate: float
+    #: The same quantity per grid point: the mean fraction of the N drawn
+    #: samples that cast a vote, averaged over the subsample draws. Under the
+    #: `exclude` policy this is 1.0 at every N by construction, because the
+    #: pool is pre-filtered, and it is still published at every N rather than
+    #: omitted as uninteresting. Under `score_as_wrong` it varies.
+    answer_rate_by_n: dict[int, float]
+
     single_sample_accuracy: float | None
     unanswered_sample_policy: UnansweredPolicy  # recorded, not assumed
 
@@ -289,6 +313,75 @@ class ProblemRecord(Strict):
     answer_entropy: float | None = None
 
     logprob_coverage: float = 1.0
+
+    @model_validator(mode="after")
+    def _answer_rate_is_versioned(self) -> ProblemRecord:
+        """A record carrying an answer rate cannot claim a version without one.
+
+        The version is the branch point for readers. A v2 record has no rate
+        and its accuracies are unqualified; a record that claims v2 while
+        carrying a rate would defeat the branch and let an unqualified
+        accuracy be read as a qualified one.
+        """
+        if self.schema_version < ANSWER_RATE_SCHEMA_VERSION:
+            raise ValueError(
+                f"schema_version {self.schema_version} predates answer_rate "
+                f"(added at {ANSWER_RATE_SCHEMA_VERSION}); a record carrying "
+                "the field must declare the version that introduced it"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def _answer_rate_covers_the_grid(self) -> ProblemRecord:
+        """Every accuracy on the curve has a rate at the same N.
+
+        Doc 4 s9.1: `vote_accuracy[N]` is a family of accuracies, so it needs a
+        rate per N. One rate for the problem would paper over exactly the
+        difference the field exists to expose.
+        """
+        missing = sorted(set(self.vote_accuracy) - set(self.answer_rate_by_n))
+        if missing:
+            raise ValueError(
+                f"vote_accuracy has no answer_rate at N={missing}: an accuracy "
+                "without its rate is not reportable"
+            )
+        rates = [("answer_rate", self.answer_rate), *self.answer_rate_by_n.items()]
+        for name, value in rates:
+            if not 0.0 <= float(value) <= 1.0:
+                raise ValueError(f"answer_rate out of range at {name}: {value}")
+        return self
+
+    @model_validator(mode="after")
+    def _answer_rate_matches_the_counts(self) -> ProblemRecord:
+        """The rate is a function of the stored counts, not an assertion."""
+        if self.n_samples_stored <= 0:
+            return self
+        expected = self.n_answered / self.n_samples_stored
+        if abs(expected - self.answer_rate) > 1e-9:
+            raise ValueError(
+                f"answer_rate {self.answer_rate} does not match "
+                f"n_answered/n_samples_stored = {expected}"
+            )
+        return self
+
+
+def problem_record_from_dict(record: dict[str, Any]) -> ProblemRecord:
+    """Load a stored problem record, branching on `schema_version`.
+
+    Records written before `answer_rate` existed are refused rather than
+    upgraded. The rate cannot be recovered from a table that never stored the
+    counts it is computed from, so a default here would be a fabricated
+    qualification on somebody else's accuracy.
+    """
+    version = record.get("schema_version")
+    if version is None or version < ANSWER_RATE_SCHEMA_VERSION:
+        raise ValueError(
+            f"problem record at schema_version {version} predates answer_rate "
+            f"(added at {ANSWER_RATE_SCHEMA_VERSION}). Its accuracies are "
+            "unqualified: the pool that voted is unknown. Rebuild it from raw "
+            "rather than reading it as though it carried a rate."
+        )
+    return ProblemRecord.model_validate(record)
 
 
 class PairedDifference(Strict):
