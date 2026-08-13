@@ -446,6 +446,32 @@ Exploratory and confirmatory are separate directory trees, not a boolean
 flag. Analysis entry points require `--split` with no default, because a
 default is how the wrong split gets used silently.
 
+Two further rules, each added after the failure it prevents happened here.
+
+**An exploratory analysis records the problem set it read, at run time, into
+its own output.** Not the count, the ids.
+
+The failure: `notes/exploration_ledger.md` had to be reconstructed after the
+fact, because four exploratory analyses ran against the margin-v1 store and
+none recorded what it saw. It was recoverable only because the sampler
+iterates problem-major, which makes the set available to any analysis a prefix
+of the sampling order, so a count could be turned back into a set. That is
+luck. Under any interleaved order the exposure would have been unrecoverable,
+and with it the ability to say which problems remain unexamined. An analysis
+that does not record its own scope destroys the holdout it leaves behind
+without anybody noticing.
+
+**No analysis runs against a live store.** Sampling completes, the store is
+frozen, and only then does anything read it.
+
+The failure: the exposure boundary moved while it was being measured. Two
+exploratory analyses ran minutes apart against a store the sampler was still
+writing to, and both reported 129 problems because the boundary had advanced
+between them. Every look at a live store silently consumes more of the
+holdout than the analyst intends, and the amount consumed depends on how long
+the read took. A frozen store makes exposure a property of the analysis; a
+live one makes it a property of the wall clock.
+
 ### 8.2 Order of operations
 
 Explore, freeze hypotheses and thresholds, tag, then sample and analyze the
