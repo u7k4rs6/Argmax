@@ -111,6 +111,50 @@ Even for a solo repo, and specifically **because** it is solo:
   document; it costs one minute in repo settings and defends the paper's
   main methodological claim.
 
+## 3.4 Availability is established by a real request
+
+A model that appears in the provider's listing, with a price beside it, may
+still refuse every call. **Availability is established by issuing a request and
+seeing it succeed, never by reading a listing.**
+
+This is not a hypothetical. Selecting a second model for a replication on
+2026-08-14, five candidates in the 7 to 9B range were taken from Together's
+`/v1/models` endpoint, each carrying a non-zero per-token price, and each was
+probed at a 0.05 USD ceiling:
+
+| candidate | listed price, in/out per 1M | outcome |
+|---|---|---|
+| `meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo` | 0.18 / 0.18 | **refused**, `model_not_available` |
+| `mistralai/Mistral-7B-Instruct-v0.3` | 0.20 / 0.20 | **refused**, `model_not_available` |
+| `meta-llama/Llama-3-8b-chat-hf` | 0.20 / 0.20 | **refused**, `model_not_available` |
+| `nvidia/NVIDIA-Nemotron-Nano-9B-v2` | 0.06 / 0.25 | **refused**, `model_not_available` |
+| `Qwen/Qwen3.5-9B` | 0.17 / 0.25 | reachable |
+
+Four of five. Each refusal reads "Unable to access non-serverless model ...
+create and start a new dedicated endpoint", so the listing price describes what
+a dedicated endpoint would cost rather than what this account can call. The
+predecessor recorded the same ratio from the other direction: 3 of 5 candidates
+that appeared in its listing rejected serverless calls.
+
+The consequences for this project:
+
+1. **A phase config naming a model that has never been probed is not runnable.**
+   The capability probe is the availability check, and `provides()` returns
+   False for a model recorded as unavailable, so the runner refuses.
+2. **A refusal is recorded, not discarded.** It writes the same capabilities
+   file a success writes, with `available: false` and the provider's message,
+   so a phase that wants that model fails with a reason rather than a missing
+   file.
+3. **A pricing snapshot is not an availability record.** The two are separate
+   facts with separate evidence, and `configs/pricing/together-2026-08-14.yaml`
+   carries both only because the probes were run before it was written.
+
+The failure this prevents happened here: a candidate was selected, a pricing
+snapshot written, and a config committed, all on the inference that a listed
+price implied serverless availability. The probe caught it before any sampling
+spend, which is what the probe is for, but the inference should not have been
+made.
+
 ## 4. Spend controls
 
 Credits are the binding constraint, so treat overspend as a security
