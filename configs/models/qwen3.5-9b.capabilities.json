@@ -1,0 +1,168 @@
+{
+  "available": true,
+  "capabilities_id": "916d263930e50589",
+  "finish_reason_present": true,
+  "logprobs_container_key": "content",
+  "logprobs_depth": 5,
+  "logprobs_depth_requested": 5,
+  "logprobs_first_alternatives_raw": [
+    {
+      "bytes": [
+        84,
+        104,
+        105,
+        110,
+        107,
+        105,
+        110,
+        103
+      ],
+      "logprob": -0.0056258440017700195,
+      "token": "Thinking"
+    },
+    {
+      "bytes": [
+        84,
+        104,
+        101
+      ],
+      "logprob": -5.184195518493652,
+      "token": "The"
+    },
+    {
+      "bytes": [
+        116,
+        104,
+        105,
+        110,
+        107,
+        105,
+        110,
+        103
+      ],
+      "logprob": -13.577052116394043,
+      "token": "thinking"
+    },
+    {
+      "bytes": [
+        76,
+        101,
+        116
+      ],
+      "logprob": -13.755623817443848,
+      "token": "Let"
+    },
+    {
+      "bytes": [
+        70,
+        105,
+        110,
+        100,
+        105,
+        110,
+        103
+      ],
+      "logprob": -14.023482322692871,
+      "token": "Finding"
+    }
+  ],
+  "logprobs_first_entry_raw": {
+    "bytes": [
+      84,
+      104,
+      105,
+      110,
+      107,
+      105,
+      110,
+      103
+    ],
+    "logprob": -0.0056258440017700195,
+    "token": "Thinking",
+    "top_logprobs": [
+      {
+        "bytes": [
+          84,
+          104,
+          105,
+          110,
+          107,
+          105,
+          110,
+          103
+        ],
+        "logprob": -0.0056258440017700195,
+        "token": "Thinking"
+      },
+      {
+        "bytes": [
+          84,
+          104,
+          101
+        ],
+        "logprob": -5.184195518493652,
+        "token": "The"
+      },
+      {
+        "bytes": [
+          116,
+          104,
+          105,
+          110,
+          107,
+          105,
+          110,
+          103
+        ],
+        "logprob": -13.577052116394043,
+        "token": "thinking"
+      },
+      {
+        "bytes": [
+          76,
+          101,
+          116
+        ],
+        "logprob": -13.755623817443848,
+        "token": "Let"
+      },
+      {
+        "bytes": [
+          70,
+          105,
+          110,
+          100,
+          105,
+          110,
+          103
+        ],
+        "logprob": -14.023482322692871,
+        "token": "Finding"
+      }
+    ]
+  },
+  "logprobs_keys": [
+    "content"
+  ],
+  "logprobs_returned": true,
+  "logprobs_style_requested": "integer_depth",
+  "model_requested": "Qwen/Qwen3.5-9B",
+  "model_returned": "Qwen/Qwen3.5-9B",
+  "model_slug": "qwen3.5-9b",
+  "probed_utc": "2026-08-13T19:13:24.660399+00:00",
+  "reasoning_delimiter": null,
+  "reasoning_delivery": "api_field",
+  "reasoning_token_field": "usage.reasoning_tokens",
+  "response_extra_fields": [
+    "metadata",
+    "prompt"
+  ],
+  "seed_accepted": null,
+  "unavailable_reason": null,
+  "usage_fields": [
+    "completion_tokens",
+    "prompt_tokens",
+    "reasoning_tokens",
+    "total_tokens"
+  ]
+}

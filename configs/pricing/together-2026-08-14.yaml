@@ -1,0 +1,55 @@
+# Pricing snapshot for the second-model replication. Cost figures cite a
+# snapshot id, never a remembered rate.
+#
+# Verified 2026-08-14 against Together's /v1/models endpoint, which returns the
+# per-model rate the account is actually billed at. The vendor pricing page was
+# consulted first and its summary was incomplete, listing only one model in the
+# 7-9B range; the endpoint lists 39. Doc 3 s4.4 wants a dated rate, and the
+# endpoint is the authority for what this key pays.
+
+snapshot_id: together-2026-08-14
+date: "2026-08-14"
+provider: together_ai
+verified_by: "GET https://api.together.xyz/v1/models, read 2026-08-14"
+
+models:
+  "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo":
+    usd_per_1m_input: 0.18
+    usd_per_1m_output: 0.18
+    context_length: 131072
+  "Qwen/Qwen2.5-7B-Instruct-Turbo":
+    usd_per_1m_input: 0.30
+    usd_per_1m_output: 0.30
+    note: "unchanged from together-2026-08-13"
+
+# CORRECTION, written after the probes. The reasoning that picked the first
+# candidate was wrong: "priced in /v1/models, therefore serverless" does not
+# hold. Four of five priced candidates reject serverless calls, which is doc 3
+# s5's point restated by the vendor, and the predecessor recorded the same
+# thing: 3 of 5 listed candidates rejected serverless calls. A price in the
+# listing is not an availability signal. Only a real request is.
+
+gate_results:
+  probed_utc: "2026-08-14"
+  ceiling_usd: 0.05
+  candidates:
+    - id: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
+      listed_price: "0.18 / 0.18"
+      outcome: "NOT SERVERLESS, model_not_available"
+    - id: "mistralai/Mistral-7B-Instruct-v0.3"
+      listed_price: "0.20 / 0.20"
+      outcome: "NOT SERVERLESS, model_not_available"
+    - id: "meta-llama/Llama-3-8b-chat-hf"
+      listed_price: "0.20 / 0.20"
+      outcome: "NOT SERVERLESS, model_not_available"
+    - id: "nvidia/NVIDIA-Nemotron-Nano-9B-v2"
+      listed_price: "0.06 / 0.25"
+      outcome: "NOT SERVERLESS, model_not_available"
+    - id: "Qwen/Qwen3.5-9B"
+      listed_price: "0.17 / 0.25"
+      outcome: "REACHABLE, logprobs depth 5 as requested"
+  conclusion: >
+    The only reachable model comparable in scale is Qwen3.5-9B, which is the
+    same family as the first model and is reasoning-native. Every non-Qwen
+    candidate in the 7-9B range is gone from serverless. A cross-family
+    replication is not purchasable on this account at any price.

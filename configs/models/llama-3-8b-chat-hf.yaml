@@ -1,0 +1,33 @@
+# Second model for the MD1/MD2 replication. Different family, comparable scale.
+
+model_slug: llama-3-8b-chat-hf
+model_string: "meta-llama/Llama-3-8b-chat-hf"
+
+model_class: non_reasoning
+
+params:
+  temperature: 0.7        # the published setting, held so the sampling
+                          # distribution is the same experiment
+  top_p: null
+  max_tokens: 2048        # the published cap. Held constant across conditions
+                          # per doc 2 s7.1; this model has its own answer rate
+                          # and it is reported rather than assumed.
+  seed: 0
+  stop: []
+  n: 1
+
+  # Together's documented ceiling of 20 is wrong; 5 is the real one, found by
+  # rejection on 2026-08-13. Verified again for this model by the probe.
+  logprobs_depth: 5
+  logprobs_style: integer_depth
+
+concurrency: 16
+
+pricing:
+  snapshot_id: together-2026-08-14
+  date: "2026-08-14"
+  usd_per_1m_input: 0.2
+  usd_per_1m_output: 0.2
+  usd_per_1m_reasoning: null
+
+capabilities_file: configs/models/llama-3-8b-chat-hf.capabilities.json
