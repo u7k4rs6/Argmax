@@ -26,7 +26,12 @@ import pytest
 REPO = Path(__file__).resolve().parents[1]
 PREREG = REPO / "PREREGISTRATION.md"
 
-TAG_FORMAT = re.compile(r"^argmax-prereg-[a-z0-9]+-v\d+\.\d+$")
+#: Doc 2 s8.3 fixes the shape, `argmax-prereg-<phase>-v<major>.<minor>`, and
+#: says nothing about the case of the phase name. This pattern was stricter
+#: than the doc and would have rejected `argmax-prereg-threadA-v1.0`, so it is
+#: widened to letters of either case. Widened before any tag existed, and the
+#: shape itself is unchanged.
+TAG_FORMAT = re.compile(r"^argmax-prereg-[A-Za-z0-9]+-v\d+\.\d+$")
 
 
 def _table_rows(section: str) -> list[list[str]]:
