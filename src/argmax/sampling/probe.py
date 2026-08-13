@@ -59,7 +59,12 @@ class Capabilities:
     reasoning_token_field: str | None = None  # path within usage, if any
     reasoning_delivery: str = "none"  # api_field | delimiter | none
     reasoning_delimiter: list[str] | None = None
-    seed_accepted: bool = False
+    #: None means unknown, and unknown is the honest value: one call cannot
+    #: establish that a seed was honoured, and hosted inference is
+    #: non-deterministic across batching and hardware even at a fixed seed
+    #: (doc 2 s7). It was previously defaulted to False, which reads as a
+    #: measurement that nothing performed.
+    seed_accepted: bool | None = None
     finish_reason_present: bool = False
     response_extra_fields: list[str] = field(default_factory=list)
 
@@ -72,7 +77,9 @@ class Capabilities:
             "finish_reason": self.finish_reason_present,
             "reasoning_tokens": self.reasoning_token_field is not None,
             "reasoning_split": self.reasoning_delivery != "none",
-            "seed": self.seed_accepted,
+            # Unknown does not provide. A phase that requires a honoured seed
+            # must not start on the strength of a field nobody measured.
+            "seed": bool(self.seed_accepted),
         }.get(requirement, False)
 
 

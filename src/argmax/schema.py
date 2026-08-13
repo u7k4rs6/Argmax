@@ -46,7 +46,12 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 #: accuracies are unqualified. That is a fact about those records and it is not
 #: backfilled: the rate cannot be recovered from a table that never stored the
 #: counts it is computed from.
-SCHEMA_VERSION = 3
+#: 4: `ProblemRecord` carries `answer_margin_censored` and `answer_margin_k`
+#: beside the margin. The provider returns k alternatives per token and k slots
+#: need not contain every option letter, so a margin is a measurement when they
+#: all appear and a lower bound when one does not. A version 3 record's margin
+#: does not say which it is.
+SCHEMA_VERSION = 4
 
 #: The version at which `answer_rate` became required. Readers branch here.
 ANSWER_RATE_SCHEMA_VERSION = 3
@@ -309,7 +314,15 @@ class ProblemRecord(Strict):
     # rather than the whole completion. This is the analysis the published
     # paper could not run.
     answer_token_logprob_mean: float | None = None
+    #: The margin never travels without its censoring flag and its k. The
+    #: provider returns k alternatives per token, and k slots need not contain
+    #: every option letter; when one is missing the margin is a lower bound,
+    #: not a measurement. A margin published without that distinction is a
+    #: number that silently means two different things. See doc 4 s4.1 for the
+    #: same argument applied to accuracy and its answer rate.
     answer_margin_vs_runner_up: float | None = None
+    answer_margin_censored: bool | None = None
+    answer_margin_k: int | None = None
     answer_entropy: float | None = None
 
     logprob_coverage: float = 1.0
@@ -349,6 +362,27 @@ class ProblemRecord(Strict):
         for name, value in rates:
             if not 0.0 <= float(value) <= 1.0:
                 raise ValueError(f"answer_rate out of range at {name}: {value}")
+        return self
+
+    @model_validator(mode="after")
+    def _margin_carries_its_censoring_and_k(self) -> ProblemRecord:
+        """A margin without k is not interpretable and is refused.
+
+        k decides where the censoring point sits, so a stored margin whose k is
+        unknown cannot be told apart from one measured at a different depth.
+        """
+        if self.answer_margin_vs_runner_up is None:
+            return self
+        if self.answer_margin_censored is None:
+            raise ValueError(
+                "answer_margin_vs_runner_up without answer_margin_censored: a "
+                "bound and a measurement are different quantities"
+            )
+        if self.answer_margin_k is None or self.answer_margin_k < 1:
+            raise ValueError(
+                "answer_margin_vs_runner_up without a usable answer_margin_k; "
+                "the depth the provider returned decides what the margin means"
+            )
         return self
 
     @model_validator(mode="after")

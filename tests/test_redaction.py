@@ -52,3 +52,34 @@ def test_error_path_is_scrubbed(monkeypatch, caplog):
         logger.error("request failed: %s", exc_text)
 
     assert FAKE_KEY not in "\n".join(r.getMessage() for r in caplog.records)
+
+
+# --- second line of defence: the key that is not in this process's env ------
+
+
+def test_a_long_opaque_token_is_redacted_without_any_marker():
+    """The literal scrub only fires when the value is in os.environ. A key
+    pasted into a config, or echoed back inside a provider error, has no
+    `Bearer` and no `key=` to announce it."""
+    from argmax.sampling.redact import scrub
+
+    pasted = "aB3xY7zQ9wE2rT5yU8iO1pA4sD6fG0hJkL"
+    assert pasted not in scrub(f"provider said: unknown credential {pasted}")
+
+
+def test_sha256_digests_survive_redaction():
+    """Manifests, provenance records and leakage fingerprints are full of
+    digests. Redacting them to guard against a shape no provider issues would
+    break the audit trail this project runs on."""
+    from argmax.sampling.redact import scrub
+
+    digest = "f22e15c8cd1d6ed5a4b58fd5a289fcb688e3dd91564a7935d7203bf58c6bafec"
+    line = f"ladder sha256 {digest} verified"
+    assert scrub(line) == line
+
+
+def test_long_decimal_runs_survive_redaction():
+    from argmax.sampling.redact import scrub
+
+    counter = "12345678901234567890123456789012345"
+    assert counter in scrub(f"sample_index {counter}")
