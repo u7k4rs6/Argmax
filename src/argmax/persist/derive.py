@@ -30,7 +30,12 @@ from typing import Any
 
 from argmax.analysis.gates import answer_margin_vs_runner_up
 from argmax.config import DATA
-from argmax.extract.ladder import EXTRACTOR_VERSION, char_span_to_token_span, extract
+from argmax.extract.ladder import (
+    EXTRACTOR_VERSION,
+    char_span_to_token_span,
+    extract,
+    top_alternatives_at,
+)
 
 LETTERS = "ABCD"
 DERIVED = DATA / "derived"
@@ -55,11 +60,9 @@ def derive_row(record: dict[str, Any], n_options: int = 4) -> dict[str, Any]:
     margin = None
     censored = None
     k = None
-    logprobs = record.get("logprobs_raw") or {}
-    tops = logprobs.get("top_logprobs") or []
-    if token_span is not None and tops and token_span[0] < len(tops):
-        alternatives = tops[token_span[0]]
-        if isinstance(alternatives, dict):
+    if token_span is not None:
+        alternatives = top_alternatives_at(record.get("logprobs_raw"), token_span[0])
+        if alternatives:
             m = answer_margin_vs_runner_up(alternatives, LETTERS[:n_options])
             margin, censored, k = m.value, m.censored, m.k
 

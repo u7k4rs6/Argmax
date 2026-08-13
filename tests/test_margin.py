@@ -108,3 +108,64 @@ def test_a_complete_margin_is_accepted():
         )
     )
     assert record.answer_margin_k == 5
+
+
+# --- provider logprob shapes -----------------------------------------------
+#
+# Together returns two shapes and which one arrives is a property of the model.
+# Reading only one does not raise on the other: it yields no alternatives, and
+# every margin in the run comes back null. Qwen3.5-9B is the model that found
+# this, after 148 probe samples had already been paid for.
+
+
+def _flat(alternatives: dict[str, float]) -> dict:
+    return {"tokens": [" B"], "top_logprobs": [alternatives]}
+
+
+def _nested(alternatives: dict[str, float]) -> dict:
+    return {
+        "content": [
+            {
+                "token": " B",
+                "logprob": max(alternatives.values()),
+                "top_logprobs": [
+                    {"token": t, "logprob": lp} for t, lp in alternatives.items()
+                ],
+            }
+        ]
+    }
+
+
+ALTS = {" B": 0.0, " A": -22.32, " X": -23.93, " C": -25.71, " b": -26.79}
+
+
+def test_both_provider_shapes_yield_the_same_alternatives():
+    from argmax.extract.ladder import top_alternatives_at
+
+    assert top_alternatives_at(_flat(ALTS), 0) == ALTS
+    assert top_alternatives_at(_nested(ALTS), 0) == ALTS
+
+
+def test_both_provider_shapes_yield_the_same_margin():
+    """The failure mode was a silently null margin, not a wrong one."""
+    from argmax.analysis.gates import answer_margin_vs_runner_up
+    from argmax.extract.ladder import top_alternatives_at
+
+    margins = [
+        answer_margin_vs_runner_up(top_alternatives_at(shape(ALTS), 0), "ABCD")
+        for shape in (_flat, _nested)
+    ]
+    assert margins[0].value == margins[1].value
+    assert not margins[0].censored and not margins[1].censored
+    # B, A and C present, X and b are not option letters
+    assert margins[0].options_present == 3
+    assert abs(margins[0].value - 22.32) < 1e-9
+
+
+def test_out_of_range_and_absent_positions_are_none_not_empty():
+    from argmax.extract.ladder import top_alternatives_at
+
+    assert top_alternatives_at(_nested(ALTS), 5) is None
+    assert top_alternatives_at(_flat(ALTS), 5) is None
+    assert top_alternatives_at(None, 0) is None
+    assert top_alternatives_at({}, 0) is None

@@ -197,3 +197,63 @@ def char_span_to_token_span(
     if lo_tok is None or hi_tok is None:
         return None
     return (lo_tok, hi_tok)
+
+
+def top_alternatives_at(
+    logprobs_raw: dict[str, Any] | None, index: int
+) -> dict[str, float] | None:
+    """Top-k alternatives at one token position, from either provider shape.
+
+    Together returns logprobs in two shapes, and which one arrives is a
+    property of the model, not of the request. `build_payload` documents the
+    request side of this; this is the response side.
+
+    - **Parallel arrays.** `tokens`, `token_logprobs`, `top_logprobs`, the last
+      a list of token-to-logprob dicts, one per position. Qwen2.5-7B-Instruct
+      returns this.
+    - **OpenAI-nested.** `content`, a list of per-position dicts each carrying
+      `token`, `logprob` and its own `top_logprobs` LIST of
+      `{token, logprob}` entries. Qwen3.5-9B returns this.
+
+    Reading only the first shape does not raise on the second. It finds no
+    `top_logprobs` key at the top level, produces no alternatives, and the
+    margin comes back null for every sample in the run. That is the silent
+    failure this function exists to prevent, and it is the same class of
+    failure as the request-side one: a well formed response that never
+    contained what was asked for.
+
+    Returns None when the position has no alternatives, which is distinct from
+    an empty mapping.
+    """
+    if logprobs_raw is None or index < 0:
+        return None
+
+    nested = logprobs_raw.get("content")
+    if isinstance(nested, list):
+        if index >= len(nested):
+            return None
+        entry = nested[index]
+        if not isinstance(entry, dict):
+            return None
+        alternatives = entry.get("top_logprobs")
+        if not isinstance(alternatives, list):
+            return None
+        out: dict[str, float] = {}
+        for alt in alternatives:
+            if isinstance(alt, dict) and "token" in alt and "logprob" in alt:
+                # A repeated token would collapse; keep the higher logprob so
+                # the top-of-list value wins, matching the flat shape's dict.
+                token = alt["token"]
+                logprob = float(alt["logprob"])
+                if token not in out or logprob > out[token]:
+                    out[token] = logprob
+        return out or None
+
+    flat = logprobs_raw.get("top_logprobs")
+    if isinstance(flat, list):
+        if index >= len(flat):
+            return None
+        entry = flat[index]
+        return dict(entry) if isinstance(entry, dict) else None
+
+    return None
