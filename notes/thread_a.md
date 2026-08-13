@@ -243,8 +243,8 @@ headroom the backfire paper's oracle identifies and its gates could not reach.
 
 1. **This is a reconstruction, not Chen et al.'s method.** Their code is not
    available to this project. A PASS is evidence about the mechanism as
-   described in arXiv:2608.11403's Positioning section, not about their
-   implementation.
+   described in the Positioning section of arXiv:2608.11403, read as
+   `paper/backfire_preprint.pdf`, not about their implementation.
 2. **The estimator was given labels.** A deploy-time signal would not have
    them. The result is an upper bound on what the verifier-free version could
    do, and the backfire paper's own finding is that verifier-free signals fail
