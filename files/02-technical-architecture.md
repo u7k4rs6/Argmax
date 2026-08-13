@@ -299,7 +299,28 @@ vote, and therefore it moves accuracy directly. A curve measured at one cap
 and a curve measured at another are measurements of two different
 experiments.
 
-The constraint, which binds the runner and the analysis both:
+**The criterion is the answer rate, not the cap.** An earlier version of this
+section made equal caps the test of comparability. That is wrong, and wrong in
+the direction that matters: a non-reasoning model at 16,384 tokens truncates
+near zero while `MiniMaxAI/MiniMax-M2.7` at the same cap truncates 35.1
+percent. The shared cap yields two pools of different kinds, one nearly
+complete and one missing a third of its samples, and comparing accuracies
+across them compares populations rather than policies. Equal caps are neither
+necessary nor sufficient. The rule:
+
+> **Two conditions are comparable when their answer rates match, or when the
+> result is shown to be insensitive to the difference between them.** A
+> constant cap is the mechanism that usually produces matching answer rates.
+> It is not the criterion, and it does not produce them across models that
+> differ in how much they think.
+
+"Shown to be insensitive" means shown, not asserted: recompute the comparison
+on the subpopulation where the rates do match, or on a common floor, and
+report both. The mechanism is in `04-data-and-instrumentation-spec.md` section
+4.1, and section 4 makes `answer_rate` a required field on the problem record
+precisely so this test can be applied rather than assumed.
+
+That the cap is a treatment still binds the runner and the analysis both:
 
 1. **`max_tokens` is held constant across every condition within a study.**
    Every model, every tier, every arm, every N in the grid. If two models
@@ -317,9 +338,14 @@ The constraint, which binds the runner and the analysis both:
    `PREREGISTRATION.md` stating what was compared before and what may be
    compared after.
 
-The mechanism is in `04-data-and-instrumentation-spec.md` section 4 under
-`answer_rate`: a truncated sample casts no vote, so the pool that actually
-votes at cap C is smaller than N and is not a random subset of it.
+Binding 3 is the conservative form of the rule above: a cap change is one way
+to move the answer rate, so a comparison spanning one is refused outright
+rather than argued. **The converse does not hold.** Holding the cap fixed does
+not license a comparison, because two models at one cap can still answer at
+different rates, and that case has to be settled on the rates themselves.
+`notes/max_tokens_estimate.md` shows how far apart the rates can be: at one
+cap and one benchmark tier, the fraction of samples that answer at all is a
+property of the problem, and 8 of 47 problems produced no answer whatsoever.
 
 ## 8. Pre-registration and verification
 
