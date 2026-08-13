@@ -100,6 +100,42 @@ and at accuracy 0.90 roughly 156 of 198 problems would carry fewer than three
 incorrect samples at M=16, leaving about 42. The claims still resolve there,
 but see the limitations.
 
+## Correction, post-tag: the option order is shuffled, and I said it was not
+
+The tag is cut, so this is recorded as a correction rather than edited into
+the text above.
+
+**What I claimed.** In `configs/phases/margin-v2.yaml` and in the report of
+this run, that "the option order is the dataset's own and is not reshuffled",
+offered as the reason `prompt_hash` is comparable across the two models.
+
+**What is true.** The options **are** shuffled. `shuffled_options(row, idx)`
+in `src/argmax/datasets/gpqa.py` applies `random.Random(idx).shuffle`, keyed
+on the dataset row index, reproducing the predecessor's shuffle exactly. That
+module's own docstring says so, and says that any other shuffle would be a
+valid experiment that forfeits comparability with the published numbers.
+
+**What is unaffected.** The conclusion the wrong sentence was supporting.
+`prompt_hash` is equal across the two stores for **all 198 problems**,
+verified two ways: directly on the overlap present in the v2 store while it
+draws, and by recomputing `prompt_hash(prompt_for(p))` for every problem and
+comparing against the 198 stored v1 hashes. 198 equal, 0 different. Both runs
+call the same `load_problems()`, so the prompts are identical by construction
+rather than by coincidence, and the two models see the same question with the
+same options in the same positions.
+
+The mechanism is stronger than the one I stated: a shuffle keyed on row index
+is deterministic, so it reproduces across runs, models and machines, which an
+"unshuffled dataset order" would only do if the dataset's order never changed.
+
+**Which claim was affected.** Only the stated reason for cross-model
+comparability of `prompt_hash`, in the phase config comment and in the run
+report. It does not appear in the registered hypotheses, thresholds, or
+limitations. **MD3 and MD4 are within-model and their verdicts are untouched**
+either way, since both are computed on Qwen3.5-9B samples alone; the shuffle
+question bears on whether v1 and v2 may be compared side by side, and the
+answer is that they may.
+
 ## Stratification check: does the margin depend on how hard the problem is?
 
 Run before tagging, on the v1 exposed 129 at M=64, because the survivor set

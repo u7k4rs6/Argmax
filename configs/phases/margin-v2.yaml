@@ -32,9 +32,14 @@ unanswered_sample_policy: exclude
 prereg_tag: argmax-prereg-margin-desc-v2.0
 
 # The predecessor's locked template, byte-identical to the one v1 used. The
-# option order is the dataset's own and is not reshuffled: `prompt_hash` is
-# comparable across the two models for the same problem_id, which is what
-# makes this a replication rather than a second experiment.
+# option order is shuffled by `random.Random(row_index)`, reproducing the
+# predecessor's shuffle exactly as v1 did. Because that shuffle is keyed on
+# the row index it is deterministic across runs and models, so `prompt_hash`
+# is equal across the two stores for all 198 problems (verified), which is
+# what makes this a replication rather than a second experiment.
+#
+# Corrected after tagging: this comment previously said the order was the
+# dataset's own and unshuffled. See the correction in notes/margin_desc_v2.md.
 prompt_template_id: "scb-locked-v1@e3544f73"
 
 # Measured on this model at this cap with thinking disabled, from the 32-sample
