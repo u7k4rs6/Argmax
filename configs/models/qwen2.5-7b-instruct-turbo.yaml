@@ -1,0 +1,46 @@
+# The first of the two policies the published study used. Held here so that a
+# comparison against arXiv:2608.11403 is possible at all: doc 2 s7.1 makes the
+# comparison legal only when the answer rates match, and they match only at the
+# published cap on a non-reasoning policy.
+
+model_slug: qwen2.5-7b-instruct-turbo
+model_string: "Qwen/Qwen2.5-7B-Instruct-Turbo"
+
+model_class: non_reasoning
+
+params:
+  temperature: 0.7        # the published setting; changing it breaks the
+                          # comparison this config exists to enable
+  top_p: null
+  max_tokens: 2048
+  # NOT a Step 0 guess. 2048 is the published cap, read from the predecessor at
+  # tag backfire-prereg-v1.0 (pilot/sampling.py:147) and recorded in
+  # notes/predecessor_cap.md. Its truncation rate on this policy is measured,
+  # not assumed: 21 of 13,058 stored completions reached it, 0.0016, and the
+  # answer rate was 0.9946. The blocked decision was always the reasoning-model
+  # cap, and this is not that.
+  seed: 0
+  stop: []
+  n: 1
+
+  # Together documents `logprobs` as an integer 0 to 20, the top-k to return at
+  # each generation step. `top_logprobs` is a response field there, not a
+  # request one. Sending the OpenAI spelling gets depth 1 and looks like a
+  # provider limitation. 20 is the deepest documented value; the probe records
+  # what actually came back.
+  logprobs_depth: 20
+  logprobs_style: integer_depth
+
+concurrency: 4
+
+pricing:
+  snapshot_id: together-2026-08-13
+  date: "2026-08-13"
+  usd_per_1m_input: 0.30
+  usd_per_1m_output: 0.30
+  usd_per_1m_reasoning: null
+  # Verified 2026-08-13 against together.ai/pricing and the model page. This is
+  # a 67 percent rise over the predecessor's 2026-05 snapshot of 0.18, which is
+  # why doc 3 s4.4 wants a date on every price. See configs/pricing/.
+
+capabilities_file: configs/models/qwen2.5-7b-instruct-turbo.capabilities.json

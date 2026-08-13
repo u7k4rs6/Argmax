@@ -1,0 +1,56 @@
+# Pricing snapshot. Cost figures cite a snapshot id, never a remembered rate.
+#
+# Doc 3 s4.4. The predecessor's constants were three months old and one of the
+# two had moved by 67 percent, so they are not carried forward. They are
+# recorded below as the previous snapshot, for the diff, and are not used.
+
+snapshot_id: together-2026-08-13
+date: "2026-08-13"
+provider: together_ai
+verified_by: "together.ai/pricing and the per-model pages, read 2026-08-13"
+
+models:
+  "Qwen/Qwen2.5-7B-Instruct-Turbo":
+    usd_per_1m_input: 0.30
+    usd_per_1m_output: 0.30
+    source: "https://www.together.ai/models/qwen2-5-7b-instruct-turbo"
+  "meta-llama/Meta-Llama-3-8B-Instruct-Lite":
+    usd_per_1m_input: 0.14
+    usd_per_1m_output: 0.14
+    source: "https://www.together.ai/models/llama-3-8b-instruct-lite"
+  "MiniMaxAI/MiniMax-M2.7":
+    usd_per_1m_input: 0.30
+    usd_per_1m_output: 1.20
+    source: "https://www.together.ai/pricing"
+    note: >
+      Not used by any planned run. Recorded because the phase 14b audit priced
+      404 samples with exactly these figures and they still hold, which is what
+      makes the $0.00971 per sample in notes/max_tokens_estimate.md a current
+      number rather than a historical one.
+
+previous_snapshot:
+  snapshot_id: backfire-2026-05
+  date: "2026-05"
+  source: "self-consistency-backfire pilot/config.py:54, run_model2_sampling.py:55"
+  models:
+    "Qwen/Qwen2.5-7B-Instruct-Turbo":
+      usd_per_1m_input: 0.18
+      usd_per_1m_output: 0.18
+    "meta-llama/Meta-Llama-3-8B-Instruct-Lite":
+      usd_per_1m_input: 0.14
+      usd_per_1m_output: 0.14
+
+change_since_previous:
+  qwen: "+0.12 per 1M on both sides, a 67 percent rise"
+  llama: "unchanged"
+  effect_on_the_v2_plan: >
+    The 198-problem re-cost rises from $3.30 at the old rates to $4.66 at
+    these. The plan still fits $6 at M=64 and does not at M=96.
+
+conflicting_sources:
+  - claim: "One third-party aggregator lists Qwen2.5-7B-Instruct-Turbo output at $1.20 per 1M."
+    resolution: >
+      Not used. together.ai's own pricing page and the model page both say 0.30
+      for input and output. Where a vendor page and an aggregator disagree, the
+      vendor page is the snapshot and the disagreement is recorded here rather
+      than silently resolved.

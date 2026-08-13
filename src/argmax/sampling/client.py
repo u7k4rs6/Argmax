@@ -144,14 +144,31 @@ def build_payload(
     top_p: float | None,
     seed: int | None,
     stop: list[str],
-    logprobs: bool,
-    top_logprobs: int | None,
+    logprobs_depth: int | None,
+    logprobs_style: str = "integer_depth",
 ) -> dict[str, Any]:
     """Assemble a request body.
 
     `max_tokens` is required with no default: truncation must be a controlled
     variable, not a provider default. `stop` defaults to empty because a stop
     sequence silently truncates the answer and looks like a short completion.
+
+    ## Two spellings of the same request, and why the default is not OpenAI's
+
+    Together's chat-completions reference documents `logprobs` as **an integer
+    between 0 and 20**, "of the top k tokens to return log probabilities for at
+    each generation step, instead of only the sampled token". `top_logprobs`
+    appears there only as a RESPONSE field. OpenAI spells the same request as
+    `logprobs: true` plus `top_logprobs: k`.
+
+    Sending the OpenAI spelling to Together gets `logprobs: true`, which is not
+    an integer depth, and the alternatives the margin gate needs do not come
+    back. The failure is silent: a depth-1 response is well formed, so a probe
+    written the OpenAI way would report "logprobs unsupported at depth" when
+    what actually happened is that the depth was never requested.
+
+    `logprobs_style` therefore travels with the model config rather than being
+    assumed, and the capability probe records what came back either way.
     """
     payload: dict[str, Any] = {
         "model": model_string,
@@ -166,8 +183,15 @@ def build_payload(
         payload["top_p"] = top_p
     if seed is not None:
         payload["seed"] = seed  # sent and recorded, never relied upon
-    if logprobs:
-        payload["logprobs"] = True
-        if top_logprobs is not None:
-            payload["top_logprobs"] = top_logprobs
+    if logprobs_depth is not None:
+        if logprobs_style == "integer_depth":
+            payload["logprobs"] = int(logprobs_depth)
+        elif logprobs_style == "openai":
+            payload["logprobs"] = True
+            payload["top_logprobs"] = int(logprobs_depth)
+        else:
+            raise ValueError(
+                f"unknown logprobs_style {logprobs_style!r}; "
+                "expected 'integer_depth' (Together) or 'openai'"
+            )
     return payload

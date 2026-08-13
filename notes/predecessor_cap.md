@@ -90,10 +90,24 @@ thinking. Raising the cap fixes the answer rate and breaks the cap match. There
 is no setting of `max_tokens` at which a reasoning model both matches the
 published cap and matches the published answer rate.
 
-The one encouraging number: of the 107 completions that did fit under 2048,
-106 produced an answer and 95 of those were correct, 0.8962. The fast mode is
-not a degraded mode. It is a different population, and it is the population
-that would survive the published cap.
+Of the 107 completions that did fit under 2048, 106 produced an answer and 95
+of those were correct, **0.8962**.
+
+That number does not say the fast mode is undegraded, and an earlier version of
+this note read it that way. **Fitting inside 2048 tokens is a selection on the
+problem, not a property of the mode.** A completion finishes early when the
+model finds the problem easy, so the 107 are enriched for easy problems, and
+their accuracy is a statement about which problems fit rather than about how
+well fast answers perform. The selection is visible in the same data: 25 of 47
+problems contribute none of the 107, and mode membership is a property of the
+problem at 5.65 times the permutation null (`notes/max_tokens_estimate.md`
+section 7).
+
+What 0.8962 does establish is narrower and still useful: the subset that
+survives a 2048 cap is not noise, so a cap does not merely truncate at random.
+It selects, and it selects towards problems the model was going to get right
+anyway. For a comparison against the published numbers that makes the cap worse
+rather than better: the surviving pool is easier than the pool it came from.
 
 ## 3. What is not a barrier
 

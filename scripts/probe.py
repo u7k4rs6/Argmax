@@ -46,8 +46,8 @@ def main() -> int:
         top_p=params.get("top_p"),
         seed=params.get("seed"),
         stop=params.get("stop") or [],
-        logprobs=bool(params.get("logprobs", True)),
-        top_logprobs=params.get("top_logprobs"),
+        logprobs_depth=params.get("logprobs_depth"),
+        logprobs_style=params.get("logprobs_style", "integer_depth"),
     )
 
     with Client(rate_per_sec=1.0) as client:
@@ -68,6 +68,8 @@ def main() -> int:
         model_slug=args.model,
         model_requested=cfg["model_string"],
         probed_utc=datetime.now(UTC).isoformat(),
+        logprobs_depth_requested=params.get("logprobs_depth"),
+        logprobs_style_requested=params.get("logprobs_style", "integer_depth"),
         **found,
     )
     path = save_capabilities(caps)

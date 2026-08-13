@@ -203,10 +203,12 @@ calling it a paper.
 
 **One sentence per row:**
 
-- **A.** Contributes the backfire rate across three difficulty tiers rather
-  than one, which is the generalisation the published paper's own limitations
-  section asks for and therefore reads as its missing table rather than as a
-  separate result. **Thin.**
+- **A.** Tests whether Chen et al. 2024's mixture explanation for
+  rise-then-fall majority-vote curves, and the few-sample optimal-call-count
+  estimator built on it, survive on a uniformly hard benchmark where the
+  easy-query component they invoke is absent. **Not thin.** It tests a
+  mechanism claim from a different paper by manipulating the thing that claim
+  rests on, which is not what the backfire paper does.
 - **B.** Contributes the first backfire measurement on a reasoning-tuned
   policy, which the published paper names as untested, but at M=8 it cannot
   reach the N at which backfire was defined and a third of its samples never
@@ -216,71 +218,118 @@ calling it a paper.
   a methods result the backfire paper does not contain. **Not thin, but already
   established for free**, from stored data, in `notes/predecessor_cap.md`.
 
+> **Correction.** An earlier version of this table read row A as "the backfire
+> rate across three tiers" and marked it thin, because Thread A was defined
+> only in the kickoff brief, which is in neither repository, and the reading
+> was a guess. Thread A is the Chen et al. test above. The guess changed a
+> verdict, so the definition is now transcribed in
+> `docs/kickoff/THREADS.md` and the verdict below is revised. The brief itself
+> is still not committed.
+
 ### Costing basis
 
-`$0.00971` per sample for a reasoning model at a 16,384 cap, measured 2026-08.
-`$0.000161` (Qwen) and `$0.0000996` (Llama) per sample for a non-reasoning
-model at 2048, from the predecessor's recorded 2026-05 pricing snapshot at
-`pilot/config.py:54` and `scripts/run_model2_sampling.py:55`. **That snapshot
-is three months old and must be re-verified before any run**, per `03` section
-4.4. `M=96` where a grid reaching N=64 needs a CI at its endpoint, per `02`
-section 2.
+Re-verified 2026-08-13 against Together's own pricing and model pages, recorded
+as `configs/pricing/together-2026-08-13.yaml`. The predecessor's 2026-05
+constants are **not** carried forward, and one of the two had moved:
+
+| Per sample, cap 2048 | 2026-05 basis | **2026-08-13 snapshot** |
+|---|---|---|
+| Qwen2.5-7B-Instruct-Turbo | $0.000161 | **$0.000268** (price up 67 percent) |
+| Llama-3-8B-Instruct-Lite | $0.0000996 | **$0.0000996** (unchanged) |
+
+Reasoning model at a 16,384 cap: **$0.00971** per sample, measured 2026-08, and
+the MiniMax rates that produced it still hold at today's snapshot.
+
+Token counts per sample are measured from the predecessor's stored completions,
+not assumed: 295.8 in and 598.9 out for Qwen, 272.4 in and 438.7 out for Llama.
+
+`M=96` where a grid reaching N=64 needs a CI at its endpoint, per `02` section
+2. `M=64` reproduces the published design exactly and inherits its bare
+endpoint.
 
 ### The table
 
-| | **A. Non-reasoning, cap 2048, three tiers** | **B. Reasoning, one model, one tier, large cap** | **C. Both, two registered studies, no cross-comparison** |
+| | **A. Non-reasoning, cap 2048, three tiers (Thread A)** | **B. Reasoning, one model, one tier, large cap** | **C. Both, two registered studies, no cross-comparison** |
 |---|---|---|---|
 | **Sizing** | 3 tiers x 47 problems, M=96, 2 models = 27,072 samples | 47 problems, M=8, 1 model = 376 samples | A plus B as sized here |
-| **Cost** | **$3.53** | **$3.65** | **$7.18** |
-| **Credits needed above $6** | none, $2.47 margin | none, $2.35 margin | **$1.18**, and $37.81 if B is to reach N=64 |
-| **What it buys** | The backfire rate on 141 problems across three tiers, comparable to the published numbers because the cap and the answer rate both match | An answer rate and a truncation rate for a reasoning policy, plus a curve that tops out at N=4 with a CI | Both of the above, plus a documented incomparability between them |
-| **What it forecloses** | The reasoning-model question entirely, at this budget | Any comparison to the published numbers, and any claim at the N where backfire is defined | Nothing extra, but it spends the margin that the capability probe and the inevitable re-run need |
-| **Answers the paper's central question** (a deploy-time signal separating confidently-correct from confidently-wrong) | **No.** Nothing in A is a new signal | **No** | **No** |
-| **Plausible venue** | Workshop table, or a v2 of the existing entry | None standalone. A technical note at best | Workshop methods note |
-| **Eligible** | **No** | **No** | **No** |
+| **Cost at the 2026-08-13 snapshot** | **$4.98** | **$3.65** | **$8.63** |
+| **Credits needed above $6** | none, $1.02 margin | none, $2.35 margin | **$2.63**, and $37.81 more if B is to reach N=64 |
+| **What it buys** | A test of whether Chen et al.'s mixture explanation and its optimal-call estimator survive when the easy component is removed, on three tiers that vary the mixture deliberately, with the hard tier being the published 47 problems | An answer rate and a truncation rate for a reasoning policy, plus a curve that tops out at N=4 with a CI | Both of the above, plus a documented incomparability between them |
+| **What it forecloses** | The reasoning-model question entirely, at this budget | Any comparison to the published numbers, and any claim at the N where backfire is defined | Nothing extra, but it spends the margin the capability probe and the inevitable re-run need |
+| **Answers the backfire paper's central question** (a deploy-time signal separating confidently-correct from confidently-wrong) | **No**, but see below: A's samples make the answer free | **No** | **No** |
+| **Plausible venue** | Standalone workshop or short paper: it tests a published scaling model, not this project's predecessor | None standalone. A technical note at best | Workshop methods note |
+| **Eligible** | **Yes** | **No** | **No** |
 
-### No row clears the bar
+### One row clears the bar, and it was the one previously marked thin
 
-Not one of the three is eligible, and the reason is the same in all three
-cases: **none of them touches the question the published paper names as
-central.** A and C are affordable and thin. B is affordable only in a form that
-measures nothing, and the form that would measure something costs $43.81
-against $6 available.
+**A is eligible.** Under the correct Thread A definition it is not a
+generalisation of the backfire result; it is a test of a mechanism claim in
+Chen et al. 2024, on the case that discriminates it. The backfire paper does
+not test a scaling model, does not manipulate the mixture, and does not
+evaluate an optimal-call-count estimator.
 
-Padding one of them into eligibility would mean attaching a gate analysis to a
-scope that was not designed for it, and the resulting paper would be a
-generalisation table with a gate bolted on.
+B and C remain ineligible for the reasons already given: B measures nothing at
+a budget that fits, and C's distinctive contribution is already established for
+free from stored data.
 
-### The alternative: v2 of 2608.11403, not a new entry
+### A and the gate extension share their samples
 
-The honest move is a revision of the existing paper. It is already accepted at
-the COLM 2026 Workshop on Efficient Reasoning, the problem set is the same 47
-problems, and the extension below is comparable to the published runs by
-construction: same cap, same prompt, same provider, answer rates matching at
-0.99.
-
-**The smallest credible extension**, in the order it would be run:
+This is the thing worth noticing. The v2 gate extension needs non-reasoning
+samples on the published 47 problems, at cap 2048, with per-token logprobs
+retained. **Row A's hard tier is those same problems under those same
+settings.** Collect A's samples with `logprobs_depth` set and the gate
+comparison is a groupby over rows that already exist:
 
 | Step | What | Samples | Cost |
 |---|---|---|---|
-| 1 | Capability probe, both models, confirming `top_logprobs >= 2` is honoured and re-verifying the price snapshot | ~4 | under $0.01 |
-| 2 | Re-sample the published 47 problems, both models, N=64, cap 2048, retaining per-token logprobs and the answer span | 6,016 | **$0.78** |
-| 3 | Margin gate against agreement gate, paired per problem, from stored rows | 0 | $0 |
+| 1 | Capability gate, both models, deepest documented logprob depth | 2 | under $0.01 |
+| 2 | Row A, three tiers x 47 problems, M=96, both models, cap 2048, logprobs retained | 27,072 | **$4.98** |
+| 3 | Thread A: does the rise-then-fall shape survive on the hard tier | 0 | $0 |
+| 4 | Margin gate against agreement gate, on the hard tier, paired per problem | 0 | $0 |
 
-**Total: about $0.79, leaving $5.20 of the $6.** It answers the paper's own key
-open problem with the paper's own problem set, it is comparable to the
-published numbers under `02` section 7.1 without an argument, and every number
-it produces is recomputable from stored artifacts because `04`'s retention
-policy is what the samples are collected under.
+**Total about $4.99, leaving $1.01.** Two registered studies off one sampling
+run, which `02` section 8.1 permits and `02` section 8.3 requires be tagged
+separately.
 
-Two things it does not do, stated so the maintainer is choosing with them in
-view. It says nothing about reasoning models, which stay out of reach at this
-budget. And it stands or falls on whether the provider returns a runner-up
-logprob, which is why step 1 exists and why it comes first.
+The margin gate half is comparable to the published numbers by construction:
+same cap, same prompt, same provider, answer rates matching at 0.99. If it
+fails to beat the agreement gate, that is a publishable negative result on the
+backfire paper's own central question, obtained at no marginal sampling cost.
 
-If the margin gate fails to beat the agreement gate, that is a publishable
-negative result on the paper's own central question, and it costs $0.79 to
-find out.
+### What the v2 extension does and does not attack
+
+**It attacks the gate question**, meaning the backfire paper's stated key open
+problem: is there a deploy-time signal that separates confidently-correct from
+confidently-wrong. The candidate is the answer-token margin against the
+runner-up, which the predecessor could not compute because it stored a scalar
+and requested depth 1.
+
+**It does not attack the reasoning-model question**, and nothing in this plan
+does. Any sentence suggesting otherwise is wrong.
+
+### Why the reasoning-model question stays open
+
+The published paper names it as untested: both its policies are small and
+non-reasoning, and whether backfire shrinks for reasoning-tuned models, which
+may be better calibrated, is unknown. This project does not close it, for a
+reason that is measured rather than budgetary in origin:
+
+- At the published cap of 2048, a reasoning policy answers **at most 0.2649**
+  of the time, distribution-free, and **25 of 47 problems produce nothing at
+  all** (`notes/predecessor_cap.md` section 2.1). The comparison is not
+  expensive there, it is empty.
+- At 16,384 the policy answers 0.6460 and the cap no longer matches, so `02`
+  section 7.1 refuses the comparison on both counts.
+- Reaching N=64 on 47 problems with a reasoning policy costs **$43.81**
+  against $6 available, and that is before the answer rate is dealt with.
+
+So the barrier is not only money. **There is no cap at which a reasoning policy
+both matches the published cap and matches the published answer rate**, which
+means the reasoning-model question cannot be answered as an extension of this
+paper at any budget. It needs its own study, with its own controls, and a
+budget that admits a reasoning policy at a large cap. Recording that here is
+the point: it is a scope boundary with a measurement behind it, not an item
+deferred for lack of funds.
 
 ---
 

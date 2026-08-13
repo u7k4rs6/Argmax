@@ -1,0 +1,35 @@
+# The second published policy. See the sibling Qwen config for why the cap and
+# the temperature are fixed rather than chosen.
+
+model_slug: llama-3-8b-instruct-lite
+model_string: "meta-llama/Meta-Llama-3-8B-Instruct-Lite"
+
+model_class: non_reasoning
+
+params:
+  temperature: 0.7
+  top_p: null
+  max_tokens: 2048
+  # The published cap. Measured truncation on this policy: 38 of 12,672 stored
+  # completions reached it, 0.0030, answer rate 0.9860. See
+  # notes/predecessor_cap.md.
+  seed: 0
+  stop: []
+  n: 1
+
+  logprobs_depth: 20
+  logprobs_style: integer_depth
+
+concurrency: 4
+
+pricing:
+  snapshot_id: together-2026-08-13
+  date: "2026-08-13"
+  usd_per_1m_input: 0.14
+  usd_per_1m_output: 0.14
+  usd_per_1m_reasoning: null
+  # Verified 2026-08-13. Unchanged from the predecessor's 2026-05 snapshot,
+  # which is worth recording: one of the two prices moved and one did not, and
+  # carrying either forward on faith would have been wrong half the time.
+
+capabilities_file: configs/models/llama-3-8b-instruct-lite.capabilities.json

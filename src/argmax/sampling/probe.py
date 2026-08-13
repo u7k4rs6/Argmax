@@ -41,6 +41,11 @@ class Capabilities:
 
     logprobs_returned: bool
     logprobs_depth: int | None  # how many alternatives per token actually came back
+    logprobs_container_key: str | None = None  # "content", "tokens", or absent
+    logprobs_keys: list[str] = field(default_factory=list)
+    logprobs_first_entry_raw: object = None  # verbatim, for checking the reading
+    logprobs_depth_requested: int | None = None
+    logprobs_style_requested: str | None = None
     usage_fields: list[str] = field(default_factory=list)
     reasoning_token_field: str | None = None  # path within usage, if any
     reasoning_delivery: str = "none"  # api_field | delimiter | none
@@ -67,10 +72,25 @@ def inspect_response(body: dict[str, Any]) -> dict[str, Any]:
     usage = body.get("usage") or {}
 
     logprobs = choice.get("logprobs") or {}
+    container = (
+        "content"
+        if logprobs.get("content")
+        else "tokens"
+        if logprobs.get("tokens")
+        else None
+    )
     content = logprobs.get("content") or logprobs.get("tokens") or []
-    depth = None
+
+    # Depth 0 and depth unknown are different findings. Zero means the response
+    # carried per-token logprobs with no alternatives beside them, which is the
+    # answer that kills the margin gate. None means the shape was not one this
+    # function knows how to read, which is a reason to look at the verbatim
+    # record rather than to conclude anything.
+    depth: int | None = None
     if content and isinstance(content[0], dict):
         depth = len(content[0].get("top_logprobs") or [])
+    elif content:
+        depth = 0
 
     text = message.get("content") or ""
     delivery, delimiter = "none", None
@@ -102,6 +122,11 @@ def inspect_response(body: dict[str, Any]) -> dict[str, Any]:
         "model_returned": body.get("model", ""),
         "logprobs_returned": bool(content),
         "logprobs_depth": depth,
+        "logprobs_container_key": container,
+        "logprobs_keys": sorted(logprobs.keys()),
+        # Verbatim, so a depth reading that looks wrong can be checked against
+        # what the provider actually sent rather than against this parser.
+        "logprobs_first_entry_raw": content[0] if content else None,
         "usage_fields": sorted(usage.keys()),
         "reasoning_token_field": reasoning_field,
         "reasoning_delivery": delivery,
