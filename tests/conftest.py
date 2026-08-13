@@ -38,6 +38,9 @@ EXPECTED_SKIPS: dict[str, str] = {
     "tests/test_recompute.py::test_nothing_is_derived_only": (
         "no derived tables yet (pre-Step 0)"
     ),
+    # No longer skips: margin-v1 produced derived artifacts, so this now runs
+    # over them. Row kept so a future skip is not mistaken for the old
+    # condition.
     "tests/test_answer_rate_pairing.py::test_the_published_artifacts_pair": (
         "no derived artifacts yet (pre-Step 0)"
     ),
@@ -55,7 +58,7 @@ EXPECTED_SKIPS: dict[str, str] = {
 }
 
 #: What the default `pytest` invocation must produce, exactly.
-EXPECTED_DEFAULT_SKIP_COUNT = 2
+EXPECTED_DEFAULT_SKIP_COUNT = 1
 
 _OBSERVED: list[tuple[str, str]] = []
 
