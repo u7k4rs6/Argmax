@@ -42,8 +42,16 @@ def test_every_registered_reason_says_what_would_unblock_it():
         )
 
 
-def test_the_default_suite_expects_the_two_recompute_skips():
-    """The count is stated as a literal so that changing it is a visible edit."""
+def test_the_default_suite_count_matches_the_registry():
+    """The count is stated as a literal so that changing it is a visible edit.
+
+    Every entry waits on the same thing: artifacts that do not exist before
+    Step 0. If a skip ever appears here for another reason, this assertion is
+    where it should be argued rather than absorbed.
+    """
     default_run = {n for n in EXPECTED_SKIPS if n.startswith("tests/test_")}
     assert len(default_run) == EXPECTED_DEFAULT_SKIP_COUNT
-    assert all("test_recompute.py" in n for n in default_run)
+    assert all(
+        "no raw store" in EXPECTED_SKIPS[n] or "no derived" in EXPECTED_SKIPS[n]
+        for n in default_run
+    )

@@ -35,6 +35,9 @@ EXPECTED_SKIPS: dict[str, str] = {
     "tests/test_recompute.py::test_nothing_is_derived_only": (
         "no derived tables yet (pre-Step 0)"
     ),
+    "tests/test_answer_rate_pairing.py::test_the_published_artifacts_pair": (
+        "no derived artifacts yet (pre-Step 0)"
+    ),
     # `make verify`, run as `pytest tests/falsification.py`.
     "tests/falsification.py::test_every_registered_claim_resolves_to_backing_rows": (
         "no claims registered yet (pre-Step 0)"
@@ -49,7 +52,7 @@ EXPECTED_SKIPS: dict[str, str] = {
 }
 
 #: What the default `pytest` invocation must produce, exactly.
-EXPECTED_DEFAULT_SKIP_COUNT = 2
+EXPECTED_DEFAULT_SKIP_COUNT = 3
 
 _OBSERVED: list[tuple[str, str]] = []
 

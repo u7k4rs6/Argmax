@@ -344,10 +344,13 @@ test.
 The test is mechanical, so the contract has to be mechanical too.
 
 - **What counts as an accuracy.** Any column, key or series in a published
-  artifact whose name is `accuracy` or ends in `_accuracy`, and any figure
-  panel whose plotted quantity is one of those. `single_sample_accuracy`,
-  `vote_accuracy[N]`, `peak_accuracy` and `accuracy_under_strategy` are all
-  in scope.
+  artifact whose name contains `accuracy` as an underscore-separated token,
+  and any figure panel whose plotted quantity is one of those.
+  `single_sample_accuracy`, `vote_accuracy[N]`, `peak_accuracy` and
+  `accuracy_under_strategy` are all in scope. (An earlier wording here said
+  "named `accuracy` or ends in `_accuracy`", which excluded
+  `accuracy_under_strategy` two lines after naming it. The token rule is the
+  one that matches the intent, and the implementation follows it.)
 - **What counts as a match.** An `answer_rate` at the same granularity,
   reachable without a join the reader has to perform: the same table row for
   a table, the same panel or its caption for a figure. A rate published in a
