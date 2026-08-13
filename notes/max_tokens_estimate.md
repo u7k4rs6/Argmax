@@ -302,18 +302,236 @@ factor-of-1.8 range instead of a point estimate.
 
 ---
 
+## 6. The two-component mixture
+
+Section 2 found the unimodal fits misspecified and named the reason: the
+distribution is bimodal, a mass of completions that answer quickly and a mass
+that thinks until the budget runs out. The response is not a better unimodal
+family. It is a mixture with a component for each mode.
+
+Five parameters: a mixing weight and a lognormal for each component, fitted by
+right-censored maximum likelihood with the same Nelder-Mead, from four starting
+points to reduce the chance of a local optimum.
+
+### 6.1 Validation, on the same terms as before
+
+Synthetic censored mixture data, known parameters, 4,000 draws, 22.6 percent
+censored at 16,384:
+
+| Parameter | True | Recovered |
+|---|---|---|
+| weight, fast | 0.600 | 0.591 |
+| mu, fast | 7.200 | 7.173 |
+| sigma, fast | 0.600 | 0.606 |
+| mu, slow | 9.800 | 9.806 |
+| sigma, slow | 0.800 | 0.776 |
+
+The estimator recovers a mixture it is given. What it does with the real data
+is therefore about the data, not about the optimiser.
+
+### 6.2 The fit, and how it compares
+
+| Model | Parameters | Log-likelihood | AIC |
+|---|---|---|---|
+| Lognormal | 2 | -2675.90 | 5355.81 |
+| Weibull | 2 | -2705.91 | 5415.82 |
+| **Two-component lognormal mixture** | **5** | **-2633.94** | **5277.87** |
+
+The mixture wins by 78 AIC over the better unimodal fit, having paid for three
+extra parameters.
+
+### 6.3 IDENTIFIED: the fast component and the mixing weight
+
+The fast mode lies essentially entirely below the censoring point, so it is
+observed rather than extrapolated, and the weight is pinned by the censored
+fraction.
+
+| Quantity | Estimate | 95 percent bootstrap interval, 400 reps |
+|---|---|---|
+| weight on the fast mode | 0.538 | 0.363 to 0.680 |
+| mu, fast | 7.726 | 7.562 to 7.931 |
+| sigma, fast | 0.771 | 0.479 to 0.954 |
+| fast-mode median | **2,266 tokens** | 1,923 to 2,781 |
+| fast-mode p99 | 13,617 tokens | 6,314 to 24,385 |
+| P(fast sample exceeds 16,384) | **0.0051** | |
+
+Two honest qualifications on the word identified:
+
+- The fast mode's **p99 is inside the cap at the point estimate and its
+  bootstrap upper bound is not**, 24,385 against a cap of 16,384. So "the fast
+  mode lies entirely below the cap" is true of the fitted distribution and not
+  quite true of every resampled world. The identified claim is the median and
+  the body, not the last percentile.
+- The weight's interval is wide, 0.363 to 0.680. What is tight is the censored
+  fraction the mixture implies, because that is what the data measure directly.
+  The split between "slow but under the cap" and "fast with a long tail" is
+  where the width comes from.
+
+### 6.4 NOT IDENTIFIED: the slow component's upper tail
+
+**No p99 is reported for the slow component, and none should be.** Every
+observation of the slow mode above 16,384 is a record saying "at least 16,384",
+so the data contain no information about the shape out there. The fitted
+`sigma_slow` of 2.769 and the implied slow-mode median of 112,636 tokens are
+what the likelihood settles on, not what the data show.
+
+The profile makes the emptiness visible. Fixing `sigma_slow` and refitting
+everything else:
+
+| sigma, slow | log-likelihood loss | implied censored fraction | slow-mode p99 |
+|---|---|---|---|
+| 0.3 | -10.11 | 0.3515 | 311,783 |
+| 0.5 | -10.09 | 0.3514 | 178,590 |
+| 0.7 | -10.06 | 0.3515 | 398,153 |
+| 0.9 | -10.06 | 0.3515 | 955,677 |
+| 1.2 | -10.08 | 0.3515 | 3,916,139 |
+| 1.6 | -7.10 | 0.3416 | 1,702,172 |
+| 2.0 | -2.04 | 0.3438 | 3,939,834 |
+
+Every row reproduces the censored fraction to three decimals. The implied slow
+p99 spans a factor of **twelve**, from 312 thousand to 3.9 million tokens,
+across rows the data barely distinguish. The likelihood is also non-monotone in
+`sigma_slow`, which says the constrained surface is itself poorly determined
+rather than merely flat.
+
+The data determine **what fraction of samples are slow**. They say essentially
+nothing about **how slow**, and no budget decision may rest on the second.
+
+### 6.5 The two checks the unimodal fits failed
+
+Section 2 rejected the unimodal fits on two grounds. The mixture is held to the
+same two:
+
+| Check | Truth | Lognormal | Weibull | **Mixture** |
+|---|---|---|---|---|
+| censored fraction at 16,384 | 0.3515 | 0.3046 | 0.3091 | **0.3523** |
+| nonparametric median | 4,655 | 6,888 | 7,788 | **4,621** |
+
+Both pass, and not by a little: the median is within 0.7 percent of a quantity
+the data determine outright, where the unimodal fits were 48 and 67 percent
+high. The body agrees too, at every point where section 2 found the unimodal
+fits off:
+
+| | empirical | mixture |
+|---|---|---|
+| P(X <= 1,000) | 0.0916 | 0.0979 |
+| P(X <= 2,000) | 0.2574 | 0.2680 |
+| P(X <= 4,000) | 0.4678 | 0.4667 |
+| P(X <= 8,000) | 0.5792 | 0.5892 |
+| P(X <= 12,000) | 0.6287 | 0.6266 |
+| P(X <= 16,000) | 0.6485 | 0.6462 |
+
+The mixture is the right shape. It still cannot tell you where to put
+`max_tokens`, because the budget question lives in the tail it does not
+identify.
+
+---
+
+## 7. Is the mode a property of the problem, or of the sample?
+
+This is the part that may outlive the budget question. If a completion's mode
+is decided by the problem, the mode is a feature of the problem and a candidate
+predictor. If it is decided per sample, it is noise.
+
+Mode membership is assigned by posterior responsibility under the fitted
+mixture. It is close to a hard split: only 53 of 404 samples fall between 0.2
+and 0.8, and the most fast-leaning censored sample has responsibility 0.0078,
+so every censored sample is slow, as the model requires. 245 samples are fast
+and 159 are slow.
+
+### 7.1 The distribution across problems
+
+47 problems, 8 to 11 samples each. Fraction of a problem's samples in the fast
+mode:
+
+| Fast fraction | Problems |
+|---|---|
+| exactly 0.00 | **8** |
+| 0.01 to 0.24 | 5 |
+| 0.25 to 0.49 | 2 |
+| 0.50 to 0.74 | 4 |
+| 0.75 to 0.99 | 12 |
+| exactly 1.00 | **16** |
+
+Mean 0.643, standard deviation 0.399. **24 of 47 problems are at one extreme or
+the other**: 8 problems where no sample ever answered fast, 16 where every
+sample did.
+
+### 7.2 The permutation test
+
+Under a per-sample null, mode labels are exchangeable across problems at fixed
+per-problem sample counts. 10,000 permutations:
+
+| Statistic | Observed | Null mean | Null 95th percentile | p |
+|---|---|---|---|---|
+| variance of per-problem fraction | **0.1590** | 0.0281 | 0.0378 | **< 0.0001** |
+| problems at 0.00 or 1.00 | **24** | 0.67 | 2 | **< 0.0001** |
+
+The observed variance is **5.65 times** the per-sample null. The null produces
+24 extreme problems in none of 10,000 draws; its 95th percentile is 2.
+
+**Mode membership is a property of the problem.** Not marginally, and not in a
+way that needs a delicate test.
+
+### 7.3 What it predicts, and what it does not
+
+The obvious next step is to ask whether the fast fraction predicts accuracy. It
+appears to, spectacularly, and the appearance is an artifact:
+
+| Statistic | All samples | Answered samples only |
+|---|---|---|
+| accuracy, fast-mode samples | 0.9061 (n=245) | 0.9098 (n=244) |
+| accuracy, slow-mode samples | **0.0881** (n=159) | **0.8235** (n=17) |
+| r, per-problem fast fraction against accuracy | **0.856** | **0.099** |
+
+The left column is the predecessor's coercion, not a finding. 142 of the 159
+slow samples have no answer at all, and every unanswered sample in that store
+is recorded as `correct = false`. So "slow samples are wrong" decodes to "slow
+samples were truncated, produced nothing, and were scored wrong", which doc 4
+section 3.6 forbids for exactly this reason.
+
+Among samples that actually produced an answer, the gap collapses: 0.9098
+against 0.8235, Wilson intervals 0.867 to 0.940 and 0.590 to 0.938, heavily
+overlapping on 17 slow observations. The per-problem correlation falls from
+0.856 to 0.099.
+
+**What the mode predicts is whether a sample answers at all, not whether the
+answer is right.** At this cap the per-problem fast fraction is very nearly the
+per-problem answer rate, which is the quantity doc 4 section 4.1 now requires be
+published beside every accuracy. This analysis is where that requirement earns
+its place: a per-problem property decides who votes, 8 problems of 47 have no
+voters at all, and their accuracy is undefined rather than zero.
+
+Whether the mode predicts where an accuracy-versus-N curve peaks is not settled
+here and cannot be, because 8 problems contribute no answered samples and the
+rest contribute a truncated view. It is a hypothesis worth registering before
+Argmax's own data exist, not a result: **problems whose samples answer fast are
+a different population from problems whose samples think to the cap, and
+pooling them is pooling two experiments.**
+
+---
+
 ## What a human is being asked to accept
 
-Not a value for `max_tokens`. Three statements:
+Not a value for `max_tokens`. Five statements:
 
 1. The identified facts: median demand 4,655 tokens, at least 35.1 percent
    truncation at 16,384, mean demand at least 8,005 tokens.
-2. That the fitted tail is not usable for choosing a truncation-free budget,
-   because the fits miss the median by 48 to 67 percent and disagree with each
-   other by 3x at p99.
+2. That the fitted tail is not usable for choosing a truncation-free budget.
+   The unimodal fits miss the median by 48 to 67 percent and disagree by 3x at
+   p99. The mixture fixes the body and does not fix the tail: the slow
+   component's p99 moves by a factor of twelve across refits the data barely
+   distinguish, which is why no p99 is reported for it.
 3. That the design should therefore pick a budget, measure its truncation rate
    with about 139 completions, and count truncation as a first-class outcome
    rather than trying to eliminate it.
+4. That the population is two populations. A fast mode with median 2,266 tokens
+   carrying 54 percent of the weight, and a slow mode whose tail this data
+   cannot see.
+5. That which mode a sample lands in is **a property of the problem**, at 5.65
+   times the per-sample null and p below 0.0001, and that what it predicts is
+   the answer rate rather than the accuracy. Eight of 47 problems produced no
+   answer at all at this cap.
 
 `max_tokens` stays `[BLOCKED: Step 0]` until someone decides which truncation
 rate is acceptable. That is a judgement about the experiment, not a
