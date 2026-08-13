@@ -18,7 +18,12 @@ import sys
 from argmax.config import load_phase, require
 from argmax.errors import ArgmaxError
 from argmax.sampling.probe import assert_phase_supported
-from argmax.sampling.runner import assert_confirmatory_preconditions, run_phase
+from argmax.sampling.runner import (
+    assert_confirmatory_preconditions,
+    git_dirty,
+    git_sha,
+    run_phase,
+)
 from argmax.sampling.spend import SpendGuard
 
 
@@ -54,7 +59,10 @@ def main() -> int:
     require(cfg.get("M"), "M", source)
     require(cfg.get("n_grid"), "n_grid", source)
 
-    run_phase(args.phase, args.split)
+    cfg["_git_sha"] = git_sha()
+    cfg["_git_dirty"] = git_dirty()
+    result = run_phase(args.phase, args.split, cfg)
+    print(result["counts"])
     return 0
 
 

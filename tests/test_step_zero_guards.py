@@ -112,9 +112,23 @@ def test_exploratory_has_no_such_preconditions(monkeypatch):
     runner.assert_confirmatory_preconditions("exploratory", None)  # no raise
 
 
-def test_running_a_phase_is_not_possible_yet():
-    """The loop that spends money is deliberately unwritten until Step 0."""
+def test_a_phase_without_a_resolved_config_is_refused():
+    """The loop exists now, and it still cannot be entered without values.
+
+    It raised on Step 0 until the token cost was measured. The refusal that
+    replaced it is narrower and does the same job: no config, no run, and
+    `require` raises on any value still blocked before anything is spent.
+    """
     from argmax.sampling.runner import run_phase
 
-    with pytest.raises(NotImplementedError, match="Step 0"):
+    with pytest.raises(NotImplementedError, match="resolved phase config"):
         run_phase("_template", "exploratory")
+
+
+def test_the_template_phase_still_refuses_on_its_blocked_values():
+    """configs/phases/_template.yaml keeps M blocked, so it cannot be run."""
+    from argmax.config import load_phase, require
+
+    cfg = load_phase("_template")
+    with pytest.raises(StepZeroBlocked):
+        require(cfg.get("M"), "M", cfg["_source"])

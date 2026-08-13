@@ -245,7 +245,7 @@ def estimate_shrunk_within_k(
         raise ValueError(f"unknown boundary_rule {boundary_rule!r}")
 
     rng = np.random.default_rng(seed)
-    measurable = tuple(N for N in grid if N <= k)
+    measurable = tuple(N for N in grid if k >= N)
 
     curves = {
         pid: vote_accuracy_point(
@@ -253,9 +253,7 @@ def estimate_shrunk_within_k(
         )
         for pid, codes in sampled.items()
     }
-    pooled = {
-        N: float(np.mean([c[N] for c in curves.values()])) for N in measurable
-    }
+    pooled = {N: float(np.mean([c[N] for c in curves.values()])) for N in measurable}
 
     per_problem: dict[str, int] = {}
     for pid, curve in curves.items():

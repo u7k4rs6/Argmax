@@ -24,9 +24,9 @@ repos:
         args: ["--maxkb=1024"]   # a JSONL slipping past .gitignore
       - id: check-merge-conflict
       - id: end-of-file-fixer
-        exclude: ^src/argmax/extract/scoring_verbatim\.py$
+        exclude: ^src/argmax/(extract/scoring_verbatim|datasets/prompts_verbatim)\.py$
       - id: trailing-whitespace
-        exclude: ^src/argmax/extract/scoring_verbatim\.py$
+        exclude: ^src/argmax/(extract/scoring_verbatim|datasets/prompts_verbatim)\.py$
       - id: check-yaml
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -34,6 +34,6 @@ repos:
     hooks:
       - id: ruff
         args: ["--fix"]
-        exclude: ^src/argmax/extract/scoring_verbatim\.py$
+        exclude: ^src/argmax/(extract/scoring_verbatim|datasets/prompts_verbatim)\.py$
       - id: ruff-format
-        exclude: ^src/argmax/extract/scoring_verbatim\.py$
+        exclude: ^src/argmax/(extract/scoring_verbatim|datasets/prompts_verbatim)\.py$

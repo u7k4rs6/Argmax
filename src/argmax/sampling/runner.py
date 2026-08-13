@@ -104,21 +104,29 @@ class PhasePlan:
     headroom_usd: float
 
 
-def run_phase(phase_id: str, split: str) -> None:
-    """Not implemented before Step 0.
+def run_phase(phase_id: str, split: str, cfg=None):
+    """Draw the phase's samples.
 
-    Every quantity this needs (M, max_tokens, the model list) is still
-    [BLOCKED: Step 0]. The precondition machinery above is complete and
-    testable; the loop that spends money is deliberately not written yet, so
-    that it cannot be run by accident against guessed values.
+    Was blocked on Step 0 until the reasoning-model token cost was measured.
+    It still refuses any phase whose values are unresolved: `cfg` carries them
+    and `argmax.config.require` raises on a `[BLOCKED: Step 0]` value before
+    anything is spent.
 
-    Implement after Step 0 returns:
-      - p95 output tokens and the truncation curve  -> max_tokens per model
-      - cost per sample                             -> M and the N grid
-      - total cost envelope                         -> model and tier counts
+    The loop itself is in `argmax.sampling.phase`, imported lazily so that this
+    module stays importable on a host with no network client.
+
+    Historical note, kept because it is the reason the refusal existed: this
+    function raised until Step 0 measured p95 output tokens, cost per sample
+    and the total envelope, so that it could not be run by accident against
+    guessed values. Those measurements are in `notes/phase14b_token_audit.md`
+    and `notes/max_tokens_estimate.md`. `max_tokens` for a REASONING model is
+    still unresolved and no phase config sets one.
     """
-    raise NotImplementedError(
-        "run_phase is blocked on Step 0. Audit the phase 14b probe for real "
-        "token counts (or run the paid fallback probe, which doubles as the "
-        "capability probe) before implementing this."
-    )
+    if cfg is None:
+        raise NotImplementedError(
+            "run_phase needs a resolved phase config. scripts/sample.py loads "
+            "it and raises StepZeroBlocked on any value still unresolved."
+        )
+    from argmax.sampling.phase import run_phase as _run
+
+    return _run(phase_id, split, cfg)

@@ -1,0 +1,51 @@
+# The one paid phase. It buys exactly two things that no stored artifact can
+# supply: the answer-token margin at the answer span, and localised entropy over
+# that span. Thread A is not part of this justification; it ran for nothing on
+# the predecessor's samples.
+#
+# EXPLORATORY. No hypothesis is registered for the margin gate, because nobody
+# has established that answer-token margins have any dynamic range at all. Doc 2
+# section 8.2 puts explore before freeze, and this is the explore.
+
+phase_id: margin-v1
+split: exploratory
+
+models:
+  - qwen2.5-7b-instruct-turbo
+# llama-3-8b-instruct-lite is NOT here: it is no longer serverless. See its
+# capabilities file, which records the refusal.
+
+benchmarks:
+  - gpqa_diamond
+
+# 198 problems at M=64. M=64 rather than 96 because the reported CI is the pool
+# bootstrap, which resamples the pool and is non-degenerate at N == M; verified
+# against the implementation, see files/01-prd.md.
+M: 64
+n_grid: [1, 2, 4, 8, 16, 32, 64]
+
+draw_scheme: without_replacement
+n_draws: 1000
+unanswered_sample_policy: exclude
+
+# Exploratory, so no tag. A confirmatory margin-gate claim needs its own
+# registration and its own samples.
+prereg_tag: null
+
+# The predecessor's locked template, copied verbatim and hash-verified against
+# the value stored in all 25,730 of its samples.
+prompt_template_id: "scb-locked-v1@e3544f73"
+
+# Measured, not guessed: the mean input and output tokens per sample across the
+# predecessor's 13,058 stored Qwen completions at this cap and this prompt.
+projected_tokens:
+  prompt: 295.8
+  completion: 598.9
+  source: "self-consistency-backfire outputs/samples, 13058 records, a7f168e6"
+
+rate_per_sec: 4.0
+
+requires:
+  - usage_raw
+  - finish_reason
+  - logprobs
