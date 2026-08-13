@@ -288,6 +288,100 @@ long-form generation task, one model whose provider returns depth of at least
 > `docs/kickoff/THREADS.md` and the verdict below is revised. The brief itself
 > is still not committed.
 
+### Thread A, reformulated, with the evidence that forced it
+
+**The original premise was tested and failed.** Thread A asked whether Chen et
+al.'s mixture explanation breaks when the easy component is absent, with GPQA
+Diamond as the uniformly hard case. It is not uniformly hard for these models:
+
+| | Qwen2.5-7B | Llama-3-8B-Lite |
+|---|---|---|
+| per-problem accuracy variance against a homogeneous null | **25.5x** | **17.1x** |
+| p | < 0.0001 | < 0.0001 |
+| problems at accuracy 0.00 | 12 | 6 |
+| problems above 0.95 | 10 | 0 |
+| two components beat one by | 77.5 AIC | 67.1 AIC |
+
+Full working in `notes/mixture_premise.md`. The published paper asserts the
+opposite in its Positioning section, which section 4.4 below records as a
+disclosure item.
+
+**The reformulation.** Test the estimator where the mixture **is** present and
+measured, rather than where it is absent. This is a different question from the
+one the kickoff brief specified, and it is recorded as a reformulation with its
+evidence rather than swapped in quietly. The original is not recoverable by
+choosing a different benchmark, because establishing that any task is unmixed
+for a given model requires exactly the measurement that just refuted it here.
+
+#### The specification, concrete enough to cost
+
+Chen et al. estimate, from a small number of samples per query, the call count
+that maximises **aggregate** performance, using the easy/hard mixture structure.
+The test is whether that estimate lands where the measured optimum is.
+
+**Ground truth.** From the stored `M = 64` samples per problem, compute
+`vote_accuracy(N)` on the published grid `{1, 2, 4, 8, 16, 32, 64}` using
+`argmax.analysis.curves`, which reports the pool bootstrap and the paired
+differences. Define:
+
+- `N*_agg`, the grid point maximising pooled accuracy over all problems
+- `N*_i`, the grid point maximising problem i's own vote accuracy
+
+**The estimator's input.** `k` samples per problem, drawn from the same stored
+M with the seed recipe already in `argmax.keys`, so no additional sampling is
+required at any k. **`k` in {4, 8, 16}**: 4 and 8 match the probe sizes the
+predecessor's agreement gate used, and 16 adds a third point without
+approaching M.
+
+**Prediction error, reported at both levels.**
+
+| Metric | Definition | Level |
+|---|---|---|
+| aggregate regret | `MV_acc(N*_agg) - MV_acc(N̂_agg(k))`, in accuracy points | primary |
+| grid distance | `abs(log2 N̂ - log2 N*)`, because the grid is geometric | both |
+| exact match | `P(N̂ = N*)` | both |
+| per-problem regret | mean over problems of `vote_acc(N*_i) - vote_acc(N̂_i(k))` | secondary |
+
+The aggregate level is the faithful reproduction of what Chen et al. claim. The
+per-problem level is the extension the backfire result makes interesting, since
+that is where the oracle headroom lives, and it is reported as an extension
+rather than as their claim.
+
+**Baselines, fixed before the comparison.** The estimator must be scored
+against: always `N = 64`; always `N = 1`; and the best fixed N chosen on the
+same `k` samples without the mixture model. The third is the one that matters,
+because it isolates what the mixture structure contributes over naive selection.
+
+**What PASS looks like.** The estimator's aggregate regret is small relative to
+the headroom between the best and worst grid points, and smaller than every
+baseline's, at all three k. Per-problem, its grid distance is below what the
+naive baseline achieves.
+
+**What FAIL looks like.** Regret indistinguishable from the naive baseline, or
+predicted N uncorrelated with measured N*, or a k-dependence that reverses
+direction between models or between k values. A FAIL is publishable: it says
+few-sample optimal-call estimation does not transfer to a benchmark of this
+difficulty profile, which is a claim about the method rather than about this
+project.
+
+**No thresholds are registered here.** "Small relative to the headroom" and
+"below the naive baseline" become numbers in `PREREGISTRATION.md` when the
+maintainer picks the row, per doc 4 section 1 principle 4.
+
+#### The sampling design it needs, and why it shrank
+
+**Three tiers are no longer required.** Tiers were a device for varying the
+mixture across conditions. The mixture varies **within** the benchmark, it is
+measured, and its components are estimated, so the variation the design needed
+is already in one problem set. Two further reasons to drop the tiers: a tiered
+design must hold `n_options` and format fixed across tiers per doc 2 section
+5.1, which constrains which supersets are usable; and section 4.3 below shows
+47 problems per tier cannot resolve any plausible between-tier gradient anyway.
+
+The design is therefore **one benchmark, all 198 problems, one model, M = 64**,
+with logprobs retained at depth 5. Every `k` in {4, 8, 16} is a subset of the
+same M, so the estimator costs nothing beyond the one sampling run.
+
 ### Costing basis
 
 Re-verified 2026-08-13 against Together's own pricing and model pages, recorded
@@ -305,23 +399,97 @@ the MiniMax rates that produced it still hold at today's snapshot.
 Token counts per sample are measured from the predecessor's stored completions,
 not assumed: 295.8 in and 598.9 out for Qwen, 272.4 in and 438.7 out for Llama.
 
-`M=96` where a grid reaching N=64 needs a CI at its endpoint, per `02` section
-2. `M=64` reproduces the published design exactly and inherits its bare
-endpoint.
+**`M = 64`, not 96, and this was verified against the implementation rather
+than argued.** Doc 2 section 2 warns that subsampling without replacement at
+`N == M` admits one draw, so the endpoint has no subsample variance. That is a
+statement about the Monte Carlo layer, and the reported CI is not the Monte
+Carlo layer: `argmax.analysis.bootstrap` resamples the **pool**, which varies
+even when the draw does not.
+
+Checked by running it. On a 64-sample pool of 34 correct and 30 incorrect, at
+`N = M = 64`:
+
+| Quantity | Value |
+|---|---|
+| `degenerate` flag | True |
+| `mc_halfwidth` | 0.0000 |
+| reported CI | **[0.0000, 1.0000]** |
+
+The endpoint interval is not merely non-degenerate, it is the full range,
+because each resampled pool flips the majority and the vote at N=64 is one
+Bernoulli outcome per world. That is the honest answer for a single problem at
+its endpoint, and it averages down across 198 of them. `M = 64` therefore
+supports a reported CI at `N = 64`, and it reproduces the published design
+exactly. **The 33 percent of budget that `M = 96` was buying is freed.**
+
+### 4.3 Power at 47 problems per tier, and why the tiers went
+
+Conditional: this section costs the tiered design that section 4.1's
+reformulation has already dropped. It is kept because it bounds **any** design
+that compares per-problem rates between groups of this size, including a future
+tiered one.
+
+Two independent proportions, alpha 0.05 two-sided, power 0.80, baseline
+backfire rate 0.566 from the published pooled figure. Alpha is the
+conventional default and **is not pre-registered**; nothing here registers a
+threshold.
+
+| n per tier | minimum detectable difference in backfire rate |
+|---|---|
+| **47** | **28.2 points** |
+| 66 | 24.0 points |
+| 100 | 19.7 points |
+| 151 | 16.1 points |
+| 198 | 14.0 points |
+
+| gradient to detect | n per tier required |
+|---|---|
+| 10 points | **391** |
+| 20 points | **97** |
+
+A single tier's own rate at n=47 has a 95 percent interval of
+[0.433, 0.705], width 0.272. At n=198 it is [0.496, 0.633], width 0.137.
+
+**47 problems per tier resolves nothing below a 28 point gradient.** For scale,
+the published difference between the two models is 56.6 against 65.7, about 9
+points, which would need roughly 391 problems per group to detect. A three-tier
+design at 47 each would have been powered only for an effect larger than any
+this literature reports.
+
+### 4.4 A disclosure item for any v2 draft
+
+The published paper's Positioning section states: "our gate results sit in
+tension with few-sample estimation of an optimal call count: **on a uniformly
+hard benchmark**, the verifier-free signals such estimation would rely on do
+not recover the headroom."
+
+Its own stored data does not support "uniformly hard" as a property of the
+benchmark for these models: per-problem accuracy varies at 25.5 and 17.1 times
+a homogeneous null, with 12 problems at zero accuracy and 10 above 0.95 for
+Qwen. The paper elsewhere reports that backfire is not uniform across domains
+and names chemistry as the dominant contributor, so the heterogeneity is
+partly acknowledged and then not carried into the positioning sentence.
+
+**This is a disclosure item, not a finding.** It does not touch the paper's
+results, which are per-problem backfire rates rather than claims about
+uniformity, and it does not change any number in it. It affects one sentence of
+positioning against Chen et al., and a v2 that reformulates Thread A around
+that same positioning has to say so plainly rather than quietly relying on the
+corrected reading.
 
 ### The table
 
 | | **A. Non-reasoning, cap 2048, three tiers (Thread A)** | **B. Reasoning, one model, one tier, large cap** | **C. Both, two registered studies, no cross-comparison** |
 |---|---|---|---|
-| **Sizing** | 3 tiers x 47 problems, M=96, 2 models = 27,072 samples | 47 problems, M=8, 1 model = 376 samples | A plus B as sized here |
-| **Cost at the 2026-08-13 snapshot** | **$4.98** | **$3.65** | **$8.63** |
-| **Credits needed above $6** | none, $1.02 margin | none, $2.35 margin | **$2.63**, and $37.81 more if B is to reach N=64 |
-| **What it buys** | A test of whether Chen et al.'s mixture explanation and its optimal-call estimator survive when the easy component is removed, on three tiers that vary the mixture deliberately, with the hard tier being the published 47 problems | An answer rate and a truncation rate for a reasoning policy, plus a curve that tops out at N=4 with a CI | Both of the above, plus a documented incomparability between them |
+| **Sizing** | **198 problems, M=64, Qwen only = 12,672 samples** (was 3 tiers x 47 at M=96 with 2 models) | 47 problems, M=8, 1 model = 376 samples | A plus B as sized here |
+| **Cost at the 2026-08-13 snapshot** | **$3.40** | **$3.65** | **$7.05** |
+| **Credits needed above $6** | none, **$2.60 margin** | none, $2.35 margin | **$1.05**, and $37.81 more if B is to reach N=64 |
+| **What it buys** | A test of whether Chen et al.'s few-sample optimal-call estimator lands where the measured optimum is, on a benchmark whose mixture is present and quantified, plus legs 1 to 3 of the measurement result and the margin gate off the same samples | An answer rate and a truncation rate for a reasoning policy, plus a curve that tops out at N=4 with a CI | Both of the above, plus a documented incomparability between them |
 | **What it forecloses** | The reasoning-model question entirely, at this budget | Any comparison to the published numbers, and any claim at the N where backfire is defined | Nothing extra, but it spends the margin the capability probe and the inevitable re-run need |
 | **Answers the backfire paper's central open question** (reasoning-native models). Bounds the claims; not the eligibility criterion | **No** | **No**, see section 2.2: not a budget problem | **No** |
 | **Supplies leg 2 of the measurement result** (the untested localised signal) | **No** on its own, but see below: A's samples make it free | **No** | **No** |
 | **Plausible venue** | Standalone workshop or short paper: it tests a published scaling model, not this project's predecessor. With the confidence-signal work attached, a methods paper that cites the backfire result rather than extending it | None standalone. A technical note at best | Workshop methods note |
-| **Eligible** | **Yes** | **No** | **No** |
+| **Eligible** | **Yes, on the reformulated question in section 4.1.** The original was refuted before sampling | **No** | **No** |
 
 ### One row clears the bar, and it was the one previously marked thin
 

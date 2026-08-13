@@ -37,6 +37,27 @@ does not manipulate the mixture, and does not evaluate an optimal-call-count
 estimator. Thread A tests a mechanism claim from a different paper by
 manipulating the thing that claim rests on.
 
+## Thread A, reformulated 2026-08-13
+
+**The original premise was tested and it failed.** Thread A as specified needs
+a benchmark that is uniformly hard for the models being run. GPQA Diamond is
+not, for either model this project can reach: per-problem accuracy varies at
+**25.5 times** the homogeneous null on Qwen and **17.1 times** on Llama, with
+12 problems solved on none of 64 samples and 10 solved on more than 95 percent.
+Evidence in `notes/mixture_premise.md`.
+
+**The replacement tests the same estimator where the mixture is present and
+measured**, rather than where it is absent. The mixture is no longer an
+assumption in either direction: its weights and component means are estimated
+from stored data, so the condition Chen et al. rely on is a known quantity
+rather than a hoped-for one.
+
+This is recorded as a reformulation, not a substitution. The original question
+is not answerable on any benchmark this project has, because establishing that
+a task is unmixed for a given model requires the same measurement that just
+refuted the assumption here. Specification and costing are in `01-prd.md`
+section 4.
+
 **What this project already knows that bears on it.** From
 `notes/max_tokens_estimate.md` section 7: completion length on GPQA Diamond is
 a two-component mixture, and which component a sample lands in is **a property

@@ -350,6 +350,42 @@ different rates, and that case has to be settled on the rates themselves.
 cap and one benchmark tier, the fraction of samples that answer at all is a
 property of the problem, and 8 of 47 problems produced no answer whatsoever.
 
+### 7.2 A pooled accuracy publishes the heterogeneity it pools over
+
+Same shape as the answer-rate rule, and for the same reason: a number that
+averages over a mixture looks exactly like a number that does not.
+
+**Any accuracy pooled across problems is published with a measure of the
+per-problem heterogeneity it pools over.** The measure is the ratio of the
+observed between-problem variance to what a homogeneous null produces, where
+the null resamples each problem's successes binomially at the pooled rate with
+that problem's own sample count. A ratio near 1 means the pooled number
+describes a population. A large ratio means it describes an average over groups
+that differ, and the reader needs to know which.
+
+This is not hypothetical on this benchmark. Two per-problem properties are
+already measured in the predecessor's stored data:
+
+| Property | Ratio to its null | Source |
+|---|---|---|
+| per-problem accuracy, Qwen2.5-7B | **25.5x** | `notes/mixture_premise.md` |
+| per-problem accuracy, Llama-3-8B-Lite | **17.1x** | same |
+| completion-length mode membership | **5.65x** | `notes/max_tokens_estimate.md` s7 |
+
+At 25.5x, a pooled accuracy of 0.34 is an average over a component the model
+almost never gets right and a component it usually does, and the pooled figure
+alone tells the reader neither thing. Pooling stays allowed. Pooling silently
+does not.
+
+The rule covers any statistic computed by pooling problems, including backfire
+rates and gate captures, because the argument is about composition rather than
+about accuracy specifically.
+
+**Not yet implemented.** The field and the test that enforces it follow the
+`answer_rate` precedent in `04-data-and-instrumentation-spec.md` sections 4.1
+and 9.1, and neither exists at the time of writing. This section records the
+requirement so that the implementation is owed rather than optional.
+
 ## 8. Pre-registration and verification
 
 ### 8.1 Split discipline
