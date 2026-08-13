@@ -180,3 +180,34 @@ A future registration over the v2 store therefore states that the length
 marginal was seen and the joint was not. That is a weaker constraint than a
 burned set, and it is the sort of thing a registration discloses rather than
 something that forecloses one.
+
+## The exposed 129 are closed
+
+**No further analysis runs against the v1 exposed 129.** Recorded here rather
+than left as an intention, because "one more free look" is always available on
+a set that is already spent, and the ledger is where that gets refused.
+
+The reason is not that the set is exhausted. It is that **nothing found there
+can become confirmatory.** Every result on it is exploratory by construction,
+and the pile is now large enough that extending it has lower value than
+organising it:
+
+| analysis on the exposed 129 | status |
+|---|---|
+| margin distribution, splits, three-way join | exploratory |
+| length against accuracy, r = -0.0019 | exploratory, design information about a confound |
+| the length quintile U, quadratic p = 0.083 | exploratory, suggestive and not established |
+| answer rate, truncation and hit_ceiling by quintile | exploratory, ruled out the selection mechanism |
+| within-problem sd by quintile | exploratory, ruled out the bimodality mechanism |
+| MD3 and MD4 threshold calibration | **used**, and registered at v2.0 from it |
+
+The last row is the only one that turned into anything binding, and it did so
+by being carried into a registration before a clean set was read, which is the
+pattern the others cannot follow now.
+
+**Next step is a draft, not another analysis.** The exploratory results above,
+the three measured walls in `notes/reasoning_wall.md`, the projection
+calibration in doc 2 section 5.3.1, and the v1 and v2 confirmatory verdicts
+are the material. Organising them is what turns exploratory work into
+something a reader can check; running a sixth free correlation on the same 129
+is not.

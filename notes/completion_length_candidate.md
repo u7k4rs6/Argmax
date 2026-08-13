@@ -284,6 +284,61 @@ bin means, on a set that was already exposed. The quadratic term was not
 chosen that way and is the honest global test. **So: a U-shape is suggestive,
 consistently signed, and not established at n=129.**
 
+### The bimodality reading, tested and not supported
+
+A per-problem mean over 64 samples averages away shape. **A problem whose
+samples split between short and long lands mid-range by construction**, so the
+middle quintile could be enriched for split problems rather than for
+consistently middling ones, and the U would then be about consistency rather
+than about length. This is not speculative here: this project already found
+within-problem length bimodality on another model, with mode membership a
+per-problem property at 5.65x its null (`notes/max_tokens_estimate.md`).
+
+Within-problem sd of completion length, by quintile of per-problem mean:
+
+| quintile | n | mean length | within-problem sd | 95 percent interval | CV, sd over mean | answer_rate |
+|---|---|---|---|---|---|---|
+| 1 shortest | 25 | 356.2 | 66.7 | [59.7, 74.0] | 0.1944 | 0.9819 |
+| 2 | 26 | 486.9 | 95.6 | [77.2, 126.4] | 0.1976 | 0.9964 |
+| 3 middle | 26 | 568.8 | **110.5** | [96.0, 127.7] | **0.1940** | 1.0000 |
+| 4 | 26 | 640.9 | 143.8 | [118.2, 178.3] | 0.2243 | 0.9970 |
+| 5 longest | 26 | 884.3 | 198.4 | [175.2, 221.1] | 0.2264 | 0.9958 |
+
+**Within-problem sd does not peak in the middle. It rises monotonically with
+mean length**, which is the ordinary scale relationship and nothing more:
+sd against mean length gives r = **+0.6064** [+0.4517, +0.7873], excluding
+zero. The CV removes that scale effect and is close to flat at 0.194 to 0.226,
+with the middle quintile carrying the **lowest** value of the five.
+
+Contrasts, since the question was specifically whether the middle is enriched:
+
+| contrast | within-problem sd | CV |
+|---|---|---|
+| Q3 minus Q1+Q5 | -23.30 [-49.99, +4.29] | -0.01672 [-0.04920, +0.01781] |
+| Q3 minus all others | -16.16 [-38.03, +6.33] | -0.01687 [-0.05067, +0.01831] |
+
+All four cross zero, and **all four are negative**: the middle quintile is if
+anything the most internally consistent, not the least. The enrichment the
+mechanism predicts would be a positive contrast, and the point estimates run
+the other way.
+
+Within-problem sd is also unrelated to per-problem accuracy: r = **+0.0123**
+[-0.1621, +0.1966], and on the CV +0.0732 [-0.1592, +0.2636]. Both cross zero.
+So consistency of length does not track difficulty either.
+
+**Reading: the U is not about consistency.** Whatever the middle quintile is,
+it is not a pile of split problems averaging into the middle. The eventual
+hypothesis is not redirected by this, and the label on the U is unchanged:
+suggestive, not established. One mechanism that would have changed what the
+shape means has been ruled out, which raises no confidence in the shape
+itself.
+
+Two limits. Within-problem sd is a coarse summary of shape and would not
+distinguish a bimodal problem from a merely dispersed one; the bimodality
+finding this tests against was mode membership on a fitted mixture, on a
+different model, and that fit was not repeated here. And a contrast crossing
+zero at n=26 per bin is weak evidence of absence.
+
 ### What this does to section 5
 
 The near-zero linear correlation no longer licenses "accuracy does not explain
