@@ -172,6 +172,10 @@ figures read.
   `correct_option`
 - `n_samples_stored`, `n_answered`, `n_truncated`, `n_no_answer`,
   `n_api_failure`
+- `answer_rate` **R**, `n_answered / n_samples_stored`. **Every reported
+  accuracy carries its answer rate alongside it**, in the same table, the
+  same figure panel and the same sentence. An accuracy without one is not
+  reportable. See the mechanism below.
 - `single_sample_accuracy`, the mean over answered samples, with the
   unanswered-sample policy recorded as a field, not assumed
 - `vote_accuracy[N]` for every N in the grid, with `ci_low`, `ci_high`,
@@ -187,6 +191,51 @@ figures read.
 
 That last group is the analysis the published paper could not run. It is
 available only if section 2 and `answer_span_tokens` are both honoured.
+
+### 4.1 Why `answer_rate` is required, and what it is guarding against
+
+A truncated sample casts no vote. At a token cap C, the pool that actually
+votes is the answered samples, so its size is `n_answered`, not `N`, and
+**it is not a random subset of the N drawn**. It is exactly the subset that
+finished answering inside C, which is to say it is enriched for the samples
+that answer fast.
+
+If that enrichment correlates with correctness in either direction, accuracy
+is confounded with the cap:
+
+- **If fast answers are more often right** (easy problem, direct recall),
+  raising the cap admits slower and worse samples and accuracy falls. The
+  curve reads as a model getting worse with more budget.
+- **If fast answers are more often wrong** (guessing rather than working),
+  raising the cap admits slower and better samples and accuracy rises. The
+  curve reads as reasoning paying off.
+
+Neither reading is available from the accuracy alone, because both produce a
+moving accuracy for a policy whose behaviour never changed. The measured
+predecessor case is not hypothetical: at a 16,384-token cap, 35.1 percent of
+samples were truncated and 34.9 percent carried no visible answer at all, so
+a third of the intended pool never voted. See
+`notes/phase14b_token_audit.md` and `notes/max_tokens_estimate.md`.
+
+The rule this imposes on the analysis:
+
+1. **The analysis may not assume the voting pool is a random subset of the
+   drawn pool.** Any statement of the form "accuracy at N" is a statement
+   about `n_answered` samples out of N, and the record carries both so that
+   the reader can see the difference rather than infer it.
+2. **A change in accuracy across caps is not interpretable until the answer
+   rate is shown to be stable across them.** If the answer rate moves, the
+   pool moved, and the accuracy change is at least partly composition rather
+   than capability. `02-technical-architecture.md` section 7.1 forbids the
+   comparison outright for exactly this reason.
+3. **`answer_rate` is not a diagnostic to check when something looks wrong.**
+   It is published with the number it qualifies, always, because the failure
+   it guards against looks like a clean result.
+
+Adding this field bumps `SCHEMA_VERSION` and readers branch on it, per
+section 1. A `problem` record from an earlier version has no `answer_rate`
+and its accuracies are therefore unqualified; that is a fact about those
+records, not something to backfill.
 
 ## 5. The `gate_outcome` record
 
@@ -281,6 +330,7 @@ handed. It should answer that question without opening a single script.
 | no coercion | no record has `is_correct == false` with `extracted_answer == null` |
 | span integrity | `answer_span_tokens` indexes inside the stored logprob array |
 | coverage honesty | `logprob_coverage < 1.0` is present wherever subsampling was applied |
+| accuracy carries its answer rate | **every figure or table artifact carrying an accuracy carries a matching `answer_rate`**; a published accuracy without one fails the suite |
 | claim coverage | every registered `claim_id` resolves to at least one artifact row |
 | threshold integrity | pre-registered threshold values match the tagged commit, not just the verdicts computed from them |
 | capability match | every phase's required fields are present in that model's capability probe |
@@ -288,6 +338,33 @@ handed. It should answer that question without opening a single script.
 The last two are the ones that catch the failures the predecessor actually
 had. A verdict that validates against a moved threshold passes every naive
 test.
+
+### 9.1 The answer-rate pairing test, stated precisely enough to implement
+
+The test is mechanical, so the contract has to be mechanical too.
+
+- **What counts as an accuracy.** Any column, key or series in a published
+  artifact whose name is `accuracy` or ends in `_accuracy`, and any figure
+  panel whose plotted quantity is one of those. `single_sample_accuracy`,
+  `vote_accuracy[N]`, `peak_accuracy` and `accuracy_under_strategy` are all
+  in scope.
+- **What counts as a match.** An `answer_rate` at the same granularity,
+  reachable without a join the reader has to perform: the same table row for
+  a table, the same panel or its caption for a figure. A rate published in a
+  different file is not a match, because the failure this guards against is
+  a number travelling on its own.
+- **Where the pairing lives for a curve.** `vote_accuracy[N]` is a family of
+  accuracies, so it needs `answer_rate` per N, not one rate for the problem:
+  the voting pool at N=64 and at N=4 are different pools, and the whole point
+  is that their composition can differ.
+- **What the test does on absence.** Fails. It does not warn, and it does not
+  pass an artifact that has no accuracy in it either way; an artifact with no
+  accuracy is simply out of scope.
+- **The escape hatch, and its cost.** An accuracy genuinely computed over a
+  pool with no truncation (`n_truncated == 0` for every contributing sample)
+  still publishes `answer_rate`, which will read 1.0000. The rate is not
+  omitted when it is uninteresting, because "uninteresting" is a judgement
+  made after seeing it and the reader has not seen it.
 
 ## 10. Open items for Step 0
 

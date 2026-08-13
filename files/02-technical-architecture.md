@@ -291,6 +291,36 @@ is sent and recorded, never relied upon.
 4. Confirmatory analysis refuses to run from a dirty working tree, and
    refuses to run without a prereg tag recorded in the manifest.
 
+### 7.1 `max_tokens` is an experimental treatment, not a config value
+
+It looks like an infrastructure setting and it is not one. The cap decides
+which samples produce a visible answer at all, so it decides which samples
+vote, and therefore it moves accuracy directly. A curve measured at one cap
+and a curve measured at another are measurements of two different
+experiments.
+
+The constraint, which binds the runner and the analysis both:
+
+1. **`max_tokens` is held constant across every condition within a study.**
+   Every model, every tier, every arm, every N in the grid. If two models
+   cannot share a cap, they are not in the same study, and saying so is
+   cheaper than discovering it in the comparison.
+2. **It is recorded in the run manifest** as part of the full parameter set
+   (guarantee 3), per model, and it is in `param_hash`, so a cap change lands
+   in a different storage path and cannot contaminate an existing sample set.
+3. **Curves measured at different caps are never compared,** not across
+   models, not across tiers, not against the predecessor's published numbers,
+   and not against an earlier phase of this project. A comparison that spans
+   a cap change is a finding about the cap.
+4. A cap change is therefore a **registration change**, not an
+   implementation choice. It gets a new prereg tag and a new row in
+   `PREREGISTRATION.md` stating what was compared before and what may be
+   compared after.
+
+The mechanism is in `04-data-and-instrumentation-spec.md` section 4 under
+`answer_rate`: a truncated sample casts no vote, so the pool that actually
+votes at cap C is smaller than N and is not a random subset of it.
+
 ## 8. Pre-registration and verification
 
 ### 8.1 Split discipline
