@@ -20,12 +20,118 @@ written outside this file.
 **Coverage first, because it bounds everything below.** `mean_token_entropy` is
 present on 9,589 of 13,058 Qwen samples (73.4 percent) and 9,664 of 12,672
 Llama samples (76.3 percent), covering **151 of 198 problems** for each model.
-The rest were sampled without logprobs. Every figure here is over those 151.
+
+Those 151 are not an arbitrary subset. **They are the paper's pre-registered
+confirmatory split**, and the problems without entropy are the 47 exploratory
+ones, plus 3 that Qwen sampled and the study set aside. Section 0 characterises
+the gap; the published paper discloses it in two places and evaluates its
+entropy gate on the same 151 this note uses. So the population here is the
+right one, and it is not the population the headline backfire rate is quoted
+on.
 
 **What the stored field actually is.** The mean negative logprob of the tokens
 that were sampled, averaged over the whole completion. It is a surprisal of the
 realised path, not an entropy of a distribution, and the naming has misled at
 least one reader of this data. Section 3 turns on the difference.
+
+---
+
+## 0. What exists, exactly, and what does not
+
+An earlier version of this note said per-token arrays were never stored and
+then quoted a median token surprisal, which cannot both be true. Resolving it:
+**the arrays are not there, and the median is a stored summary of them.**
+
+`outputs/entropy_baseline/`, verbatim structure of one file, all 47 identical
+in shape:
+
+| Field | Type | Example |
+|---|---|---|
+| `problem_id`, `subject`, `model`, `schema_version`, `timestamp` | str | |
+| `temperature` | float | 0.7 |
+| `n_tokens`, `input_tokens`, `output_tokens` | int | 336 |
+| `full_response` | str | the completion |
+| `mean_per_token_nll` | float | 0.3631963021081371 |
+| `median_per_token_nll` | float | 0.0035171509 |
+| `max_per_token_nll` | float | 5.5 |
+| `mean_per_token_entropy` | float | 0.30941057361870883 |
+| `median_per_token_entropy` | float | 0.024767642715901567 |
+| `max_per_token_entropy` | float | 1.4391867481671252 |
+| `top_logprobs_available` | bool | true |
+
+- **47 problems, one sample each.** Not 64, not a matrix.
+- **Every field is a scalar.** A scan across all 47 files finds no list-valued
+  or dict-valued field anywhere. The six statistics were computed at sampling
+  time from per-token data that was then discarded.
+- **`top_logprobs_available` is a boolean, not a payload.** It records that the
+  API returned alternatives during that run, which is corroborating evidence
+  for the capability probe's depth-5 finding on the same model family. It does
+  not contain them.
+- **The depth k is not recorded anywhere**, in any of the 47 files or in the
+  summary. That a true per-token entropy was computable means k was at least 2
+  at sampling time, and how much more than 2 is unknown.
+
+**Therefore the two follow-on questions cannot be answered from this data.**
+Localised entropy at the answer span is not computable, which is what phase 14a
+said and what the published paper repeats as a stated limitation. The
+answer-token margin is not computable for the same reason. No pilot of the v2's
+gate is available at zero dollars, from this store or any other in the
+repository.
+
+**Effect on the case for the v2: untouched.** No new evidence in either
+direction. The gate remains untested by anyone, and the only way to test it is
+to collect the arrays.
+
+### Characterising the missing quarter
+
+The gap is not random, not length-related and not failure-related. It is a run
+boundary that coincides exactly with the study's own experimental split:
+
+| | Qwen2.5-7B | Llama-3-8B-Lite |
+|---|---|---|
+| samples without entropy | 3,469 of 13,058 | 3,008 of 12,672 |
+| schema of the missing | `v6.0-pilot` | `v6.0-pilot-model2` |
+| schema of the present | `v6.0-pilot-phase13` | `v6.0-pilot-model2-phase13` |
+| when the missing were sampled | 2026-05-19 to 05-24 | 2026-06-05, 11:30 to 11:47 |
+| when the present were sampled | 2026-06-05, 17:24 to 17:56 | 2026-06-05, 17:59 to 18:24 |
+| problems entirely missing | **50** | **47** |
+| problems entirely present | 148 | 151 |
+| problems mixed | 3 | 0 |
+
+The missing set is the **exploratory split**: the 47 problems the hypotheses
+were generated from, plus the 3 Qwen sampled and the study set aside, matching
+the 50 ids in `data/problem_ids.json`. The `entropy_baseline` 47 are a strict
+subset of them, and the 151 with entropy have **zero overlap** with the
+`entropy_baseline` set.
+
+Two correlates worth stating, both consequences of which problems are in which
+split rather than causes of the missingness:
+
+| | Qwen: missing / present | Llama: missing / present |
+|---|---|---|
+| accuracy | 0.4082 / 0.3162 | 0.3331 / 0.2482 |
+| extraction failure | 0.0173 / 0.0010 | 0.0189 / 0.0125 |
+| at the 2048 cap | 0.0032 / 0.0010 | 0.0017 / 0.0034 |
+| input tokens, mean | 358.8 / 273.0 | 343.9 / 250.2 |
+
+**The exploratory problems are about nine points easier** for both models. That
+is a property of the split, and it means any statistic computed on the
+confirmatory 151, including everything in this note, describes a harder
+population than the exploratory 47 do.
+
+### Does the published paper mention the gap?
+
+**Yes, twice, and it draws the right conclusion from it.** Section 2:
+"Logprobs are available for all 151 confirmatory problems but not for the 47
+older exploratory ones, so the entropy gate is evaluated on the confirmatory
+set." Section 4: "logprobs were stored only for the 151 confirmatory problems
+... Localized entropy (computed over final-answer tokens only) was not
+computable from stored data, which retained only the mean scalar; this is a
+limitation of the pipeline rather than a finding."
+
+It also warns that the entropy-gate and agreement-gate capture percentages are
+computed on different problem sets and "should not be read as like-for-like".
+Nothing here is a gap the paper concealed.
 
 ---
 
@@ -156,17 +262,21 @@ capture of 0.0054.
 ### The mechanism, which is the part that transfers
 
 `outputs/entropy_baseline/` holds 47 problems sampled with `top_logprobs`
-requested, storing both the sampled-path surprisal and a true per-token entropy
-computed from the alternatives. It shows why a whole-completion average cannot
-work:
+requested, storing **summary statistics** of the sampled-path surprisal and of
+a true per-token entropy computed from the alternatives. The arrays are gone,
+per section 0, but the summaries are enough to show why a whole-completion
+average cannot work:
 
-| Quantity, mean over 47 responses | Value |
-|---|---|
-| mean per-token NLL, whole completion | 0.2618 |
-| **median per-token NLL, within a response** | **0.0081** |
-| median of those per-response medians | **0.00038** |
-| mean per-token true entropy from `top_logprobs` | 0.2372 |
-| tokens per completion, mean | 612.7 |
+| Quantity, mean over 47 responses | Value | Stored as |
+|---|---|---|
+| mean per-token NLL, whole completion | 0.2618 | `mean_per_token_nll` |
+| **median per-token NLL, within a response** | **0.0081** | `median_per_token_nll` |
+| median of those per-response medians | **0.00038** | derived from the above |
+| mean per-token true entropy from `top_logprobs` | 0.2372 | `mean_per_token_entropy` |
+| tokens per completion, mean | 612.7 | `n_tokens` |
+
+Every figure here is a scalar the pipeline wrote at sampling time. None of it
+required the arrays, and none of it can substitute for them.
 
 The median token in a response carries a surprisal of **0.0004 nats**, which is
 a probability of 0.9996. The mean is 0.26. The distribution over tokens is

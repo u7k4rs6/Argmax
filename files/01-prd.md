@@ -21,15 +21,22 @@ Companion documents: `02-technical-architecture.md`,
 
 The predecessor study, arXiv:2608.11403, measured how often majority-vote
 self-consistency **reduces** accuracy on expert-level multiple choice, and
-showed that a cheap agreement gate cannot avoid the damage. It closes by naming
-its own key open problem in one sentence:
+showed that two cheap verifier-free gates cannot avoid the damage. Its abstract
+names its own central open question in one clause:
 
-> "developing a deploy-time signal that distinguishes 'confidently correct'
-> from 'confidently wrong' would unlock the oracle ceiling and is the key open
-> problem."
+> "we do not test reasoning-native models, which we flag as the central open
+> question."
 
-Argmax exists to attack that sentence with instrumentation the predecessor did
-not have. Specifically:
+**Argmax cannot answer that question**, and section 2.2 gives the measured
+reason: it is not a budget problem. What Argmax can attack is a narrower thing
+the paper names as a pipeline limitation rather than a finding:
+
+> "Localized entropy (computed over final-answer tokens only) was not
+> computable from stored data, which retained only the mean scalar; this is a
+> limitation of the pipeline rather than a finding."
+
+That limitation is the whole reason this repository's instrumentation exists.
+Specifically:
 
 1. **Per-token logprobs retained with a span pointing at the answer token.**
    The predecessor kept only a mean-entropy scalar, which foreclosed
@@ -58,22 +65,34 @@ eligibility bar rather than as a matter of taste.
 
 ### 2.1 The published result
 
-From arXiv:2608.11403, on 47 GPQA Diamond problems, N=64, temperature 0.7, two
-7-8B non-reasoning models:
+From arXiv:2608.11403, `paper/backfire_preprint.pdf`, accepted at the COLM 2026
+Workshop on Efficient Reasoning. On the **full 198-problem** GPQA Diamond
+benchmark, N=64, temperature 0.7, two 7-8B non-reasoning models, with 47
+problems exploratory and a pre-registered 151-problem confirmatory split:
 
 | | Qwen2.5-7B-Instruct-Turbo | Llama-3-8B-Instruct-Lite |
 |---|---|---|
-| accuracy at N=1 | 40.8% | 33.3% |
-| accuracy at N=64 | 50.6% | 34.0% |
-| backfire rate, problems where N=64 is worse than N=1 | **47%** [32, 62] | **66%** [51, 81] |
-| oracle gate gain over fixed N=64 | +7.4 pp | +11.4 pp |
-| fraction of that ceiling captured by an agreement gate | ~0% | 2.7% |
-| plurality correct in the top confidence bin | 56.3% | 50.0% |
+| backfire rate, pooled over 198 | **56.6%** | **65.7%** |
+| grid-oracle ceiling above N=1 | +14 pp | +17 pp |
+| movement from fixed-budget N=64 by either verifier-free gate | **< 0.002** | **< 0.002** |
+| plurality correct in the top agreement bin | about half | lower than its lowest-agreement bin |
+| confirmatory hypotheses passed | 4 of 4 | 4 of 4 |
 
-The paper's own limitations name what is untested: 47 problems, one benchmark,
-two models, wide bootstrap intervals, calibration bins of 13 to 18 problems,
-and both models small and non-reasoning, with reasoning-tuned models untested
-because they may be better calibrated.
+> **Correction.** An earlier version of this section quoted 47 percent and 66
+> percent backfire on 47 problems, an N=1 accuracy of 40.8 percent, and an
+> agreement gate capturing "0 percent and 2.7 percent". Those are from
+> `backfire_paper_draft.md` at the predecessor's repository root, a superseded
+> 47-problem draft. The published preprint is the 198-problem version and its
+> numbers are above. The same mistake put the wrong sentence in section 1: the
+> superseded draft called a deploy-time signal "the key open problem", while
+> the published abstract flags reasoning-native models as the central open
+> question. Both are corrected here.
+
+The paper's stated limitations: one benchmark, two models, both small and
+non-reasoning, and reasoning-native models untested. It also records that
+localized entropy was not computable from its stored data, and that its two
+gate figures are computed on different problem sets and should not be read as
+like-for-like.
 
 ### 2.2 What Argmax may and may not compare against it
 
@@ -105,7 +124,7 @@ already established for free, so it is not a finding that needs purchasing.
 The margin gate cannot be computed from the published runs. Their logprob
 arrays were never stored, only a mean-entropy scalar, and the phase 14b probe
 requested `logprobs: 1`, which returns the chosen token and no runner-up. So
-the single most promising signal for the paper's key open problem requires new
+the most promising candidate for the limitation the paper records requires new
 samples, and those samples require a capability probe that confirms
 `top_logprobs >= 2` is honoured for the chosen model. That probe is the first
 spend of any scope below.
@@ -256,7 +275,8 @@ endpoint.
 | **Credits needed above $6** | none, $1.02 margin | none, $2.35 margin | **$2.63**, and $37.81 more if B is to reach N=64 |
 | **What it buys** | A test of whether Chen et al.'s mixture explanation and its optimal-call estimator survive when the easy component is removed, on three tiers that vary the mixture deliberately, with the hard tier being the published 47 problems | An answer rate and a truncation rate for a reasoning policy, plus a curve that tops out at N=4 with a CI | Both of the above, plus a documented incomparability between them |
 | **What it forecloses** | The reasoning-model question entirely, at this budget | Any comparison to the published numbers, and any claim at the N where backfire is defined | Nothing extra, but it spends the margin the capability probe and the inevitable re-run need |
-| **Answers the backfire paper's central question** (a deploy-time signal separating confidently-correct from confidently-wrong) | **No**, but see below: A's samples make the answer free | **No** | **No** |
+| **Answers the backfire paper's central open question** (reasoning-native models) | **No** | **No**, see section 2.2: not a budget problem | **No** |
+| **Closes the limitation the paper records** (localized entropy, not computable from its stored data) | **No** on its own, but see below: A's samples make it free | **No** | **No** |
 | **Plausible venue** | Standalone workshop or short paper: it tests a published scaling model, not this project's predecessor | None standalone. A technical note at best | Workshop methods note |
 | **Eligible** | **Yes** | **No** | **No** |
 
@@ -293,8 +313,10 @@ separately.
 
 The margin gate half is comparable to the published numbers by construction:
 same cap, same prompt, same provider, answer rates matching at 0.99. If it
-fails to beat the agreement gate, that is a publishable negative result on the
-backfire paper's own central question, obtained at no marginal sampling cost.
+fails to beat the agreement gate, that is a publishable negative result on a
+limitation the paper records but could not test, obtained at no marginal
+sampling cost. It is not an answer to the paper's central open question, which
+is reasoning-native models and is out of reach for the reasons in section 2.2.
 
 ### What the v2 extension does and does not attack
 
