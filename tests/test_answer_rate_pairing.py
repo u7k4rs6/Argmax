@@ -180,3 +180,100 @@ def test_the_published_artifacts_pair():
     if not derived.exists() or not any(iter_artifacts(derived)):
         pytest.skip("no derived artifacts yet (pre-Step 0)")
     assert_paired(scan([derived]))
+
+
+# --- markdown, doc 4 s9.1.1 -------------------------------------------------
+#
+# The artifact scan above stayed green while a note published per-problem
+# accuracies by length quintile with no answer rates. The rule was never
+# scoped to notes, and the number that would have shown whether that table's
+# shape was a truncation artifact was the missing one.
+
+from pathlib import Path  # noqa: E402
+
+from argmax.persist.pairing import (  # noqa: E402
+    PairingReport,
+    check_markdown,
+    iter_markdown_tables,
+)
+
+REPO = Path(__file__).resolve().parents[1]
+
+
+def _check(text, tmp_path):
+    path = tmp_path / "note.md"
+    path.write_text(text, encoding="utf-8")
+    report = PairingReport()
+    check_markdown(path, report)
+    return report
+
+
+def test_a_markdown_accuracy_column_without_a_rate_fails(tmp_path):
+    report = _check(
+        "| bin | accuracy |\n|---|---|\n| a | 0.4441 |\n| b | 0.2218 |\n", tmp_path
+    )
+    assert report.problems and "no answer_rate" in report.problems[0]
+
+
+def test_a_markdown_accuracy_column_with_a_rate_passes(tmp_path):
+    report = _check(
+        "| bin | accuracy | answer_rate |\n|---|---|---|\n"
+        "| a | 0.4441 | 0.9819 |\n| b | 0.2218 | 1.0000 |\n",
+        tmp_path,
+    )
+    assert not report.problems
+    assert report.n_in_scope == 1
+
+
+def test_a_rate_elsewhere_in_the_document_is_not_a_match(tmp_path):
+    """The reader must not have to perform a join."""
+    report = _check(
+        "The answer rate over these problems is 0.9943.\n\n"
+        "| bin | accuracy |\n|---|---|\n| a | 0.4441 |\n",
+        tmp_path,
+    )
+    assert report.problems
+
+
+def test_a_bin_label_column_is_not_an_accuracy(tmp_path):
+    """`accuracy bin` with range cells is a stratifier, not a reported value.
+
+    The whole cell must parse. Reading only its first token would score
+    "0.000 to 0.125" as the accuracy 0.0.
+    """
+    report = _check(
+        "| accuracy bin | problems |\n|---|---|\n"
+        "| 0.000 to 0.125 | 42 |\n| 0.125 to 0.250 | 19 |\n",
+        tmp_path,
+    )
+    assert not report.problems
+    assert report.n_in_scope == 0
+
+
+def test_percent_cells_are_read_as_accuracies(tmp_path):
+    report = _check(
+        "| bin | accuracy |\n|---|---|\n| a | 44.4% |\n| b | 22.2% |\n", tmp_path
+    )
+    assert report.problems
+
+
+def test_tables_are_found_with_their_line_numbers(tmp_path):
+    text = "intro\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\ntail\n"
+    tables = list(iter_markdown_tables(text))
+    assert len(tables) == 1
+    line_no, header, body = tables[0]
+    assert line_no == 3
+    assert header == ["a", "b"]
+    assert body == [["1", "2"]]
+
+
+def test_every_markdown_file_in_the_repo_pairs():
+    """The enforcement, over notes, files and the repository root."""
+    report = PairingReport()
+    roots = [REPO / "notes", REPO / "files", REPO / "docs"]
+    paths = [p for root in roots if root.exists() for p in sorted(root.rglob("*.md"))]
+    paths += sorted(REPO.glob("*.md"))
+    for path in paths:
+        check_markdown(path, report)
+    assert len(paths) >= 15, "the markdown scan is covering almost nothing"
+    assert not report.problems, "\n".join(report.problems)

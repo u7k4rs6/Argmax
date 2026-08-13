@@ -412,6 +412,46 @@ The test is mechanical, so the contract has to be mechanical too.
   omitted when it is uninteresting, because "uninteresting" is a judgement
   made after seeing it and the reader has not seen it.
 
+#### 9.1.1 The rule covers notes, and it did not
+
+**Decided: notes are in scope.** Every markdown file in this repository is
+covered by the same rule as a published artifact.
+
+This is recorded as a correction rather than as a clarification, because the
+gap was found by falling through it. A table of per-problem accuracies by
+completion-length quintile was published in `notes/completion_length_candidate.md`
+carrying accuracies, bootstrap intervals and no answer rates, and the suite
+stayed green throughout. The scan only ever walked structured artifacts, where
+"what counts as an accuracy" is decidable from a key name.
+
+The result was not merely untidy. The right arm of that table's U-shape has
+one obvious alternative explanation, truncation at long lengths selecting
+which samples get scored, and **the answer rate is the column that
+distinguishes them**. Publishing the shape without it published a result whose
+main threat was invisible. It survived the check when the check was finally
+run, which is luck rather than vindication.
+
+The mechanical rule for markdown, kept narrow enough to implement without
+guessing:
+
+| | |
+|---|---|
+| **In scope** | a pipe table with a header cell containing `accuracy` or `accuracies` as a word, whose column's cells each parse **whole** as a number in [0, 1] |
+| **Out of scope** | a column that labels rows by accuracy rather than reporting one. `accuracy bin` with cells reading "0.000 to 0.125" is a stratifier: the whole cell does not parse, so it does not match. This is why the parser reads the entire cell and not its first token |
+| **What counts as a match** | `answer_rate` or "answer rate" **in the same table**. Elsewhere in the same document is not a match, for the same reason a different file is not: the reader must not have to perform a join |
+| **On absence** | fails, like the artifact rule |
+
+Implemented as `check_markdown` in `argmax.persist.pairing`, run over every
+`.md` in the repository by `tests/test_answer_rate_pairing.py`. At the time of
+writing it finds exactly one table in scope, the one that prompted it, now
+paired.
+
+Two honest limits. A prose sentence carrying an accuracy is still uncovered,
+because deciding what is an accuracy in free text needs judgement the test
+cannot supply; the rule binds there and only the discipline enforces it. And a
+narrow test that finds one table today will find nothing on most runs, which
+is the intended state rather than evidence it is not working.
+
 ## 10. Open items for Step 0
 
 Step 0 audits the abandoned phase 14b probe for token counts. While in

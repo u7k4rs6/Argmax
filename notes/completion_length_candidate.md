@@ -207,15 +207,53 @@ and it is not flat.
 ## 6. The shape: a U, suggestive and not established
 
 Per-problem mean completion length in quintiles, accuracy within each, cluster
-bootstrap over problems at 10,000 resamples:
+bootstrap over problems at 10,000 resamples. **The answer rate is in the same
+table** under doc 4 section 9.1, and it is the column that decides whether the
+right arm is a shape or a selection effect:
 
-| quintile | n | length range | mean length | accuracy | 95 percent interval |
-|---|---|---|---|---|---|
-| 1 shortest | 25 | 166 to 430 | 356.2 | **0.4441** | [0.3123, 0.5784] |
-| 2 | 26 | 437 to 528 | 486.9 | 0.3400 | [0.2326, 0.4569] |
-| 3 middle | 26 | 528 to 610 | 568.8 | **0.2218** | [0.1340, 0.3233] |
-| 4 | 26 | 610 to 682 | 640.9 | 0.3316 | [0.2248, 0.4460] |
-| 5 longest | 26 | 725 to 1197 | 884.3 | **0.4098** | [0.2957, 0.5331] |
+| quintile | n | mean length | accuracy | 95 percent interval | answer_rate | truncation | hit_ceiling |
+|---|---|---|---|---|---|---|---|
+| 1 shortest | 25 | 356.2 | **0.4441** | [0.3123, 0.5784] | **0.9819** | 0.0000 | 0.0000 |
+| 2 | 26 | 486.9 | 0.3400 | [0.2326, 0.4569] | 0.9964 | 0.0024 | 0.0024 |
+| 3 middle | 26 | 568.8 | **0.2218** | [0.1340, 0.3233] | 1.0000 | 0.0000 | 0.0000 |
+| 4 | 26 | 640.9 | 0.3316 | [0.2248, 0.4460] | 0.9970 | 0.0024 | 0.0024 |
+| 5 longest | 26 | 884.3 | **0.4098** | [0.2957, 0.5331] | 0.9958 | 0.0060 | 0.0060 |
+
+Length ranges by quintile: 166 to 430, 437 to 528, 528 to 610, 610 to 682,
+725 to 1197.
+
+### The truncation mechanism, ruled out rather than assumed
+
+Long problems against a 2048 cap are where truncation should concentrate, so
+this is the specific alternative explanation for the right arm, not a
+speculative one. It does not hold:
+
+- **The answer rate does not fall with length.** The lowest rate is in the
+  **shortest** quintile at 0.9819, not the longest at 0.9958. Whatever costs
+  answers here, it is not running out of budget.
+- **Truncation is 0.60 percent at its worst**, in Q5, and identical to
+  `hit_ceiling` in every quintile, which is the expected relationship and a
+  check that neither column is measuring something else.
+- **Both arms survive scoring unanswered samples as incorrect.** Scored that
+  way rather than excluded:
+
+| quintile | accuracy excluding unanswered | accuracy scoring unanswered incorrect | change | answer_rate |
+|---|---|---|---|---|
+| 1 | 0.4441 | 0.4294 | -0.0148 | 0.9819 |
+| 2 | 0.3400 | 0.3371 | -0.0029 | 0.9964 |
+| 3 | 0.2218 | 0.2218 | +0.0000 | 1.0000 |
+| 4 | 0.3316 | 0.3311 | -0.0005 | 0.9970 |
+| 5 | 0.4098 | 0.4093 | -0.0005 | 0.9958 |
+
+| contrast | excluding unanswered | scoring unanswered incorrect |
+|---|---|---|
+| Q5 minus Q3, right arm | +0.1880 [+0.0354, +0.3375] | **+0.1875** [+0.0349, +0.3431] |
+| Q1 minus Q3, left arm | +0.2224 [+0.0591, +0.3825] | **+0.2076** [+0.0472, +0.3644] |
+
+Both still exclude zero, and the right arm moves by 0.0005. **The right arm is
+not a selection effect from truncation.** The left arm is the one that moves
+at all, by 0.0148, because the shortest quintile is where the unanswered
+samples are, which is the opposite of the mechanism that was worth ruling out.
 
 Both extremes above the middle, near-symmetric arms. Tested by direct
 resampled contrasts rather than by reading the overlap of those intervals,

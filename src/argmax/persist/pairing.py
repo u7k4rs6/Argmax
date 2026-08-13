@@ -38,6 +38,7 @@ hits and no evidence are different claims.
 
 from __future__ import annotations
 
+import re
 import json
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
@@ -240,3 +241,109 @@ def assert_paired(report: PairingReport) -> None:
         "random subset of the pool that was drawn. Publish the rate beside "
         "the accuracy, including when it reads 1.0000."
     )
+
+
+# --- markdown tables in notes and docs --------------------------------------
+#
+# The rule above was written for published artifacts, where "what counts as an
+# accuracy" is decidable from a key name. It did not cover markdown, and a
+# quintile table of per-problem accuracies was published in a note without its
+# answer rates for exactly that reason: the discipline existed, the check did
+# not reach where the number actually lived.
+#
+# Doc 4 s9.1 now says the rule covers notes. This is the part that makes that
+# enforceable rather than aspirational.
+
+_MD_ACCURACY = re.compile(r"(?<![a-z_])accurac(?:y|ies)(?![a-z_])", re.IGNORECASE)
+_MD_RATE = re.compile(r"answer[ _]rate", re.IGNORECASE)
+
+
+def _md_cells(row: str) -> list[str]:
+    return [c.strip() for c in row.strip().strip("|").split("|")]
+
+
+def iter_markdown_tables(text: str):
+    """Yield (line_number, header_cells, body_rows) for each pipe table."""
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        is_header = lines[i].strip().startswith("|")
+        has_rule = i + 1 < len(lines) and set(lines[i + 1].strip()) <= set("|-: ")
+        if is_header and has_rule and lines[i + 1].strip():
+            header = _md_cells(lines[i])
+            j = i + 2
+            body = []
+            while j < len(lines) and lines[j].strip().startswith("|"):
+                body.append(_md_cells(lines[j]))
+                j += 1
+            yield i + 1, header, body
+            i = j
+        else:
+            i += 1
+
+
+def _column_holds_accuracies(body: list[list[str]], index: int) -> bool:
+    """True when the column's cells are numbers that could be accuracies.
+
+    This is what separates a column REPORTING accuracies from one that merely
+    labels rows by accuracy, such as an `accuracy bin` column whose cells read
+    "0.000 to 0.125". A bin label is a stratifier; it is not a number that can
+    travel without its answer rate, so it is out of scope.
+
+    Bold and backtick markup is stripped. A column needs at least one parseable
+    value in the unit interval and no cell that parses outside it.
+    """
+    seen = False
+    for row in body:
+        if index >= len(row):
+            continue
+        cell = row[index].strip().strip("*`").strip()
+        if not cell:
+            continue
+        percent = cell.endswith("%")
+        try:
+            # The WHOLE cell must be one number. "0.000 to 0.125" is a bin
+            # label, not an accuracy, and taking its first token would read it
+            # as one.
+            value = float(cell.removesuffix("%"))
+        except ValueError:
+            return False
+        if percent:
+            value /= 100.0
+        if not 0.0 <= value <= 1.0:
+            return False
+        seen = True
+    return seen
+
+
+def check_markdown(path: Path, report: PairingReport) -> None:
+    """Fail any markdown table with an accuracy column and no answer rate.
+
+    Matching is per table, not per file: a rate elsewhere in the document is
+    not a match, for the same reason a rate in another file is not. The number
+    has to be readable without the reader performing a join.
+    """
+    text = path.read_text(encoding="utf-8")
+    for line_no, header, body in iter_markdown_tables(text):
+        columns = [
+            i
+            for i, cell in enumerate(header)
+            if _MD_ACCURACY.search(cell) and _column_holds_accuracies(body, i)
+        ]
+        if not columns:
+            continue
+        report.n_artifacts += 1
+        report.n_in_scope += 1
+        blob = " ".join(header) + " " + " ".join(c for row in body for c in row)
+        if not _MD_RATE.search(blob):
+            named = ", ".join(header[i] or f"column {i}" for i in columns)
+            report.problems.append(
+                f"{path}:{line_no}: table reports accuracies ({named}) with no "
+                f"answer_rate in the same table"
+            )
+
+
+def iter_markdown(root: Path) -> Iterator[Path]:
+    for path in sorted(root.rglob("*.md")):
+        if path.is_file():
+            yield path
