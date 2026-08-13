@@ -70,6 +70,31 @@ all:
 The two confirmatory models answer essentially always. The reasoning model
 loses a third of its samples and loses eight problems outright.
 
+## 2.1 The distribution-free number: what a reasoning model would have answered at 2048
+
+No fit, no model, just the empirical CDF of the probe's `output_tokens`:
+
+| Quantity | Value |
+|---|---|
+| probe records with `output_tokens <= 2048` | **107 of 404 = 0.2649** [0.2242, 0.3099] |
+| of those 107, how many produced an answer | 106 = 0.9907 |
+| implied answer rate for MiniMax-M2.7 at a 2048 cap | **at most 0.2649** |
+| probe problems that would have contributed nothing at 2048 | **25 of 47** |
+
+This is the cleanest statement of why the comparison cannot be bought. Put the
+reasoning model at the published cap and it answers **26 percent** of the time
+against the published models' **99 percent**, and more than half its problems
+go silent. The gap is not a matter of spending more: at 2048 the samples are
+cheap and the model still has nothing to say, because it has not finished
+thinking. Raising the cap fixes the answer rate and breaks the cap match. There
+is no setting of `max_tokens` at which a reasoning model both matches the
+published cap and matches the published answer rate.
+
+The one encouraging number: of the 107 completions that did fit under 2048,
+106 produced an answer and 95 of those were correct, 0.8962. The fast mode is
+not a degraded mode. It is a different population, and it is the population
+that would survive the published cap.
+
 ## 3. What is not a barrier
 
 Worth establishing first, because it narrows the constraint to one thing:

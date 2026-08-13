@@ -3,9 +3,12 @@
 Status: written before Step 0. Contains no scope, model count, or budget
 numbers. Every place one is required is marked `[BLOCKED: Step 0]`.
 
-Companion documents: `03-security-and-access.md`,
-`04-data-and-instrumentation-spec.md`. The PRD (`01-prd.md`) is deliberately
-absent until the reasoning-model token cost is measured.
+Companion documents: `01-prd.md`, `03-security-and-access.md`,
+`04-data-and-instrumentation-spec.md`. The PRD was deliberately absent until
+the reasoning-model token cost was measured. That measurement now exists, from
+stored data rather than from a paid probe, so `01-prd.md` covers sections 1 to
+3 and the scope table. Its later sections stay unwritten until a scope row is
+picked.
 
 ---
 

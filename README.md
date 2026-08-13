@@ -15,12 +15,16 @@ an implementation of them.
 
 | Document | Covers |
 |---|---|
+| `files/01-prd.md` | why this project exists, what it may compare against, the scope table |
 | `files/02-technical-architecture.md` | stage graph, components, reproducibility, pre-registration |
 | `files/03-security-and-access.md` | credentials, spend controls, benchmark data handling, release |
 | `files/04-data-and-instrumentation-spec.md` | every stored field, retention policy, validation |
 
-`01-prd.md` is deliberately absent until the reasoning-model token cost is
-measured. See "Step 0" below.
+The PRD was deliberately absent until the reasoning-model token cost was
+measured. Step 0 answered that from the predecessor's stored data, so
+`01-prd.md` now carries sections 1 to 3 and the scope table. **No scope row has
+been picked**, and its hypotheses, thresholds and success criteria stay
+unwritten until one is. See "Step 0" below.
 
 ## Status
 
