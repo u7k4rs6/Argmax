@@ -115,7 +115,13 @@ def run_phase(phase_id: str, split: str, cfg: dict[str, Any]) -> dict[str, Any]:
             "n": 1,
         }
         param_hash = keys.param_hash(param_set)
+        # The manifest records concurrency; the hash does not. A concurrency
+        # change must not orphan an existing sample set, and it must not be
+        # invisible either.
         manifest_written["params"][slug] = param_set
+        manifest_written.setdefault("concurrency", {})[slug] = int(
+            model_cfg.get("concurrency", 4)
+        )
         manifest_written["hashes"][slug] = param_hash
 
         # Pre-flight, from the phase's recorded token estimate and its source.
@@ -290,6 +296,7 @@ def run_phase(phase_id: str, split: str, cfg: dict[str, Any]) -> dict[str, Any]:
         M=M,
         realized_cost_usd=ledger.realized_spend_usd(),
         counts_by_outcome_class=counts,
+        concurrency_by_model=manifest_written.get("concurrency", {}),
     )
     path = paths.manifest_path(run_id)
     writer.write_manifest(path, manifest.model_dump_json(indent=2))

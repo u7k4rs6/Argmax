@@ -532,6 +532,18 @@ class RunManifest(Strict):
     realized_cost_usd: float = 0.0
     counts_by_outcome_class: dict[str, int] = Field(default_factory=dict)
 
+    #: Concurrency is deliberately NOT in `param_hash`: it changes nothing about
+    #: what a sample contains. It is recorded here anyway because hosted
+    #: inference is not batch invariant, so samples drawn at different
+    #: concurrencies are two regimes and a reader pooling them is entitled to
+    #: know. `run_id` is on every sample, so this mapping makes the regime
+    #: boundary visible per sample without touching the raw store.
+    #: Empty means the run predates this field, not that concurrency was zero.
+    concurrency_by_model: dict[str, int] = Field(default_factory=dict)
+    #: Free text for anything about this run a reader needs and no field holds,
+    #: such as where a regime boundary falls.
+    regime_note: str | None = None
+
     @model_validator(mode="after")
     def _confirmatory_needs_tag(self) -> RunManifest:
         if self.split == Split.confirmatory and not self.prereg_tag:
