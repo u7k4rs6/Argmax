@@ -74,4 +74,63 @@ predates the field, not that concurrency was zero.
 
 ## Results
 
-_(regime check, manifest check, extraction and answer rate follow)_
+### Manifest check
+
+Every manifest reads `max_tokens: 2048`, matching the published runs. No stop
+condition.
+
+### Regime check, read under the confound fixed above
+
+| | concurrency 4 (n=748) | concurrency 16 (n=11,924) | difference |
+|---|---|---|---|
+| mean completion tokens | 647.6 | 599.4 | **+48.2** |
+| truncation rate | 0.0013 | 0.0019 | -0.0006 |
+| answer rate | 0.9987 | 0.9948 | +0.0039 |
+| margin median | 24.000 | 24.000 | 0.000 |
+| mean margin | 20.819 | 20.774 | +0.045 |
+
+Margin distributions are indistinguishable, medians identical to three
+decimals. The one apparent difference is 8 percent of completion length, and
+**the straddling problem reverses its sign**: within that single problem, mean
+completion is 945.9 at concurrency 4 against 969.0 at 16, so **-23 tokens
+where the between-groups comparison gives +48**. Accuracy on one problem is not
+reported. Suggestive at 44 draws against 20, not weighted.
+
+Read as: no evidence the regimes differ, and the only number that looked like
+a difference is better explained by which eleven problems fell before the
+boundary. Not a batch-invariance result in either direction.
+
+### Answer rate, doc 4 s4.1
+
+| | rate | 95 percent interval |
+|---|---|---|
+| **Argmax** | **0.9950** | [0.9936, 0.9961] |
+| published Qwen | 0.9946 | [0.9932, 0.9958] |
+
+Difference +0.0004, intervals almost entirely overlapping. Comparability with
+the published numbers holds on the output population, not only on the matched
+prompts. Produced by `derive`, the same path `test_recompute.py` covers.
+
+Store totals: 12,672 samples, $3.4122, 12,344 margins measured, 265 censored.
+
+### The registered descriptive claims, on the 69 unexposed problems
+
+One look, under `argmax-prereg-margin-desc-v1.0`. 64 of 69 problems carried at
+least three dissenting samples; 5 were excluded by the registered rule.
+
+| id | quantity | estimate | one-sided 95% lower bound | threshold | verdict |
+|---|---|---|---|---|---|
+| **MD1** | median margin, dissenting samples | 20.5232 | **18.8376** | 15.0 | **PASS** |
+| **MD2** | fraction above 10 nats, dissenting | 0.7567 | **0.7105** | 0.60 | **PASS** |
+
+Headroom above threshold: +3.84 nats and +0.11.
+
+Both pass on problems no exploratory analysis had read, and the holdout
+reproduces the exposed set closely: 20.52 against 20.62, and 0.757 against
+0.749. **A sample that contradicts its own problem's plurality still emits its
+answer at a median of 20.5 nats**, which is roughly 800 million to one. It is
+certain given the chain it has just written, and the disagreement between
+samples lives upstream in which chain got written.
+
+The two-sample equivalence is not registered and not reported: it needed a
+2.89-nat band at this n, which would pass on noise.
