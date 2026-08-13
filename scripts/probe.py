@@ -54,10 +54,28 @@ def main() -> int:
         response = client.complete(payload)
 
     if not response.ok:
+        # A refusal is a capability finding, not an absent one. It is written
+        # to the same file a success would write, so a phase that requires this
+        # model refuses to start with a reason instead of a missing file.
+        caps = Capabilities(
+            capabilities_id=param_hash(
+                {"slug": args.model, "error": response.error_type}
+            )[:16],
+            model_slug=args.model,
+            model_requested=cfg["model_string"],
+            model_returned="",
+            probed_utc=datetime.now(UTC).isoformat(),
+            available=False,
+            unavailable_reason=f"{response.error_type}: {response.error_message}",
+            logprobs_depth_requested=params.get("logprobs_depth"),
+            logprobs_style_requested=params.get("logprobs_style", "integer_depth"),
+        )
+        path = save_capabilities(caps)
         print(
             f"probe failed: {response.error_type}: {response.error_message}",
             file=sys.stderr,
         )
+        print(f"wrote {path} recording the model as unavailable", file=sys.stderr)
         return 1
 
     found = inspect_response(response.body)

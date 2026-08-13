@@ -1,0 +1,40 @@
+{
+  "capabilities_id": "3a2fc192f7b845c3",
+  "finish_reason_present": true,
+  "logprobs_container_key": "tokens",
+  "logprobs_depth": 5,
+  "logprobs_depth_requested": 5,
+  "logprobs_first_alternatives_raw": {
+    "'C": -38,
+    "A": -36,
+    "C": 0,
+    "Cc": -36.25,
+    "D": -38.5
+  },
+  "logprobs_first_entry_raw": "C",
+  "logprobs_keys": [
+    "token_ids",
+    "token_logprobs",
+    "tokens",
+    "top_logprobs"
+  ],
+  "logprobs_returned": true,
+  "logprobs_style_requested": "integer_depth",
+  "model_requested": "Qwen/Qwen2.5-7B-Instruct-Turbo",
+  "model_returned": "Qwen/Qwen2.5-7B-Instruct-Turbo",
+  "model_slug": "qwen2.5-7b-instruct-turbo",
+  "probed_utc": "2026-08-13T10:30:48.226170+00:00",
+  "reasoning_delimiter": null,
+  "reasoning_delivery": "none",
+  "reasoning_token_field": null,
+  "response_extra_fields": [
+    "prompt"
+  ],
+  "seed_accepted": false,
+  "usage_fields": [
+    "cached_tokens",
+    "completion_tokens",
+    "prompt_tokens",
+    "total_tokens"
+  ]
+}

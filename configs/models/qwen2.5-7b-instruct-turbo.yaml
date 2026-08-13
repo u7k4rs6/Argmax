@@ -25,10 +25,15 @@ params:
 
   # Together documents `logprobs` as an integer 0 to 20, the top-k to return at
   # each generation step. `top_logprobs` is a response field there, not a
-  # request one. Sending the OpenAI spelling gets depth 1 and looks like a
-  # provider limitation. 20 is the deepest documented value; the probe records
-  # what actually came back.
-  logprobs_depth: 20
+  # request one, so sending the OpenAI spelling gets depth 1 and reads as a
+  # provider limitation.
+  #
+  # The documented maximum is wrong. logprobs=20 is rejected:
+  #   HTTP 400, "20 is greater than the maximum of 5 - 'logprobs'"
+  # 5 is the real ceiling for this model. Recorded here rather than in a
+  # comment somewhere downstream, because the documented value fails every
+  # request and the failure names the true limit.
+  logprobs_depth: 5
   logprobs_style: integer_depth
 
 concurrency: 4

@@ -17,7 +17,9 @@ params:
   stop: []
   n: 1
 
-  logprobs_depth: 20
+  # 5, not the documented 20: Together rejects 20 with "20 is greater than the
+  # maximum of 5 - 'logprobs'". See the sibling Qwen config.
+  logprobs_depth: 5
   logprobs_style: integer_depth
 
 concurrency: 4

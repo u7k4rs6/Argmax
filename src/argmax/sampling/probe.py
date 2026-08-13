@@ -39,11 +39,20 @@ class Capabilities:
     model_returned: str
     probed_utc: str
 
-    logprobs_returned: bool
-    logprobs_depth: int | None  # how many alternatives per token actually came back
+    #: False when the provider refused to serve the model at all. Recorded
+    #: rather than left as a failed exit code: doc 4 principle 5, absence is
+    #: data. The predecessor lost a phase to exactly this and the fact survives
+    #: only in a script comment. A model that cannot be called is a capability
+    #: finding, and the phase that wanted it needs to see it.
+    available: bool = True
+    unavailable_reason: str | None = None
+
+    logprobs_returned: bool = False
+    logprobs_depth: int | None = None  # alternatives per token that came back
     logprobs_container_key: str | None = None  # "content", "tokens", or absent
     logprobs_keys: list[str] = field(default_factory=list)
     logprobs_first_entry_raw: object = None  # verbatim, for checking the reading
+    logprobs_first_alternatives_raw: object = None  # the alternatives, verbatim
     logprobs_depth_requested: int | None = None
     logprobs_style_requested: str | None = None
     usage_fields: list[str] = field(default_factory=list)
@@ -55,6 +64,8 @@ class Capabilities:
     response_extra_fields: list[str] = field(default_factory=list)
 
     def provides(self, requirement: str) -> bool:
+        if not self.available:
+            return False  # an unreachable model provides nothing
         return {
             "logprobs": self.logprobs_returned,
             "usage_raw": bool(self.usage_fields),
@@ -86,9 +97,28 @@ def inspect_response(body: dict[str, Any]) -> dict[str, Any]:
     # answer that kills the margin gate. None means the shape was not one this
     # function knows how to read, which is a reason to look at the verbatim
     # record rather than to conclude anything.
+    #
+    # Two shapes exist and they nest differently. OpenAI puts one dict per
+    # token in `content`, each carrying its own `top_logprobs` list. Together
+    # returns PARALLEL ARRAYS: `tokens`, `token_logprobs`, `token_ids` and a
+    # sibling `top_logprobs` whose i-th entry holds the alternatives for the
+    # i-th token. Reading the OpenAI nesting against a Together response finds
+    # a bare string where it expects a dict and concludes depth 0, which is the
+    # false negative this probe exists to prevent: it reports "no alternatives"
+    # when the alternatives are one key to the left.
+    parallel = logprobs.get("top_logprobs")
     depth: int | None = None
+    first_alternatives = None
     if content and isinstance(content[0], dict):
-        depth = len(content[0].get("top_logprobs") or [])
+        alternatives = content[0].get("top_logprobs") or []
+        depth = len(alternatives)
+        first_alternatives = alternatives
+    elif isinstance(parallel, list) and parallel:
+        first_alternatives = parallel[0]
+        if isinstance(first_alternatives, dict | list):
+            depth = len(first_alternatives)
+        else:
+            depth = None  # present but unreadable; the verbatim record decides
     elif content:
         depth = 0
 
@@ -127,6 +157,7 @@ def inspect_response(body: dict[str, Any]) -> dict[str, Any]:
         # Verbatim, so a depth reading that looks wrong can be checked against
         # what the provider actually sent rather than against this parser.
         "logprobs_first_entry_raw": content[0] if content else None,
+        "logprobs_first_alternatives_raw": first_alternatives,
         "usage_fields": sorted(usage.keys()),
         "reasoning_token_field": reasoning_field,
         "reasoning_delivery": delivery,
