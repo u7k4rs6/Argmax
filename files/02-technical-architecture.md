@@ -188,7 +188,66 @@ discovered at analysis time, after the samples were paid for.
 - Spend guard: the runner computes a projected cost from the capability
   probe's token measurements before starting, adds realized spend from
   `runs/ledger.jsonl`, and aborts if the total would cross
-  `ARGMAX_SPEND_CEILING_USD`. No ceiling set means refuse to run.
+  `ARGMAX_SPEND_CEILING_USD`. No ceiling set means refuse to run. The ledger
+  is cumulative across the project, so the ceiling is a project total and not
+  a per-run allowance.
+
+#### 5.3.1 A projection from k problems carries between-problem variance
+
+**A probe's projection error is not sampling noise, and taking more samples
+per problem does not shrink it.** Completion length is a property of the
+problem. Measured on the v1 store, 198 problems at 64 samples each, the
+variance of per-problem mean completion length is **119.66 times** what a
+homogeneous null predicts at that many samples per problem. Between-problem sd
+is 205.50 tokens against a full-set mean of 602.21.
+
+(That is a different quantity from the **5.65x** already tabulated in section
+9 for completion-length mode membership, which is MiniMax over 47 problems.
+This one is Qwen, mean completion length, 198 problems.)
+
+So a probe over k problems estimates the full-set mean with the spread of a
+k-sample mean drawn from that between-problem distribution, however many
+draws it takes per problem. Resampling k of the 198 per-problem means, 20,000
+trials each (`argmax.analysis.projection`):
+
+| k problems | median error | p5 | p95 | fraction underestimating | **uplift for 95 percent coverage** |
+|---|---|---|---|---|---|
+| 4 | -1.21% | -25.87% | +29.12% | 52.9% | **34.9%** |
+| 8 | -0.53% | -18.53% | +19.94% | 51.8% | **22.7%** |
+| 16 | -0.35% | -13.20% | +13.93% | 51.7% | **15.2%** |
+| 32 | -0.17% | -9.10% | +9.10% | 51.1% | **10.0%** |
+
+Two things this settles. Probes are close to unbiased in the median, so a
+projection is not systematically low; but **just over half of all probes
+underestimate**, because the distribution of per-problem means is
+right-skewed and the median sits below the mean. A coin-flip chance of
+underestimating is not a bug to be fixed, it is the reason the ceiling cannot
+be set at the projection.
+
+**Therefore: the ceiling is set from the calibrated upper bound at that k, not
+from the projection.** Multiply the projection by the uplift for the k the
+probe actually used.
+
+Both underestimates on record are consistent with this rather than with any
+error in the arithmetic:
+
+| projection | basis | error | verdict |
+|---|---|---|---|
+| margin-v1 phase | broad, the predecessor's 13,058 records | **-5.4%** | within the spread at large k |
+| margin-v2 cap probe | **8 problems**, 32 samples | **-13.8%** | inside the k=8 fifth percentile of -18.53%, an ordinary draw |
+
+The v2 probe was not unlucky and was not biased. It drew 8 problems, and 8
+problems carry plus or minus 19 percent. Its ceiling was first set at 6
+percent headroom over the projection and would have fired near the end of the
+run; the calibrated figure at k=8 is 22.7 percent.
+
+**Probe problems are drawn at random, not by lowest id.** The v2 cap probe
+took the 8 lowest-id burned problems, which fixes one arbitrary subset of the
+between-problem distribution and makes the draw unrepeatable in a way that
+carries no benefit. Burned status constrains which problems are *eligible*; it
+says nothing about the order to take them in. Draw at random from the eligible
+set with a recorded seed, so a second probe is a second draw rather than the
+same draw again.
 
 ### 5.4 Persistence
 
