@@ -65,5 +65,15 @@ class PreregTagMissing(ArgmaxError):
     """Confirmatory work attempted without a prereg tag in the manifest."""
 
 
+class MonteCarloNotConverged(ArgmaxError):
+    """More subsample draws are needed before the answer means anything.
+
+    Raised instead of returning an estimate whose Monte Carlo noise is large
+    against the effect it is meant to resolve. The number of draws is free to
+    raise, so a noisy estimate here is a choice, and it is one nobody should
+    make silently.
+    """
+
+
 class SchemaViolation(ArgmaxError):
     """A record is missing a required field or has the wrong type."""

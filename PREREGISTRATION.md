@@ -22,7 +22,7 @@ answerable from one table.
 
 | Tag | Date | Commit | Hypotheses covered | Analyses that may cite it |
 |---|---|---|---|---|
-| _(none yet — pre-Step 0)_ | | | | |
+| _(none yet, pre-Step 0)_ | | | | |
 
 ## Hypotheses
 

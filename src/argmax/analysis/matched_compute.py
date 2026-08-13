@@ -20,8 +20,9 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass
 
+from argmax.analysis import convergence
+from argmax.analysis.bootstrap import DEFAULT_N_BOOTSTRAP, confidence_interval
 from argmax.analysis.curves import majority_vote
-from argmax.analysis.intervals import mean_interval
 from argmax.keys import subsample_seed
 from argmax.schema import BudgetMatched
 
@@ -35,7 +36,7 @@ class StoredSample:
     max_tokens: int
 
 
-def compare_at_budget(
+def _fill_budget(
     samples: list[StoredSample],
     correct_option: str,
     *,
@@ -43,18 +44,10 @@ def compare_at_budget(
     strategy_id: str,
     problem_id: str,
     model_slug: str,
-    n_draws: int = 1000,
-    claim_ids: list[str] | None = None,
-) -> BudgetMatched:
-    """Greedily fill the budget with stored samples and vote over what fits.
-
-    `tokens_actually_consumed` comes from the stored usage block, so a
-    strategy that planned 4 samples but consumed the budget in 3 is reported
-    as 3. The plan is not the measurement.
-    """
-    if not samples:
-        raise ValueError(f"no stored samples for {problem_id}/{model_slug}")
-
+    n_draws: int,
+    seed_tag: str,
+) -> tuple[list[float], list[int], list[int]]:
+    """Greedily fill the budget in a random order, `n_draws` times."""
     hits: list[float] = []
     consumed_per_draw: list[int] = []
     used_per_draw: list[int] = []
@@ -62,7 +55,10 @@ def compare_at_budget(
     for replicate in range(n_draws):
         rng = random.Random(
             subsample_seed(
-                problem_id, f"{model_slug}:{strategy_id}", budget_tokens, replicate
+                problem_id,
+                f"{model_slug}:{strategy_id}:{seed_tag}",
+                budget_tokens,
+                replicate,
             )
         )
         order = rng.sample(samples, len(samples))
@@ -80,6 +76,43 @@ def compare_at_budget(
         consumed_per_draw.append(spent)
         used_per_draw.append(len(chosen))
 
+    return hits, consumed_per_draw, used_per_draw
+
+
+def compare_at_budget(
+    samples: list[StoredSample],
+    correct_option: str,
+    *,
+    budget_tokens: int,
+    strategy_id: str,
+    problem_id: str,
+    model_slug: str,
+    n_draws: int = 1000,
+    max_draws: int = convergence.DEFAULT_MAX_DRAWS,
+    n_bootstrap: int = DEFAULT_N_BOOTSTRAP,
+    bootstrap_draws: int | None = None,
+    claim_ids: list[str] | None = None,
+) -> BudgetMatched:
+    """Greedily fill the budget with stored samples and vote over what fits.
+
+    `tokens_actually_consumed` comes from the stored usage block, so a
+    strategy that planned 4 samples but consumed the budget in 3 is reported
+    as 3. The plan is not the measurement.
+    """
+    if not samples:
+        raise ValueError(f"no stored samples for {problem_id}/{model_slug}")
+
+    hits, consumed_per_draw, used_per_draw = _fill_budget(
+        samples,
+        correct_option,
+        budget_tokens=budget_tokens,
+        strategy_id=strategy_id,
+        problem_id=problem_id,
+        model_slug=model_slug,
+        n_draws=n_draws,
+        seed_tag="point",
+    )
+
     if not hits:
         return BudgetMatched(
             problem_id=problem_id,
@@ -95,11 +128,74 @@ def compare_at_budget(
             claim_ids=claim_ids or [],
         )
 
-    # Wilson on the mean of the draws, for the reason given in
-    # argmax.analysis.intervals: percentiles of a 0/1 list are 0 and 1, so the
-    # interval this used to report was [0, 1] for every strategy at every
-    # budget, and a matched-compute table of [0, 1] intervals compares nothing.
-    accuracy, lo, hi = mean_interval(hits)
+    # Monte Carlo noise is a convergence statistic, not an interval, and B is
+    # raised until it is small rather than reported alongside a noisy answer.
+    # No cross-strategy effect is visible from inside one call, so the
+    # absolute floor is the requirement: resolve this strategy's accuracy
+    # below `floor` and let the caller compare strategies.
+    state: dict[str, list] = {
+        "hits": hits,
+        "consumed": consumed_per_draw,
+        "used": used_per_draw,
+    }
+
+    def estimate(n: int) -> float:
+        h, c, u = _fill_budget(
+            samples,
+            correct_option,
+            budget_tokens=budget_tokens,
+            strategy_id=strategy_id,
+            problem_id=problem_id,
+            model_slug=model_slug,
+            n_draws=n,
+            seed_tag="point",
+        )
+        state["hits"], state["consumed"], state["used"] = h, c, u
+        return sum(h) / len(h)
+
+    accuracy, mc = convergence.converge(
+        estimate,
+        lambda _mean: 0.0,
+        start_draws=n_draws,
+        max_draws=max_draws,
+        label=f"{problem_id}/{model_slug} strategy {strategy_id} at "
+        f"budget {budget_tokens}",
+    )
+    hits, consumed_per_draw, used_per_draw = (
+        state["hits"],
+        state["consumed"],
+        state["used"],
+    )
+
+    # The reported CI is the pool bootstrap: a different M stored samples
+    # would have filled the budget with different completions.
+    #
+    # Cost is n_bootstrap * inner_draws budget fills. A smaller
+    # `bootstrap_draws` leaves Monte Carlo noise inside each replicate, which
+    # widens the interval rather than narrowing it.
+    inner_draws = mc.n_draws if bootstrap_draws is None else bootstrap_draws
+    boot: list[float] = []
+    for b in range(n_bootstrap):
+        rng = random.Random(
+            subsample_seed(problem_id, f"{model_slug}:{strategy_id}:pool", 0, b)
+        )
+        resampled = [rng.choice(samples) for _ in samples]
+        boot_hits, _, _ = _fill_budget(
+            resampled,
+            correct_option,
+            budget_tokens=budget_tokens,
+            strategy_id=strategy_id,
+            problem_id=problem_id,
+            model_slug=model_slug,
+            n_draws=inner_draws,
+            seed_tag=f"boot{b}",
+        )
+        if boot_hits:
+            boot.append(sum(boot_hits) / len(boot_hits))
+
+    interval = confidence_interval(boot) if boot else None
+    lo = None if interval is None else interval.low
+    hi = None if interval is None else interval.high
 
     return BudgetMatched(
         problem_id=problem_id,

@@ -31,7 +31,13 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-SCHEMA_VERSION = 1
+#: 2: the reported interval on a derived record changed meaning. In version 1,
+#: `ProblemRecord.ci_low/ci_high` were percentiles of the Monte Carlo draws. In
+#: version 2 they are the pool bootstrap, the Monte Carlo layer reports a
+#: convergence half-width instead, and the paired differences that decide curve
+#: shape are persisted per replicate as `PairedDifference`. A reader that does
+#: not branch on this will compare two different quantities and see a trend.
+SCHEMA_VERSION = 2
 
 
 class Split(StrEnum):
@@ -224,6 +230,8 @@ class ProblemRecord(Strict):
     """Derived, per problem per model. Rebuildable from samples, persisted anyway
     because it is what analysis and figures read."""
 
+    schema_version: int = Field(default=SCHEMA_VERSION)
+
     problem_id: str
     benchmark: str
     tier: str
@@ -242,15 +250,29 @@ class ProblemRecord(Strict):
     single_sample_accuracy: float | None
     unanswered_sample_policy: UnansweredPolicy  # recorded, not assumed
 
-    # vote_accuracy and its CI, keyed by N in the grid
+    # vote_accuracy and its CI, keyed by N in the grid.
+    #
+    # ci_low/ci_high are the POOL BOOTSTRAP: the uncertainty of having drawn
+    # only M samples from the model. That is the only thing this codebase
+    # calls a CI. Monte Carlo noise, from taking B subsample draws rather than
+    # all C(M, N) of them, is not an interval and is reported as
+    # mc_halfwidth below.
     vote_accuracy: dict[int, float]
     ci_low: dict[int, float]
     ci_high: dict[int, float]
+    interval_method: str  # "pool_bootstrap"
+    n_bootstrap: int
+    mc_halfwidth: dict[int, float]
     n_draws: int
     draw_scheme: DrawScheme
     seed_recipe: str
 
     backfire: dict[int, bool]  # vote_accuracy[N] < single_sample_accuracy
+    # The same question asked of the paired difference: does the interval on
+    # vote_accuracy[N] - single_sample_accuracy exclude zero on the low side?
+    # `backfire` above is the published point-estimate definition, kept for
+    # comparability; this one is the claim that can be defended.
+    backfire_significant: dict[int, bool] = Field(default_factory=dict)
     peak_N: int | None
     peak_accuracy: float | None
     curve_shape: CurveShape | None
@@ -267,6 +289,35 @@ class ProblemRecord(Strict):
     answer_entropy: float | None = None
 
     logprob_coverage: float = 1.0
+
+
+class PairedDifference(Strict):
+    """One row per (problem, model, comparison, N, bootstrap replicate).
+
+    The per-replicate paired differences behind every curve-shape claim.
+    Persisted in full rather than summarised, for the same reason gate
+    outcomes are: defect 2 was keeping the aggregate and discarding the rows,
+    which turned a paired bootstrap into a full confirmatory re-run and got
+    the claim deleted instead.
+
+    With these rows a different level, a different multiple-comparison
+    correction, or a paired test across problems is a groupby.
+
+    `comparison` is `vs_single` (vote_accuracy[N] minus single_sample_accuracy)
+    or `adjacent` (vote_accuracy[N] minus vote_accuracy[N_other], N_other the
+    previous grid point). Both are formed INSIDE a bootstrap replicate, where
+    the two quantities share a resampled pool; differencing two independently
+    computed marginals instead would throw away the pairing that makes the
+    comparison tight.
+    """
+
+    problem_id: str
+    model_slug: str
+    comparison: str  # "vs_single" | "adjacent"
+    N: int
+    N_other: int | None
+    replicate: int
+    difference: float
 
 
 class GateOutcome(Strict):
