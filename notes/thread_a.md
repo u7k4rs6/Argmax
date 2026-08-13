@@ -154,4 +154,104 @@ confirmatory runner checks the tag exists and refuses to start without it.
 
 ## Phase 4. The confirmatory result
 
-_(filled in after the tagged run)_
+Run at `argmax-prereg-threadA-v1.0`, on the 151 confirmatory problems, with
+the frozen configuration. The runner checks the tag exists and refuses
+otherwise.
+
+### The pooled numbers, with the heterogeneity they pool over
+
+Doc 2 section 7.2: a pooled accuracy travels with its heterogeneity ratio.
+
+| Quantity | Confirmatory 151 | Exploratory 47 |
+|---|---|---|
+| pooled single-sample accuracy | **0.3192** | 0.4153 |
+| between-problem variance against a homogeneous null | **24.9x** | 24.1x |
+
+The confirmatory problems are 9.6 accuracy points harder, and both splits are
+mixtures to the same degree.
+
+### The aggregate curve is flat, which is worse for the design than monotone
+
+| N | 1 | 2 | 4 | 8 | 16 | 32 | 64 |
+|---|---|---|---|---|---|---|---|
+| aggregate accuracy | 0.3193 | 0.3196 | 0.3238 | 0.3241 | 0.3234 | 0.3235 | **0.3245** |
+
+The whole grid spans **0.52 accuracy points**. Phase 2 predicted the aggregate
+comparison would be unresolvable because the curve rises to the boundary; on
+the confirmatory split it is flat, so the maximum possible aggregate regret any
+method can incur is 0.0052 and the optimal call count is undefined for any
+practical purpose. Registering aggregate regret as the primary metric would
+have produced a test in which every method passes.
+
+### Per-problem regret, all four methods, all three k
+
+Lower is better. `always_max` is fixed-budget voting at N=64, which is what the
+published study does.
+
+| method | k=4 | k=8 | k=16 |
+|---|---|---|---|
+| **chen (reconstruction)** | **0.0510** | **0.0317** | **0.0087** |
+| naive_within_k | 0.0696 | 0.0529 | 0.0128 |
+| always_max | 0.0962 | 0.0962 | 0.0962 |
+| always_one | 0.1015 | 0.1015 | 0.1015 |
+
+Exact-match rate on the per-problem optimum:
+
+| method | k=4 | k=8 | k=16 |
+|---|---|---|---|
+| chen | 0.384 | 0.430 | 0.444 |
+| naive_within_k | 0.371 | 0.430 | 0.517 |
+| always_max | 0.139 | 0.139 | 0.139 |
+| always_one | 0.325 | 0.325 | 0.325 |
+
+### The registered comparison
+
+Paired per-problem regret difference, chen minus naive, negative favours the
+estimator:
+
+| id | k | mean | 95 percent CI | registered threshold | verdict |
+|---|---|---|---|---|---|
+| **TA1** | **8** | **-0.0213** | **[-0.0335, -0.0091]** | CI upper below 0.0 | **PASS** |
+| TA2a | 4 | -0.0186 | [-0.0332, -0.0041] | CI upper below 0.0 | PASS, underpowered |
+| TA2b | 16 | -0.0040 | [-0.0085, +0.0004] | CI upper below 0.0 | **FAIL** |
+
+**TA1 passes, and it passes by more than the resolution that produced it.**
+The registered floor `ta1_resolution_floor` is 0.0161 and the observed effect
+is 0.0213, so this is not a win that fits inside its own measurement error.
+
+TA2a passes despite being registered as underpowered, which is worth stating
+plainly: it was expected to be too small to resolve and it resolved anyway.
+TA2b fails, with an interval that misses by 0.0004.
+
+### What the pattern says
+
+The estimator's advantage **peaks and then erodes**: 1.86 points at k=4, 2.13
+at k=8, 0.40 at k=16. That is the shape the mixture story predicts. Modelling
+per-problem structure helps most when there is too little data to measure it
+directly, and by k=16 the naive baseline can measure the grid up to N=16 by
+itself and nearly catches up. At k=16 the naive baseline actually has the
+better exact-match rate, 0.517 against 0.444, while still losing on regret,
+which means the estimator is wrong about which N more often and wrong by less
+when it is.
+
+Against the policy the published study actually uses, fixed N=64, the
+estimator cuts per-problem regret from 0.0962 to 0.0317 at k=8, about a third.
+That is a routing result, not an aggregate one, and it lives in exactly the
+headroom the backfire paper's oracle identifies and its gates could not reach.
+
+### Four things this does not establish
+
+1. **This is a reconstruction, not Chen et al.'s method.** Their code is not
+   available to this project. A PASS is evidence about the mechanism as
+   described in arXiv:2608.11403's Positioning section, not about their
+   implementation.
+2. **The estimator was given labels.** A deploy-time signal would not have
+   them. The result is an upper bound on what the verifier-free version could
+   do, and the backfire paper's own finding is that verifier-free signals fail
+   here.
+3. **One model.** Llama-3-8B-Instruct-Lite is no longer serverless, so the
+   cross-family replication the published study has is not available.
+4. **The aggregate question is untouched**, because this benchmark cannot ask
+   it. A benchmark whose aggregate curve does turn over would be a genuine
+   test of the estimator's original purpose, and finding one is a separate
+   exercise.

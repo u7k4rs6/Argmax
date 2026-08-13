@@ -503,24 +503,27 @@ B and C remain ineligible for the reasons already given: B measures nothing at
 a budget that fits, and C's distinctive contribution is already established for
 free from stored data.
 
-### A and the gate extension share their samples
+### What the $3.40 actually buys
 
-This is the thing worth noticing. The v2 gate extension needs non-reasoning
-samples on the published 47 problems, at cap 2048, with per-token logprobs
-retained. **Row A's hard tier is those same problems under those same
-settings.** Collect A's samples with `logprobs_depth` set and the gate
-comparison is a groupby over rows that already exist:
+**Thread A is not part of this justification.** It ran on the predecessor's
+stored samples at `argmax-prereg-threadA-v1.0`, cost nothing, and is reported
+in `notes/thread_a.md`. Folding a free, already-completed result into the case
+for a paid run would be double counting.
+
+What needs new logprobs, and therefore new samples, is exactly two things: the
+**answer-token margin** and **localised entropy over the answer span**. Neither
+is computable from any stored artifact, because the predecessor kept a
+whole-completion scalar and requested depth 1. That is the entire purchase:
 
 | Step | What | Samples | Cost |
 |---|---|---|---|
-| 1 | Capability gate, both models, deepest documented logprob depth | 2 | under $0.01 |
-| 2 | Row A, three tiers x 47 problems, M=96, both models, cap 2048, logprobs retained | 27,072 | **$4.98** |
-| 3 | Thread A: does the rise-then-fall shape survive on the hard tier | 0 | $0 |
-| 4 | Margin gate against agreement gate, on the hard tier, paired per problem | 0 | $0 |
+| 1 | Capability gate, Qwen, deepest supported logprob depth | 1 | under $0.01 |
+| 2 | 198 problems, M=64, cap 2048, logprobs retained at depth 5 | 12,672 | **$3.40** |
+| 3 | Localised entropy over the answer span, against the whole-completion scalar | 0 | $0 |
+| 4 | Margin gate against agreement gate, paired per problem | 0 | $0 |
 
-**Total about $4.99, leaving $1.01.** Two registered studies off one sampling
-run, which `02` section 8.1 permits and `02` section 8.3 requires be tagged
-separately.
+**Total about $3.41, leaving $2.59.** Steps 3 and 4 are free once step 2 has
+run, and they are the only reasons step 2 is worth running.
 
 The margin gate half is comparable to the published numbers by construction:
 same cap, same prompt, same provider, answer rates matching at 0.99. If it
