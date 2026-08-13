@@ -32,6 +32,10 @@ packages = ["src/argmax"]
 [tool.ruff]
 line-length = 88
 src = ["src", "tests", "scripts"]
+# Copied byte for byte from the predecessor at tag backfire-prereg-v1.0; see
+# PROVENANCE.md. Comparability with the published numbers depends on this file
+# not being touched, and a formatter is a thing that touches files.
+extend-exclude = ["src/argmax/extract/scoring_verbatim.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]

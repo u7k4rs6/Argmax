@@ -1,5 +1,11 @@
 # Also run in CI. A local hook is bypassable with --no-verify and eventually
 # will be.
+#
+# src/argmax/extract/scoring_verbatim.py is excluded from every hook that
+# rewrites files. It is a byte-identical copy of the predecessor's extraction
+# ladder at tag backfire-prereg-v1.0 (see PROVENANCE.md), and a stripped
+# trailing space is a changed file. Scanning hooks such as gitleaks still see
+# it.
 repos:
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.4
@@ -18,7 +24,9 @@ repos:
         args: ["--maxkb=1024"]   # a JSONL slipping past .gitignore
       - id: check-merge-conflict
       - id: end-of-file-fixer
+        exclude: ^src/argmax/extract/scoring_verbatim\.py$
       - id: trailing-whitespace
+        exclude: ^src/argmax/extract/scoring_verbatim\.py$
       - id: check-yaml
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -26,4 +34,6 @@ repos:
     hooks:
       - id: ruff
         args: ["--fix"]
+        exclude: ^src/argmax/extract/scoring_verbatim\.py$
       - id: ruff-format
+        exclude: ^src/argmax/extract/scoring_verbatim\.py$
