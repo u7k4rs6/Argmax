@@ -477,6 +477,33 @@ positioning against Chen et al., and a v2 that reformulates Thread A around
 that same positioning has to say so plainly rather than quietly relying on the
 corrected reading.
 
+### The disclosure list, as it stands
+
+Three items, none of which changes a published number:
+
+| Item | What | Where it came from |
+|---|---|---|
+| 1 | `max_tokens = 2048` is a bare literal in four places, never registered and never stored in a record, so the cap is recoverable only from code at a tag | `notes/predecessor_cap.md` |
+| 2 | The Positioning section calls GPQA Diamond "a uniformly hard benchmark" and the study's own data shows 25.5x heterogeneity | section 4.4 above |
+| 3 | **Three problems from the locked 50-problem pilot set are in the confirmatory 151, and 57 of each of their 96 samples predate the backfire pre-registration** | below |
+
+**Item 3, stated precisely.** The original pre-registration
+(`preregistration.md`) locked **50** stratified problem ids. The backfire
+pre-registration describes "the original 47 GPQA Diamond problems" as
+exploratory. The difference is `gpqa_diamond_0007`, `0008` and `0040`, which
+sit in the confirmatory 151, and each carries **57 samples from the pilot run
+alongside 39 from the confirmatory run**.
+
+The published paper documents that the 47 exploratory problems retain samples
+from earlier runs. It does not document that three confirmatory problems do,
+nor that the locked pilot set was 50 rather than 47.
+
+Materiality: 3 of 151 problems, about 2 percent, and the earlier pilot
+pre-registration concerned a different question, so no backfire hypothesis was
+generated from those samples. The direction of any bias is unknown and probably
+negligible. It is a completeness item, and completeness is the standard the
+study sets for itself elsewhere.
+
 ### The table
 
 | | **A. Non-reasoning, cap 2048, three tiers (Thread A)** | **B. Reasoning, one model, one tier, large cap** | **C. Both, two registered studies, no cross-comparison** |

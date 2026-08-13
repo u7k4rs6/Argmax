@@ -215,6 +215,69 @@ def estimate_naive_within_k(
     )
 
 
+def estimate_shrunk_within_k(
+    sampled: dict[str, np.ndarray],
+    correct: dict[str, int],
+    n_options: int,
+    k: int,
+    *,
+    grid: tuple[int, ...] = GRID,
+    boundary_rule: str,
+    shrinkage: float,
+    n_draws: int,
+    seed: int,
+) -> Prediction:
+    """`naive_within_k`, with each problem's measured curve pulled toward the
+    pooled curve. No mixture model anywhere.
+
+    This exists to separate two explanations for any advantage the mixture
+    estimator shows. It could come from modelling per-problem structure, or it
+    could come from simply not trusting a curve measured on `k` samples. This
+    baseline does the second and nothing else: same measurement, same argmax,
+    same boundary rule, with the per-problem estimate shrunk toward the mean
+    across problems by
+
+        curve_i(N) <- (k * curve_i(N) + shrinkage * pooled(N)) / (k + shrinkage)
+
+    If it matches the mixture estimator, the advantage was regularisation.
+    """
+    if boundary_rule not in BOUNDARY_RULES:
+        raise ValueError(f"unknown boundary_rule {boundary_rule!r}")
+
+    rng = np.random.default_rng(seed)
+    measurable = tuple(N for N in grid if N <= k)
+
+    curves = {
+        pid: vote_accuracy_point(
+            codes, correct[pid], n_options, measurable, n_draws, rng
+        )
+        for pid, codes in sampled.items()
+    }
+    pooled = {
+        N: float(np.mean([c[N] for c in curves.values()])) for N in measurable
+    }
+
+    per_problem: dict[str, int] = {}
+    for pid, curve in curves.items():
+        shrunk = {
+            N: (k * curve[N] + shrinkage * pooled[N]) / (k + shrinkage)
+            for N in measurable
+        }
+        best = max(measurable, key=lambda N: shrunk[N])
+        if best == measurable[-1] and boundary_rule == "extrapolate_to_max":
+            best = grid[-1]
+        per_problem[pid] = best
+
+    best_agg = max(measurable, key=lambda N: pooled[N])
+    if best_agg == measurable[-1] and boundary_rule == "extrapolate_to_max":
+        best_agg = grid[-1]
+    return Prediction(
+        name=f"shrunk_within_k(m={shrinkage:g})",
+        n_hat_aggregate=best_agg,
+        n_hat_per_problem=per_problem,
+    )
+
+
 def constant_baseline(name: str, value: int, problems: list[str]) -> Prediction:
     return Prediction(
         name=name,
