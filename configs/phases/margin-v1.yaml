@@ -43,7 +43,7 @@ projected_tokens:
   completion: 598.9
   source: "self-consistency-backfire outputs/samples, 13058 records, a7f168e6"
 
-rate_per_sec: 4.0
+rate_per_sec: 16.0
 
 requires:
   - usage_raw

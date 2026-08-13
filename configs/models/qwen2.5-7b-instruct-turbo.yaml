@@ -36,7 +36,10 @@ params:
   logprobs_depth: 5
   logprobs_style: integer_depth
 
-concurrency: 4
+# Raised from 4 after measuring 0.4 samples/sec, which is 8.3 hours for this
+# phase. Concurrency is not in `param_hash` and does not change what any sample
+# contains, so a restart resumes into the same store.
+concurrency: 16
 
 pricing:
   snapshot_id: together-2026-08-13
