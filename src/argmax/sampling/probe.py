@@ -1,0 +1,147 @@
+"""The capability probe.
+
+New component, no predecessor. Runs before any phase, costs approximately one
+sample per model, and writes configs/models/<slug>.capabilities.json.
+
+It records what the provider ACTUALLY returns for that model, rather than what
+the documentation says it returns. The sampler then refuses to start a phase
+whose instrumentation requirements exceed the recorded capabilities.
+
+This is the direct fix for the predecessor's permanent loss of final-answer
+margin analysis: that hole was discovered at analysis time, after the samples
+were paid for. A probe costs one sample.
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any
+
+from argmax.config import CONFIGS
+from argmax.errors import CapabilityMissing
+
+#: Delimiter pairs seen in the wild for inline reasoning. Detection is
+#: recorded, never assumed.
+REASONING_DELIMITERS = [
+    ("<think>", "</think>"),
+    ("<reasoning>", "</reasoning>"),
+    ("<|begin_of_thought|>", "<|end_of_thought|>"),
+]
+
+
+@dataclass
+class Capabilities:
+    capabilities_id: str
+    model_slug: str
+    model_requested: str
+    model_returned: str
+    probed_utc: str
+
+    logprobs_returned: bool
+    logprobs_depth: int | None  # how many alternatives per token actually came back
+    usage_fields: list[str] = field(default_factory=list)
+    reasoning_token_field: str | None = None  # path within usage, if any
+    reasoning_delivery: str = "none"  # api_field | delimiter | none
+    reasoning_delimiter: list[str] | None = None
+    seed_accepted: bool = False
+    finish_reason_present: bool = False
+    response_extra_fields: list[str] = field(default_factory=list)
+
+    def provides(self, requirement: str) -> bool:
+        return {
+            "logprobs": self.logprobs_returned,
+            "usage_raw": bool(self.usage_fields),
+            "finish_reason": self.finish_reason_present,
+            "reasoning_tokens": self.reasoning_token_field is not None,
+            "reasoning_split": self.reasoning_delivery != "none",
+            "seed": self.seed_accepted,
+        }.get(requirement, False)
+
+
+def inspect_response(body: dict[str, Any]) -> dict[str, Any]:
+    """Read a raw completion body and report what it actually contains."""
+    choice = (body.get("choices") or [{}])[0]
+    message = choice.get("message") or {}
+    usage = body.get("usage") or {}
+
+    logprobs = choice.get("logprobs") or {}
+    content = logprobs.get("content") or logprobs.get("tokens") or []
+    depth = None
+    if content and isinstance(content[0], dict):
+        depth = len(content[0].get("top_logprobs") or [])
+
+    text = message.get("content") or ""
+    delivery, delimiter = "none", None
+    if message.get("reasoning") or message.get("reasoning_content"):
+        delivery = "api_field"
+    else:
+        for open_d, close_d in REASONING_DELIMITERS:
+            if open_d in text:
+                delivery, delimiter = "delimiter", [open_d, close_d]
+                break
+
+    reasoning_field = None
+    if "reasoning_tokens" in usage:
+        reasoning_field = "usage.reasoning_tokens"
+    elif "reasoning_tokens" in (usage.get("completion_tokens_details") or {}):
+        reasoning_field = "usage.completion_tokens_details.reasoning_tokens"
+
+    known_top = {
+        "id",
+        "object",
+        "created",
+        "model",
+        "choices",
+        "usage",
+        "system_fingerprint",
+    }
+
+    return {
+        "model_returned": body.get("model", ""),
+        "logprobs_returned": bool(content),
+        "logprobs_depth": depth,
+        "usage_fields": sorted(usage.keys()),
+        "reasoning_token_field": reasoning_field,
+        "reasoning_delivery": delivery,
+        "reasoning_delimiter": delimiter,
+        "finish_reason_present": choice.get("finish_reason") is not None,
+        "response_extra_fields": sorted(set(body.keys()) - known_top),
+    }
+
+
+def capabilities_path(slug: str) -> Path:
+    return CONFIGS / "models" / f"{slug}.capabilities.json"
+
+
+def load_capabilities(slug: str) -> Capabilities:
+    path = capabilities_path(slug)
+    if not path.exists():
+        raise CapabilityMissing(
+            f"no capability probe for {slug}. Run `make probe MODEL={slug}` "
+            "before any phase that uses it."
+        )
+    return Capabilities(**json.loads(path.read_text(encoding="utf-8")))
+
+
+def save_capabilities(caps: Capabilities) -> Path:
+    path = capabilities_path(caps.model_slug)
+    path.write_text(
+        json.dumps(asdict(caps), indent=2, sort_keys=True), encoding="utf-8"
+    )
+    return path
+
+
+def assert_phase_supported(slug: str, requirements: list[str]) -> None:
+    """Refuse to start a phase whose instrumentation the model cannot deliver.
+
+    Checked before spending, which is the whole point.
+    """
+    caps = load_capabilities(slug)
+    missing = [r for r in requirements if not caps.provides(r)]
+    if missing:
+        raise CapabilityMissing(
+            f"{slug} does not provide {missing}; required by this phase. "
+            f"Capability probe: {capabilities_path(slug)}"
+        )

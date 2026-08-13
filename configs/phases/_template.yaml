@@ -1,0 +1,44 @@
+# Copy to <phase>.yaml. A phase is the unit of spend.
+#
+# Before a phase runs, the runner:
+#   1. reads each model's capability probe and refuses if a required
+#      instrumentation field is missing
+#   2. projects cost from the probe's measured tokens
+#   3. adds realized spend from runs/ledger.jsonl
+#   4. aborts if the total would cross ARGMAX_SPEND_CEILING_USD
+
+phase_id: _template
+split: ""                   # exploratory | confirmatory, no default
+
+models: []                  # list of model_slug
+benchmarks: []              # list of benchmark names
+
+# M is samples stored per problem. Every N in the grid is derived by
+# subsampling these; the API is never called again for a smaller N.
+#
+# M must EXCEED the largest grid point if a CI is wanted at the curve's
+# endpoint: subsampling without replacement at N == M yields exactly one
+# possible draw, so the endpoint has no subsample variance. The predecessor
+# hit this and reported a bare point estimate.
+M: "[BLOCKED: Step 0]"      # unblocked by: cost per sample
+n_grid: "[BLOCKED: Step 0]" # unblocked by: cost per sample
+
+# Emulates "what if I had only drawn N". Sampling WITH replacement inflates
+# agreement through duplicates. Recorded in the manifest; never left to a
+# library default.
+draw_scheme: without_replacement
+n_draws: 1000               # B subsample replicates per (problem, model, N)
+
+# Pre-registered analysis decision, made once and applied everywhere.
+# exclude | score_as_wrong
+unanswered_sample_policy: ""
+
+# Required and non-null when split == confirmatory.
+prereg_tag: null
+
+# Required instrumentation. The runner checks these against each model's
+# capability probe and refuses to start if any is unavailable.
+requires:
+  - usage_raw
+  - finish_reason
+  - logprobs

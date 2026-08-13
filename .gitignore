@@ -1,0 +1,30 @@
+.env
+.env.*
+!.env.example
+
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+data/raw/
+data/derived/
+runs/
+
+# CLAUDE.md prohibition 2 is absolute: nothing under data/ is committed, and
+# no exception is added for it. The two lines above are the doc 3 s3.1
+# minimum; this line is what the agent rule actually requires.
+#
+# Consequence to resolve deliberately: data/DATASETS.md is a doc 3 s5.2
+# artifact that doc 3 s6 lists as safe to commit, and this rule keeps it out
+# of the repo. Ignoring it keeps the working tree clean so the confirmatory
+# dirty-tree refusal stays meaningful; the alternative, leaving it untracked
+# and visible, makes every tree permanently dirty. Moving it out of data/ is
+# the fix, and that is a call for the maintainer, not for the agent.
+data/
+
+*.jsonl
+*.parquet
+*.jsonl.gz

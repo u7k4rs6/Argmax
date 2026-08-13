@@ -1,0 +1,68 @@
+# Offline CI. Doc 3 section 8: schema tests, the falsification suite against
+# committed fixtures, and lint. NO API KEY IN CI, and no job here may add one:
+# tests run against recorded fixture responses.
+#
+# The pre-commit hooks run here as well as locally, because a local hook is
+# bypassable with --no-verify and eventually will be.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Tags matching argmax-prereg-* are protected against deletion and
+  # force-push in repository settings. That protection is a settings-level
+  # control, not a workflow; nothing here can substitute for it.
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # No env block on purpose. TOGETHER_API_KEY is absent, and so is
+    # ARGMAX_SPEND_CEILING_USD: with no ceiling set, every paid entry point
+    # refuses to start, which is the correct posture for a machine that has no
+    # business spending credits.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e '.[dev]'
+
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Tests
+        # `paid` never runs in CI. It spends credits and needs a key.
+        run: pytest -m "not paid"
+
+      - name: Falsification suite
+        # Separated so a red hypothesis is legible in the job list rather than
+        # buried in the full run. A test here may be red BY DESIGN; see the
+        # comment on each such test before "fixing" one.
+        run: pytest tests/falsification.py
+
+      - name: Secrets and hygiene hooks
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files --show-diff-on-failure
+
+      - name: No key material in the tree
+        # Cheap belt-and-braces on top of gitleaks: .env must never be tracked.
+        run: |
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo ".env is tracked by git. Rotate the key immediately, then"
+            echo "remove it from the index. See doc 3 section 2.4: rotation"
+            echo "first, history rewriting second."
+            exit 1
+          fi

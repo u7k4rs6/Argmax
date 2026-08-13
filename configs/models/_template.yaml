@@ -1,0 +1,40 @@
+# Copy to <model_slug>.yaml. The filename stem is the model_slug used in
+# paths, seeds, and manifests. Changing a slug orphans an existing sample set.
+
+model_slug: _template
+model_string: ""            # exact provider string, verbatim; asserted against
+                            # the `model` the API echoes back
+
+model_class: non_reasoning  # non_reasoning | reasoning
+                            # decides the logprob retention policy, doc 4 s7
+
+params:
+  temperature: null         # [BLOCKED: Step 0] for reasoning models
+  top_p: null
+  max_tokens: "[BLOCKED: Step 0]"
+                            # must be explicit per model. Truncation is a
+                            # controlled variable, never a provider default.
+                            # Unblocked by: p95 output tokens + truncation
+                            # curve from the phase 14b audit.
+  seed: 0                   # sent and recorded, never relied upon
+  stop: []                  # empty unless justified here in a comment; a stop
+                            # sequence silently truncates the answer and looks
+                            # like a short completion
+  n: 1                      # ALWAYS 1. n>1 returns one aggregated usage block
+                            # for the whole batch, which destroys per-sample
+                            # token accounting.
+  logprobs: true
+  top_logprobs: null        # deepest level the probe says is supported
+
+concurrency: 4              # per model, not global
+
+pricing:
+  snapshot_id: ""           # joins to the dated price table; cost figures in
+                            # the paper cite the snapshot, not a remembered rate
+  date: ""                  # YYYY-MM-DD
+  usd_per_1m_input: null
+  usd_per_1m_output: null
+  usd_per_1m_reasoning: null   # null if the provider does not price it apart
+
+# Written by `make probe MODEL=<slug>`; do not hand-edit.
+capabilities_file: configs/models/_template.capabilities.json

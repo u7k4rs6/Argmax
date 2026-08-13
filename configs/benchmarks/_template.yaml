@@ -1,0 +1,33 @@
+# Copy to <bench>.yaml. One file per benchmark tier.
+#
+# NOTE: no question text, option text, or explanations may appear in this file
+# or anything else tracked by git. See files/03-security-and-access.md s5.
+# Configs carry the pointer to the source, never the content.
+
+benchmark: _template
+tier: ""                    # tier label used in comparisons
+
+source:
+  url: ""
+  revision: ""              # exact version or revision, not "latest"
+  access: ""                # gated | open
+  licence: ""
+  may_publish_question_text: false
+  date_checked: ""          # YYYY-MM-DD
+  # Mirror this row into data/DATASETS.md when the benchmark is added, not
+  # when the paper is written.
+
+filters: []                 # e.g. domain restrictions; each one is a decision
+                            # that changes dataset_version_hash
+
+# n_options is asserted constant within a tier. The chance floor of a majority
+# vote is a function of the option count, so comparing a 4-choice tier against
+# a 10-choice tier confounds difficulty with chance rate. Hold this fixed
+# across tiers where possible.
+n_options: null
+
+prompt_template_id: ""      # version the template; a reworded prompt is a
+                            # different experiment
+
+# Set by canonicalization, not by hand. A changed hash invalidates comparison.
+dataset_version_hash: ""
