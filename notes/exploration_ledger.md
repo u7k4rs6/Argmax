@@ -138,3 +138,45 @@ has been written in terms of it.
 would be spent on.** That is a finding about what the remaining $2.55 can buy,
 and it is the kind of thing to establish before registering rather than after.
 Nothing is registered against it here.
+
+## Exposure on the margin-v2 store, and what stays unread
+
+Added after v2 was registered and sampling. This ledger began as a record for
+margin-v1; the same discipline applies to v2 and is recorded in the same
+place rather than in a second file that would have to be cross-read.
+
+**v2 has no exploratory prefix.** Unlike v1, no analysis ran against it while
+it drew. Its 198 problems were clean at the moment it was registered and its
+tag was cut before a single sample existed.
+
+What its own run report exposes, and what it does not. Exposure is
+**analysis-specific** under doc 2 section 8.1: an analysis exposes the
+question it asked, not every question that could be asked of the columns it
+touched.
+
+| quantity on the v2 store | status |
+|---|---|
+| MD3 and MD4, per the registered claims | confirmatory, one look, `argmax-prereg-margin-desc-v2.0` |
+| answer rate, truncation, cost | run diagnostics, exposed |
+| margin distribution | exposed, and registered claims are computed from it |
+| survivor count and accuracy distribution | exposed, required beside the pooled figures by doc 2 section 7.2 |
+| **completion length, marginal only** | **exposed**, reported as an exploratory run diagnostic and labelled so |
+| **completion length crossed with per-problem accuracy** | **UNREAD** |
+| **completion length crossed with curve shape or peak N** | **UNREAD** |
+| **completion length crossed with whether a problem backfires** | **UNREAD** |
+
+The three unread rows are the joint that `notes/completion_length_candidate.md`
+identifies as the durable question. **They are preserved deliberately.** The
+marginal was reported because a paid confirmatory run's diagnostics are not
+optional; the joint was not, because nothing required it and reporting it
+would have spent the only clean set this project has left on a hypothesis
+whose design is not done.
+
+The confound check in that note's section 5, length against accuracy, was run
+on the **v1 exposed 129** for exactly this reason. It is not repeated on v2
+and must not be.
+
+A future registration over the v2 store therefore states that the length
+marginal was seen and the joint was not. That is a weaker constraint than a
+burned set, and it is the sort of thing a registration discloses rather than
+something that forecloses one.

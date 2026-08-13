@@ -127,12 +127,91 @@ A tag cut to beat a running sampler is a tag cut without thinking.
 
 **Consequence, recorded rather than deferred:** v2's completion lengths are
 reported as ordinary run diagnostics when it lands, treated as **exploratory**
-and labelled so. That spends v2 for this purpose. After it, a confirmatory
-test of the length hypothesis needs problems this project has not sampled: a
-different benchmark, or a different model on the same 198 with the length
-question fixed in advance. GPQA Diamond's 198 are then fully read for length
-on both models, and no amount of care recovers that.
+and labelled so.
+
+### What that does and does not spend
+
+**Correction.** An earlier version of this section said the 198 would then be
+"fully read for length on both models, and no amount of care recovers that".
+That is too strong and it misapplies doc 2 section 8.1, under which exposure
+is **analysis-specific**: what an analysis exposes is the question it asked,
+not every question that could be asked of the same column.
+
+Reporting the **marginal** distribution of completion length exposes the
+marginal. It does not expose the **joint** of length with outcome, which is
+where the hypothesis lives:
+
+| quantity | status after v2's diagnostics are reported |
+|---|---|
+| length marginal: mean, sd, quantiles, truncation | **exposed**, reported as an exploratory run diagnostic |
+| length by per-problem accuracy | **unread** |
+| length by curve shape or peak N | **unread** |
+| length by whether a problem backfires | **unread** |
+
+So the rule for v2 is narrow and enforceable: **report the distribution, do not
+cross it with anything.** No correlation against per-problem accuracy, no
+split by curve shape, no backfire contrast, on the v2 store. The ledger
+records the joint as unread so a later analyst can see it was preserved
+deliberately rather than by oversight.
+
+A confirmatory test of the length hypothesis on v2 would still have to reckon
+with the marginal having been seen, which is a weaker constraint than the
+whole set being burned and is the sort of thing a registration states rather
+than something that forecloses one.
 
 This is the right trade. Reporting the diagnostics of a paid confirmatory run
 is not optional, and a candidate hypothesis does not get to make a run's own
-results unreportable.
+results unreportable. It does not have to cost more than it costs.
+
+## 5. Design information: is length just difficulty?
+
+**This is not a test of the hypothesis in section 3.** It is a check on a
+confound, run on the v1 **exposed 129** which are already spent, precisely so
+that it costs nothing. **Accuracy here is a covariate, not the outcome.** The
+outcome variable of the real hypothesis is curve shape or backfire, and
+neither is touched here or anywhere on a clean set.
+
+Per-problem mean completion length against per-problem single-sample accuracy,
+129 problems, answer rate 0.9943 over them, cluster bootstrap over problems at
+10,000 resamples:
+
+| | estimate | 95 percent interval |
+|---|---|---|
+| Pearson r | **-0.0019** | [-0.1809, +0.1789] |
+| Spearman r | **+0.0046** | [-0.1761, +0.1825] |
+
+| | value |
+|---|---|
+| length variance explained by accuracy, r squared | **0.0000** (95 percent up to 0.0425) |
+| **length variance independent of accuracy** | **1.0000** (95 percent from 0.9575) |
+| residual length sd after removing accuracy | **190.7 tokens**, against a raw sd of 190.7 |
+
+Length mean 589.2 sd 190.7; accuracy mean 0.3487 sd 0.3072.
+
+**Which reading this supports.** The two readings set out in advance were: if
+length and accuracy are near-collinear, the hypothesis is "hard problems
+backfire" restated and probably should not be registered; if length carries
+substantial independent variance, there is something worth designing.
+
+This is as clean a version of the second as the data could have produced.
+Length and accuracy are not merely non-collinear, they are **essentially
+orthogonal**: both correlations sit within 0.005 of zero, both intervals are
+near-symmetric about zero, and accuracy accounts for no measurable part of
+length's spread. The residual sd is unchanged to one decimal place, because
+there is nothing to remove. **Long problems are not hard problems on this
+store.**
+
+So the 119.66x between-problem structure in section 1 is not per-problem
+difficulty wearing a different name. Whatever it is, accuracy does not explain
+it, and a hypothesis built on it would not be a restatement of a known result.
+
+Three cautions on how far this goes. It is one model on one benchmark whose
+per-problem accuracy is itself extreme at 24.9x a null. Near-zero correlation
+rules out a **linear or monotone** relationship, not a non-monotone one, and a
+U-shape in length against difficulty would show up exactly like this. And a
+confound cleared is not a hypothesis supported: nothing here says length
+predicts anything about curve shape, only that if it does, the prediction is
+not accuracy in disguise.
+
+**Not designing it now.** The remaining questions in section 3 are untouched,
+and this result closes exactly one of them.
