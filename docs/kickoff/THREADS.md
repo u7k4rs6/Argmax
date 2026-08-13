@@ -29,7 +29,8 @@ not show the rise-then-fall shape, because the shape is attributed to
 composition. A uniformly hard benchmark is therefore the discriminating case,
 and GPQA Diamond is the closest thing available to one.
 
-**Why this is not the backfire paper's question.** arXiv:2608.11403 measures
+**Why this is not the backfire paper's question.** arXiv:2608.11403, read as
+`paper/backfire_preprint.pdf`, measures
 how often majority vote hurts, per problem, on one hard benchmark, and shows a
 deploy-time agreement gate cannot avoid it. It does not test a scaling model,
 does not manipulate the mixture, and does not evaluate an optimal-call-count

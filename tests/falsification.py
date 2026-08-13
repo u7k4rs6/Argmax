@@ -173,3 +173,98 @@ def test_manifest_grid_fits_M():
 #     silently "fixes" it is caught. Do not delete or skip it. If it turns
 #     green, something changed in the pipeline, not in the world.
 #     """
+
+
+# --- citation provenance: the same shape as claim coverage -----------------
+#
+# A claim_id must resolve to artifact rows. A quoted figure from the
+# predecessor must resolve to the published paper. Both are the same rule:
+# a number in a document names where it came from, and the suite fails when it
+# does not.
+
+CITATION = "arXiv:2608.11403"
+
+#: Files in the predecessor's repository that are drafts, not the published
+#: artifact. Their headline numbers disagree with it. See PROVENANCE.md.
+SUPERSEDED_SOURCES = (
+    "backfire_paper_draft",
+    "PILOT_WRITEUP",
+    "TODO_full_study",
+    "preregistration_backfire",
+)
+
+#: A superseded name may appear when a document is disclosing that it once
+#: cited one. Naming the mistake is how the correction is auditable.
+EXEMPT_MARKERS = ("supersed", "Correction", "correction", "must cite", "may cite")
+
+ALLOWED_ARTIFACTS = (
+    "paper/backfire_preprint.pdf",
+    "paper/backfire_colm_submission.pdf",
+)
+
+DOC_GLOBS = ("*.md", "files/*.md", "notes/*.md", "docs/**/*.md", "data/*.md")
+
+
+def _documents() -> list[Path]:
+    seen: dict[str, Path] = {}
+    for pattern in DOC_GLOBS:
+        for path in REPO.glob(pattern):
+            if path.is_file():
+                seen[str(path)] = path
+    return sorted(seen.values())
+
+
+def test_documents_exist_to_check():
+    """Guards against the scan silently covering nothing."""
+    assert len(_documents()) >= 5
+
+
+def test_no_document_cites_a_superseded_predecessor_draft():
+    """The drafts disagree with the published paper on its headline numbers.
+
+    One of them reached a scope decision in this repository, which is why this
+    is a test rather than a convention.
+    """
+    offenders = []
+    for path in _documents():
+        for lineno, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not any(name in line for name in SUPERSEDED_SOURCES):
+                continue
+            if any(marker in line for marker in EXEMPT_MARKERS):
+                continue  # disclosing the error, not repeating it
+            offenders.append(f"{path.relative_to(REPO)}:{lineno}: {line.strip()[:90]}")
+    assert not offenders, (
+        "a document cites a superseded predecessor draft as a source:\n  "
+        + "\n  ".join(offenders)
+    )
+
+
+def test_every_document_citing_the_paper_names_a_source_artifact():
+    """A citation with no artifact beside it cannot be checked by a reader.
+
+    PROVENANCE.md carries the digests; a citing document has to name which
+    artifact it read, so that "the paper says X" is falsifiable.
+    """
+    offenders = []
+    for path in _documents():
+        text = path.read_text(encoding="utf-8")
+        if CITATION not in text:
+            continue
+        if not any(artifact in text for artifact in ALLOWED_ARTIFACTS):
+            offenders.append(str(path.relative_to(REPO)))
+    assert not offenders, (
+        f"documents cite {CITATION} without naming the artifact they read "
+        f"({', '.join(ALLOWED_ARTIFACTS)}): {offenders}"
+    )
+
+
+def test_provenance_records_the_paper_and_its_unverified_version():
+    """The digest is recorded because the arXiv version number is not stamped
+    on the artifact. Recording a guessed version would be worse than recording
+    that nobody has checked."""
+    text = (REPO / "PROVENANCE.md").read_text(encoding="utf-8")
+    assert CITATION in text
+    assert "59d4dea8eba80b2a8bc05554c16b57fc854f5b3c6a7b0fd0e4e76b6c585ad6cc" in text
+    assert "version number is not stamped" in text

@@ -1,8 +1,62 @@
-# Provenance of copied code
+# Provenance of copied code and cited work
 
 One section per file copied into this repo from elsewhere. Written at copy
 time, not reconstructed afterwards. A copied file whose origin is not recorded
 here is a file nobody can check the published numbers against.
+
+---
+
+## The predecessor's paper, as a source of record
+
+Every figure this repository quotes from the predecessor study comes from the
+published paper and from nothing else. This section is the source of record and
+`tests/falsification.py` enforces it.
+
+| Field | Value |
+|---|---|
+| Citation | `arXiv:2608.11403` |
+| Title | When Self-Consistency Backfires: Majority Vote Hurts the Majority of Hard Science Problems for Small LLMs |
+| Venue line on the artifact | Accepted at the COLM 2026 Workshop on Efficient Reasoning |
+| Local artifact | `paper/backfire_preprint.pdf` |
+| sha256 | `59d4dea8eba80b2a8bc05554c16b57fc854f5b3c6a7b0fd0e4e76b6c585ad6cc` |
+| Size | 448,797 bytes |
+| Second artifact | `paper/backfire_colm_submission.pdf`, sha256 `a5ad3c3cb5b29730527c356ed18736b9e2419e3819297e7fbdf8791c4bce7f45` |
+| Read | 2026-08-13 |
+
+**The arXiv version number is not stamped on the artifact.** The PDF carries a
+venue line and no `v1`/`v2` marker, so the version recorded here is the file
+digest, which is verifiable, rather than an arXiv revision number, which would
+be a guess. **A maintainer must confirm the arXiv version before any Argmax
+draft cites it.** That is the one field here nobody has checked.
+
+**The PDFs are committed, and the doc 3 section 5 check was run before saying
+so.** A paper that quoted benchmark items would put question text in this
+repository, which is forbidden. This one does not: extracting the text yields
+4,232 words, with zero occurrences of `Which of the following`, zero
+option-block markers, zero `gpqa_diamond` task ids and zero canary strings. It
+reports aggregate metrics only. Repeat the check with
+`pdftotext paper/backfire_preprint.pdf -` before committing any future revision.
+
+An earlier version of this section claimed the PDFs were not committed. They
+were, added by a `git add -A`, and the claim was written without checking. The
+check has now been run and the artifacts stay, because a citation source of
+record that a reader cannot open is not a source of record.
+
+### Superseded drafts, which nothing may cite
+
+The predecessor's repository also contains earlier drafts, and they disagree
+with the published paper on the headline numbers and on what the paper calls
+its central open question:
+
+| Draft | What it says | Status |
+|---|---|---|
+| `backfire_paper_draft.md`, repo root | 47 problems, backfire 47 and 66 percent, "a deploy-time signal ... is the key open problem" | **superseded** |
+| `paper/backfire_paper_draft_v3.md` | earlier still | **superseded** |
+| `paper/backfire_paper_draft_v4.md` | 198 problems, matches the published text | superseded by the artifact, which is what may be cited |
+
+An Argmax document cited the first of these and carried its numbers into a
+scope decision. The test exists because that happened, not in anticipation of
+it happening.
 
 ---
 

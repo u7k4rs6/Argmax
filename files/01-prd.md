@@ -210,15 +210,58 @@ with the deciding fields named per `04` section 1 principle 4.
 
 ### The eligibility bar
 
-A row is eligible only if **its result stands alone as a contribution distinct
-from arXiv:2608.11403**. The test is one sentence: state what the row
-contributes that the backfire paper does not. If that sentence is thin, the row
-is ineligible, and the honest home for the work is a revision of the existing
-paper rather than a new entry.
+A row is eligible only if **its result stands alone**. The test is one
+sentence: state what the row contributes. If that sentence is thin, the row is
+ineligible, and the honest home for the work is a revision of an existing paper
+rather than a new entry.
 
 This bar exists because the cheapest failure available to this project is to
 spend its remaining credits reproducing a published result on more problems and
 calling it a paper.
+
+**Standing alone does not mean standing next to the backfire paper.** The
+central-open-question column below is kept because it is true and because it
+bounds what may be claimed, not because it is the criterion. A result can be
+worth publishing while answering none of that paper's questions.
+
+### What the confidence-signal work actually contributes
+
+The v2 extension is not "a better gate for the backfire paper". It is a methods
+result about **how confidence signals are measured in long-form generation**,
+and it stands on three legs, two already in hand:
+
+1. **The dilution mechanism, established.** A whole-completion mean surprisal
+   gives the answer token a weight of about **1 in 613**. The median token in a
+   response carries 0.0004 nats against a mean of 0.26, so the statistic is
+   dominated by several hundred near-deterministic prose tokens.
+   **This does not depend on per-token arrays.** It is computed entirely from
+   summary scalars the predecessor's pipeline already stored: `n_tokens`,
+   `mean_per_token_nll` and `median_per_token_nll`. The arrays are gone and the
+   result survives them, which is what makes it citable now rather than after a
+   new run.
+2. **The localised alternative, untested by anyone.** The published paper
+   records that localized entropy over final-answer tokens "was not computable
+   from stored data" and calls that a pipeline limitation rather than a
+   finding. Nobody has measured whether a span-localised signal separates
+   confidently-correct from confidently-wrong, on this benchmark or on this
+   model class. That is the experiment.
+3. **The threshold-selection demonstration, established.** Sweeping every
+   candidate cut on the stored entropy signal gives a best separation of
+   **+0.356 on Qwen and -0.317 on Llama**: the same procedure, opposite sign,
+   the positive one a maximum over roughly 150 cuts resting on 17 problems.
+   A worked example of a selected threshold that reverses direction on a second
+   model, from real data rather than simulation.
+
+Together those are a paper about measurement: **a widely used confidence
+statistic is diluted by construction, its apparent gate performance is a
+selection artifact, and the localised version that would fix the first problem
+has never been tested.** Legs 1 and 3 are already computed from stored data,
+which means the new sampling buys leg 2 only, and leg 2 is the part that can
+fail informatively.
+
+None of that requires the backfire paper to be nearby. It requires one
+long-form generation task, one model whose provider returns depth of at least
+2, and the answer spans that doc 4 section 3.6 already mandates.
 
 **One sentence per row:**
 
@@ -275,9 +318,9 @@ endpoint.
 | **Credits needed above $6** | none, $1.02 margin | none, $2.35 margin | **$2.63**, and $37.81 more if B is to reach N=64 |
 | **What it buys** | A test of whether Chen et al.'s mixture explanation and its optimal-call estimator survive when the easy component is removed, on three tiers that vary the mixture deliberately, with the hard tier being the published 47 problems | An answer rate and a truncation rate for a reasoning policy, plus a curve that tops out at N=4 with a CI | Both of the above, plus a documented incomparability between them |
 | **What it forecloses** | The reasoning-model question entirely, at this budget | Any comparison to the published numbers, and any claim at the N where backfire is defined | Nothing extra, but it spends the margin the capability probe and the inevitable re-run need |
-| **Answers the backfire paper's central open question** (reasoning-native models) | **No** | **No**, see section 2.2: not a budget problem | **No** |
-| **Closes the limitation the paper records** (localized entropy, not computable from its stored data) | **No** on its own, but see below: A's samples make it free | **No** | **No** |
-| **Plausible venue** | Standalone workshop or short paper: it tests a published scaling model, not this project's predecessor | None standalone. A technical note at best | Workshop methods note |
+| **Answers the backfire paper's central open question** (reasoning-native models). Bounds the claims; not the eligibility criterion | **No** | **No**, see section 2.2: not a budget problem | **No** |
+| **Supplies leg 2 of the measurement result** (the untested localised signal) | **No** on its own, but see below: A's samples make it free | **No** | **No** |
+| **Plausible venue** | Standalone workshop or short paper: it tests a published scaling model, not this project's predecessor. With the confidence-signal work attached, a methods paper that cites the backfire result rather than extending it | None standalone. A technical note at best | Workshop methods note |
 | **Eligible** | **Yes** | **No** | **No** |
 
 ### One row clears the bar, and it was the one previously marked thin
