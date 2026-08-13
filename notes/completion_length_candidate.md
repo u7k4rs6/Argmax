@@ -193,25 +193,87 @@ length and accuracy are near-collinear, the hypothesis is "hard problems
 backfire" restated and probably should not be registered; if length carries
 substantial independent variance, there is something worth designing.
 
-This is as clean a version of the second as the data could have produced.
-Length and accuracy are not merely non-collinear, they are **essentially
-orthogonal**: both correlations sit within 0.005 of zero, both intervals are
-near-symmetric about zero, and accuracy accounts for no measurable part of
-length's spread. The residual sd is unchanged to one decimal place, because
-there is nothing to remove. **Long problems are not hard problems on this
-store.**
+The second, on the linear reading. Both correlations sit within 0.005 of zero,
+both intervals are near-symmetric about zero, and accuracy accounts for no
+measurable part of length's spread. The residual sd is unchanged to one
+decimal place, because there is nothing to remove.
 
-So the 119.66x between-problem structure in section 1 is not per-problem
-difficulty wearing a different name. Whatever it is, accuracy does not explain
-it, and a hypothesis built on it would not be a restatement of a known result.
+**Correction to the first version of this section, which said length and
+accuracy were "essentially orthogonal" and that "long problems are not hard
+problems".** Both statements were too strong, and the caution listed
+immediately below them turned out to be the live case. The shape was checked
+and it is not flat.
 
-Three cautions on how far this goes. It is one model on one benchmark whose
-per-problem accuracy is itself extreme at 24.9x a null. Near-zero correlation
-rules out a **linear or monotone** relationship, not a non-monotone one, and a
-U-shape in length against difficulty would show up exactly like this. And a
-confound cleared is not a hypothesis supported: nothing here says length
-predicts anything about curve shape, only that if it does, the prediction is
-not accuracy in disguise.
+## 6. The shape: a U, suggestive and not established
 
-**Not designing it now.** The remaining questions in section 3 are untouched,
-and this result closes exactly one of them.
+Per-problem mean completion length in quintiles, accuracy within each, cluster
+bootstrap over problems at 10,000 resamples:
+
+| quintile | n | length range | mean length | accuracy | 95 percent interval |
+|---|---|---|---|---|---|
+| 1 shortest | 25 | 166 to 430 | 356.2 | **0.4441** | [0.3123, 0.5784] |
+| 2 | 26 | 437 to 528 | 486.9 | 0.3400 | [0.2326, 0.4569] |
+| 3 middle | 26 | 528 to 610 | 568.8 | **0.2218** | [0.1340, 0.3233] |
+| 4 | 26 | 610 to 682 | 640.9 | 0.3316 | [0.2248, 0.4460] |
+| 5 longest | 26 | 725 to 1197 | 884.3 | **0.4098** | [0.2957, 0.5331] |
+
+Both extremes above the middle, near-symmetric arms. Tested by direct
+resampled contrasts rather than by reading the overlap of those intervals,
+which is the fallacy this repository already removed once from `classify_curve`:
+
+| contrast | difference | 95 percent interval | |
+|---|---|---|---|
+| Q1 minus Q3, short vs middle | **+0.2224** | [+0.0564, +0.3834] | excludes zero |
+| Q5 minus Q3, long vs middle | **+0.1880** | [+0.0323, +0.3414] | excludes zero |
+| Q1 minus Q5, short vs long | +0.0344 | [-0.1473, +0.2130] | crosses zero, arms symmetric |
+| Q1+Q5 minus Q2+Q3+Q4 | +0.1288 | [+0.0208, +0.2392] | excludes zero |
+
+**But the shape-agnostic test does not reach significance.** Fitting a
+quadratic in standardised length:
+
+| term | estimate | 95 percent bootstrap | permutation p |
+|---|---|---|---|
+| linear | -0.02654 | | |
+| **quadratic** | **+0.03050** | [-0.00617, +0.06487] | **0.083** |
+
+Positive as a U requires, and it does not clear 0.05 against 10,000 label
+shuffles.
+
+**How to read the disagreement.** The quintile contrasts are the more
+favourable analysis and the less trustworthy one: quintile boundaries and,
+worse, the Q1+Q5-against-the-middle contrast were chosen **after** seeing the
+bin means, on a set that was already exposed. The quadratic term was not
+chosen that way and is the honest global test. **So: a U-shape is suggestive,
+consistently signed, and not established at n=129.**
+
+### What this does to section 5
+
+The near-zero linear correlation no longer licenses "accuracy does not explain
+length". It licenses only that **no monotone relationship exists**, which is a
+weaker claim, and the quintile pattern is a concrete alternative explanation
+for the zero rather than a hypothetical one.
+
+What survives, and it is the part that mattered for the confound question:
+length is **not** per-problem difficulty on a monotone scale, so a hypothesis
+built on length would not be "hard problems backfire" restated. A U would make
+length a genuinely different axis from accuracy rather than the same one, since
+difficulty relates to accuracy monotonically by construction. Both readings of
+the shape therefore point the same way on the confound, which is the only
+question section 5 was asked to answer.
+
+What does not survive is any claim that length and accuracy are unrelated.
+They may be related in a way a correlation cannot see.
+
+**Not designing it now, and the U is a reason for more caution rather than
+less.** A shape that appears at p = 0.083 on an exposed set, with its most
+striking contrast selected after the fact, is exactly the kind of result that
+looks like a discovery and replicates at chance. It is recorded so that a
+future design tests it as a prediction on a clean set instead of rediscovering
+it.
+
+Three standing cautions, unchanged. This is one model on one benchmark whose
+per-problem accuracy is itself extreme at 24.9x a null. The whole of sections
+5 and 6 runs on the **exposed 129**, which is why it was free. And a confound
+cleared is not a hypothesis supported: nothing here says length predicts
+anything about curve shape, only that if it does, the prediction is not
+difficulty in disguise.

@@ -489,6 +489,42 @@ not established.** The evidence is mixed and is reported rather than resolved:
   common factor, too small a sample to establish one, and one of the three is
   a different model's behaviour.
 
+**Correction: the one-factor reading is better tested now, and it does not
+survive as stated.** Both readings are kept here with their sample sizes,
+because the second superseded the first on power rather than on argument.
+
+| reading | evidence | n | model |
+|---|---|---|---|
+| **one factor** | pairwise correlations about 0.3, all intervals crossing zero; PC1 at 0.544 against a 0.333 floor | **30** | mixed, one axis is a **different model's** completion-length mode |
+| **at least two axes** | accuracy against margin tail **-0.2614** [-0.3912, -0.1156], excludes zero; accuracy against mean completion length **-0.0019** [-0.1809, +0.1789], crosses zero, r squared 0.0000 | **127** and **129** | Qwen only, within model |
+
+The weaker of the two original correlations was accuracy against a
+**cross-model length proxy**. Measured within one model at four times the
+sample size, mean completion length and per-problem accuracy have no linear
+relationship at all: the residual sd of length after removing accuracy is
+**190.7 tokens against a raw sd of 190.7**, unchanged to one decimal place.
+
+So on one model at comparable n, **per-problem accuracy relates to the margin
+tail and not to length**. That is at least two axes, not one factor.
+
+**One qualification, because it is the honest state of it.** A near-zero
+linear correlation is what a symmetric U also produces, and binning length
+into quintiles shows accuracy of 0.4441, 0.3400, 0.2218, 0.3316, 0.4098, with
+both extremes above the middle. The shape-agnostic test does not reach
+significance: the quadratic term is +0.0305 with a bootstrap interval of
+[-0.0062, +0.0649] and a permutation p of 0.083. So length may relate to
+accuracy non-monotonically. That would still not make it the same axis, since
+a U is not the monotone difficulty relation the one-factor reading needs, and
+it is recorded here so that the two-axis statement is read as "not one factor"
+rather than as "independent". `notes/completion_length_candidate.md` section 5
+carries the detail.
+
+**The rule below is unchanged, and none of this bears on it.** It rests on
+confounding, not on the factor count: a comparison whose unit is the problem
+is confounded by any per-problem property on which its groups differ,
+whatever the properties turn out to share. The count changes how many
+properties must be checked, which is the next paragraph, and nothing else.
+
 **The count affects how many properties must be checked, not whether checking
 is needed.** Under one factor, a group difference on any one property implies a
 difference on the rest, so checking one is nearly enough. Under three axes,
