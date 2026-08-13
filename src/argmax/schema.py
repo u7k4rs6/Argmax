@@ -543,6 +543,11 @@ class RunManifest(Strict):
     #: Free text for anything about this run a reader needs and no field holds,
     #: such as where a regime boundary falls.
     regime_note: str | None = None
+    #: How this manifest came to exist. The default means the run wrote it as it
+    #: ended. Anything else names what it was rebuilt from and when: a manifest
+    #: assembled afterwards from the ledger is evidence of a different kind, and
+    #: nothing else on the record distinguishes the two.
+    record_provenance: str = "contemporaneous"
 
     @model_validator(mode="after")
     def _confirmatory_needs_tag(self) -> RunManifest:
