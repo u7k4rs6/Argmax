@@ -543,10 +543,21 @@ class RunManifest(Strict):
     #: Free text for anything about this run a reader needs and no field holds,
     #: such as where a regime boundary falls.
     regime_note: str | None = None
-    #: How this manifest came to exist. The default means the run wrote it as it
-    #: ended. Anything else names what it was rebuilt from and when: a manifest
-    #: assembled afterwards from the ledger is evidence of a different kind, and
-    #: nothing else on the record distinguishes the two.
+    #: How this manifest came to exist. Three states:
+    #:
+    #:   "provisional"      written at run start from what is knowable up
+    #:                      front. The run is in flight or died without
+    #:                      finalising, so ended_utc, realized cost and the
+    #:                      outcome counts are absent or partial.
+    #:   "contemporaneous"  finalised by the run itself, on completion or via
+    #:                      its signal handler.
+    #:   anything else      reconstructed afterwards, naming what from and when.
+    #:                      A manifest assembled from the ledger is evidence of
+    #:                      a different kind and nothing else distinguishes it.
+    #:
+    #: The provisional state exists because three manifests in phase margin-v1
+    #: had to be reconstructed: a run that is stopped mid-flight left no record
+    #: at all, and the knowable-up-front half was knowable the whole time.
     record_provenance: str = "contemporaneous"
 
     @model_validator(mode="after")

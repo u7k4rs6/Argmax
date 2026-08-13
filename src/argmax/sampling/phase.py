@@ -36,6 +36,8 @@ four offline from `raw_text`, which is stored verbatim.
 
 from __future__ import annotations
 
+import os
+import signal
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
@@ -80,8 +82,67 @@ def _classify(ok: bool, finish_reason: str, text: str) -> OutcomeClass:
     return OutcomeClass.answered
 
 
+def _manifest(
+    cfg,
+    run_id,
+    split,
+    started,
+    dataset_hash,
+    M,
+    slugs,
+    written,
+    ledger,
+    counts,
+    provenance,
+    ended=None,
+):
+    """Assemble a manifest from whatever is known at the time of the call."""
+    return RunManifest(
+        run_id=run_id,
+        phase_id=cfg["phase_id"],
+        split=Split(split),
+        started_utc=started,
+        ended_utc=ended,
+        git_sha=cfg["_git_sha"],
+        git_dirty=cfg["_git_dirty"],
+        lockfile_hash=cfg.get("_lockfile_hash", ""),
+        dataset_version_hash=dataset_hash,
+        prompt_template_id=cfg["prompt_template_id"],
+        extractor_version=UNEXTRACTED,
+        params_by_model=written["params"],
+        param_hash_by_model=written["hashes"],
+        capabilities_id_by_model={
+            s: load_capabilities(s).capabilities_id for s in slugs
+        },
+        model_string_requested={s: load_model(s)["model_string"] for s in slugs},
+        model_string_returned=written["returned"],
+        pricing_snapshot_id=_pricing(load_model(slugs[0])).snapshot_id,
+        prereg_tag=cfg.get("prereg_tag"),
+        unanswered_sample_policy=cfg["unanswered_sample_policy"],
+        draw_scheme=cfg["draw_scheme"],
+        n_grid=cfg["n_grid"],
+        M=M,
+        realized_cost_usd=ledger.realized_spend_usd(),
+        counts_by_outcome_class=dict(counts),
+        concurrency_by_model=written.get("concurrency", {}),
+        record_provenance=provenance,
+    )
+
+
 def run_phase(phase_id: str, split: str, cfg: dict[str, Any]) -> dict[str, Any]:
-    """Draw `M` samples per problem for every model in the phase."""
+    """Draw `M` samples per problem for every model in the phase.
+
+    A **provisional manifest is written before the first request** and
+    finalised on completion or on SIGTERM/SIGINT. Phase margin-v1 needed three
+    manifests reconstructed from the ledger, because a run stopped mid-flight
+    left no record at all while the knowable-up-front half had been knowable
+    the whole time.
+
+    The run also writes `runs/<run_id>/sampler.pid`. Watching a sampler with
+    `pgrep -f scripts/sample.py` matches the watcher's own command line, which
+    produced a false hang report on a run that had already finished; watch the
+    pidfile with `kill -0` instead.
+    """
     started = datetime.now(UTC).isoformat()
     run_id = f"{phase_id}-{started[:19].replace(':', '').replace('-', '')}"
     problems = load_problems()
@@ -263,42 +324,61 @@ def run_phase(phase_id: str, split: str, cfg: dict[str, Any]) -> dict[str, Any]:
                     guard.check_live()
                     print(f"  {done} written, {counts}")
 
+        cfg.setdefault("phase_id", phase_id)
+        manifest_path = paths.manifest_path(run_id)
+        writer.write_manifest(
+            manifest_path,
+            _manifest(
+                cfg,
+                run_id,
+                split,
+                started,
+                dataset_hash,
+                M,
+                slugs,
+                manifest_written,
+                ledger,
+                counts,
+                "provisional",
+            ).model_dump_json(indent=2),
+        )
+        pidfile = manifest_path.parent / "sampler.pid"
+        pidfile.write_text(str(os.getpid()), encoding="utf-8")
+
+        def _finalise(signum=None, frame=None, manifest_path=manifest_path):
+            writer.write_manifest(
+                manifest_path,
+                _manifest(
+                    cfg,
+                    run_id,
+                    split,
+                    started,
+                    dataset_hash,
+                    M,
+                    slugs,
+                    manifest_written,
+                    ledger,
+                    counts,
+                    "contemporaneous"
+                    if signum is None
+                    else f"contemporaneous, finalised by signal {signum}",
+                    ended=datetime.now(UTC).isoformat(),
+                ).model_dump_json(indent=2),
+            )
+            if signum is not None:
+                print(f"signal {signum}: manifest finalised at {manifest_path}")
+                raise SystemExit(130)
+
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            signal.signal(sig, _finalise)
+
         with Client(rate_per_sec=float(cfg.get("rate_per_sec", 4.0))) as client:
             workers = int(model_cfg.get("concurrency", 4))
             with ThreadPoolExecutor(max_workers=workers) as pool:
                 list(pool.map(lambda j: one(j, client=client), todo))
         manifest_written["returned"][slug] = model_cfg["model_string"]
 
-    manifest = RunManifest(
-        run_id=run_id,
-        phase_id=phase_id,
-        split=Split(split),
-        started_utc=started,
-        ended_utc=datetime.now(UTC).isoformat(),
-        git_sha=cfg["_git_sha"],
-        git_dirty=cfg["_git_dirty"],
-        lockfile_hash=cfg.get("_lockfile_hash", ""),
-        dataset_version_hash=dataset_hash,
-        prompt_template_id=cfg["prompt_template_id"],
-        extractor_version=UNEXTRACTED,
-        params_by_model=manifest_written["params"],
-        param_hash_by_model=manifest_written["hashes"],
-        capabilities_id_by_model={
-            s: load_capabilities(s).capabilities_id for s in slugs
-        },
-        model_string_requested={s: load_model(s)["model_string"] for s in slugs},
-        model_string_returned=manifest_written["returned"],
-        pricing_snapshot_id=_pricing(load_model(slugs[0])).snapshot_id,
-        prereg_tag=cfg.get("prereg_tag"),
-        unanswered_sample_policy=cfg["unanswered_sample_policy"],
-        draw_scheme=cfg["draw_scheme"],
-        n_grid=cfg["n_grid"],
-        M=M,
-        realized_cost_usd=ledger.realized_spend_usd(),
-        counts_by_outcome_class=counts,
-        concurrency_by_model=manifest_written.get("concurrency", {}),
-    )
+    _finalise()
     path = paths.manifest_path(run_id)
-    writer.write_manifest(path, manifest.model_dump_json(indent=2))
     print(f"wrote {path}")
     return {"run_id": run_id, "counts": counts, "manifest": str(path)}
