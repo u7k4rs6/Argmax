@@ -92,4 +92,4 @@ cap_finding:
       the 2048 arm (median 1592 tokens, sigma 0.4128) puts it at 0.9890.
     projection_198x16_usd: 1.77
     credits_remaining_usd: 2.55
-    status: "NOT PURCHASED. Registration drafted and untagged; see notes/margin_desc_v2_draft.md"
+    status: "NOT PURCHASED. Registration drafted and untagged; see notes/margin_desc_v2.md"

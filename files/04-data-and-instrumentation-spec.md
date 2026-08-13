@@ -68,6 +68,49 @@ start a phase whose required fields are not in the probe.
 This is the fix for defect 1. That hole was found at analysis time, after
 the money was spent. A probe costs one sample.
 
+### 2.1 Response shape is a property of the model, not the provider
+
+The capability probe records whether a field arrives. This rule is about the
+shape it arrives in, which is the same question one level down and fails in a
+quieter way.
+
+**One provider returns the same field in more than one shape, and which shape
+arrives is decided by the model.** Together returns logprobs two ways:
+
+- **Parallel arrays.** `tokens`, `token_logprobs`, and a top-level
+  `top_logprobs` list of token-to-logprob dicts, one per position.
+  Qwen2.5-7B-Instruct-Turbo returns this.
+- **OpenAI-nested.** `content`, a list of per-position dicts, each carrying
+  its own `token`, `logprob` and `top_logprobs` **list** of
+  `{token, logprob}` entries. Qwen3.5-9B returns this.
+
+Both are valid, complete responses to the same request body. A parser written
+against the first does not raise on the second: it looks up a key that is not
+there, finds no alternatives, and returns nothing. `derive_row` did exactly
+this, and every answer-token margin on Qwen3.5-9B came back null with no error
+anywhere in the pipeline. It was caught by a 32-sample probe. Had the phase
+been bought first, it would have produced 3,168 samples with a null margin on
+every one, against claims that are defined on that field.
+
+Note the failure is the response-side twin of a request-side one `build_payload`
+already documents: sending OpenAI's `logprobs: true` to Together yields a well
+formed depth-1 response that reads as "logprobs unsupported at depth". Same
+shape of bug in both directions. A valid response that never contained what
+was asked for.
+
+**Therefore:**
+
+| Rule | Consequence |
+|---|---|
+| Any parser touching a provider response is probed against **each model** before a phase, not once per provider | A parser validated on one model is unvalidated on the next, however similar |
+| Shape knowledge lives in one function per field, not at each call site | `top_alternatives_at` reads both spellings; `char_span_to_token_span` already did, which is why the defect showed up in one place and not two |
+| A parser that finds nothing distinguishes "absent" from "present in a shape I do not read" | Null is a measurement under "absence is data". A null that means "unparsed" is a lie told in the same field |
+| Both shapes are covered by a test asserting they yield the same value | `tests/test_margin.py`; the assertion is equality of the parsed result, not merely that neither raises |
+
+Adding a shape to the reader is additive and must be shown to be: the fix
+above was accepted only after all 12,672 stored Qwen2.5-7B rows rebuilt
+byte-identical, so no already-registered verdict moved.
+
 ## 3. The `sample` record
 
 One JSON object per line, per API call. Fields marked **R** are required

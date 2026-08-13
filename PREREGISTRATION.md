@@ -22,6 +22,7 @@ answerable from one table.
 
 | Tag | Date | Commit | Hypotheses covered | Analyses that may cite it |
 |---|---|---|---|---|
+| `argmax-prereg-margin-desc-v2.0` | 2026-08-14 | `PENDING` | MD3, MD4 | Second-model replication of the descriptive margin claims on `Qwen/Qwen3.5-9B` with the thinking phase disabled, 198 problems at M=16, cap 6144. Design, calibration, stratification check and limitations in `notes/margin_desc_v2.md`. Covers no gate claim, and explicitly does NOT cover MD1 or MD2, which are not testable at M=16. |
 | `argmax-prereg-margin-desc-v1.0` | 2026-08-14 | `739c30b15a32` | MD1, MD2 | The two descriptive claims below, on the 69 unexposed problems of the margin-v1 store listed in `notes/exploration_ledger.md`. No gate claim is covered: the gate question is per-problem and was costed as unaffordable. |
 | `argmax-prereg-threadA-v1.0` | 2026-08-13 | `edfae74728f6` | TA1, TA2a, TA2b | Thread A on the predecessor's stored samples, `notes/thread_a.md` phase 4. No Argmax sampling is covered by this tag. |
 
@@ -38,6 +39,8 @@ value here.
 | TA2b | The same at k=16 | `per_problem_regret_difference.ci95_upper` | 0.0 | less | `argmax-prereg-threadA-v1.0` |
 | MD1 | Among samples whose answer differs from their own problem's plurality, the median answer-token margin exceeds 15 nats | per-problem median of `answer_margin` over dissenting samples, one-sided 95% lower bound across problems | 15.0 | greater | `argmax-prereg-margin-desc-v1.0` |
 | MD2 | Among those same dissenting samples, the fraction with a margin above 10 nats exceeds 0.60 | per-problem fraction of dissenting samples with `answer_margin > 10`, one-sided 95% lower bound across problems | 0.60 | greater | `argmax-prereg-margin-desc-v1.0` |
+| MD3 | On Qwen3.5-9B with thinking disabled, among INCORRECT samples the median answer-token margin exceeds 15 nats | per-problem median of `answer_margin` over samples with `is_correct` false and `answer_margin_censored` false, one-sided 95% lower bound across problems | 15.0 | greater | `argmax-prereg-margin-desc-v2.0` |
+| MD4 | Among those same incorrect samples, the fraction with a margin above 10 nats exceeds 0.60 | per-problem fraction of incorrect samples with `answer_margin > 10`, one-sided 95% lower bound across problems | 0.60 | greater | `argmax-prereg-margin-desc-v2.0` |
 
 **MD1 and MD2 are one-sample bounds, deliberately.** The finding they test is
 that a sample contradicting its own problem's plurality still emits its answer
@@ -93,4 +96,10 @@ line.
 | `md_resolution_median` | 1.0018 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | Standard error of the per-problem median margin at n=69, from the exposed set's sd of 8.3213. The design's own resolution, registered so a pass inside it is visible. |
 | `md_resolution_fraction` | 0.0278 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | The same for the fraction above 10 nats, from an sd of 0.2309. |
 | `md_alpha` | 0.05 | `notes/exploration_ledger.md` | `argmax-prereg-margin-desc-v1.0` | One-sided, fixed before the holdout was read. |
+| `md3_threshold` | 15.0 | `notes/margin_desc_v2.md` | `argmax-prereg-margin-desc-v2.0` | Nats. Below the v1 exposed per-problem estimate of 21.5365, so it is a prediction. Same value as `md1_threshold` deliberately, to keep the two registrations on one scale. Held unchanged after the stratification check found no dependence on per-problem accuracy. |
+| `md4_threshold` | 0.60 | `notes/margin_desc_v2.md` | `argmax-prereg-margin-desc-v2.0` | Below the v1 exposed per-problem estimate of 0.7617. Held unchanged for the same reason. |
+| `md_v2_incorrect_floor` | 3.0 | `notes/margin_desc_v2.md` | `argmax-prereg-margin-desc-v2.0` | Minimum measured-margin incorrect samples for a problem to enter the analysis. Excluded problems are counted and reported, never imputed. At M=16 this admits only problems at accuracy at or below 13 of 16, which is the selection the stratification check was run to license. |
+| `md_v2_stratification_corr_upper` | 0.1817 | `notes/margin_desc_v2.md` | `argmax-prereg-margin-desc-v2.0` | Upper end of the bootstrap interval on the correlation between per-problem accuracy and median margin among incorrect samples, [-0.1927, +0.1817]. Registered because the decision to leave the thresholds unrecalibrated rests on this interval crossing zero. |
+| `md_v2_answer_rate_reference` | 0.9950 | `notes/margin_v1_run.md` | `argmax-prereg-margin-desc-v2.0` | The v1 answer rate this run must match to be comparable under doc 2 section 7.1. Cap 6144 was chosen because it reaches it (probe 1.0000); the caps are deliberately unmatched. |
+| `md_v2_alpha` | 0.05 | `notes/margin_desc_v2.md` | `argmax-prereg-margin-desc-v2.0` | One-sided, fixed before any confirmatory sample. |
 | `ta1_alpha` | 0.05 | `notes/thread_a.md` phase 2 | `argmax-prereg-threadA-v1.0` | Two-sided, conventional, fixed before the confirmatory run. |

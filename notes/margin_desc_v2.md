@@ -1,9 +1,9 @@
-# DRAFT registration: argmax-prereg-margin-desc-v2.0
+# Registration: argmax-prereg-margin-desc-v2.0
 
-**Status: DRAFTED, NOT TAGGED. Nothing here is registered.** No rows have been
-added to `PREREGISTRATION.md`, no tag exists, and no confirmatory sample has
-been drawn against it. See "Why this is not tagged" at the end, which is the
-part of this document that matters most.
+**Status: REGISTERED and TAGGED.** Rows are in `PREREGISTRATION.md`; the tag
+was cut before any confirmatory sample was drawn. This file was drafted
+untagged first, and the section "Why this was held, and what released it"
+records that history rather than deleting it.
 
 Second-model replication of the descriptive margin claims registered as
 `argmax-prereg-margin-desc-v1.0` and reported in `notes/margin_v1_run.md`.
@@ -100,6 +100,57 @@ and at accuracy 0.90 roughly 156 of 198 problems would carry fewer than three
 incorrect samples at M=16, leaving about 42. The claims still resolve there,
 but see the limitations.
 
+## Stratification check: does the margin depend on how hard the problem is?
+
+Run before tagging, on the v1 exposed 129 at M=64, because the survivor set
+under M=16 is selected on accuracy and a threshold calibrated on the whole
+range is only valid for a selected subset if the statistic does not vary
+across it.
+
+| accuracy bin | problems | usable | median margin | sd | fraction above 10 | sd | mean incorrect per problem |
+|---|---|---|---|---|---|---|---|
+| 0.000 to 0.125 | 42 | 42 | 20.2467 | 8.40 | 0.7318 | 0.219 | 60.8 |
+| 0.125 to 0.250 | 19 | 19 | 23.5325 | 7.31 | 0.7928 | 0.179 | 53.3 |
+| 0.250 to 0.500 | 30 | 30 | 23.3041 | 6.75 | 0.7899 | 0.177 | 41.3 |
+| 0.500 to 0.750 | 15 | 15 | 18.9663 | 9.88 | 0.6610 | 0.293 | 22.8 |
+| 0.750 to 1.000 | 23 | 18 | 21.6352 | 7.93 | 0.8359 | 0.228 | 11.4 |
+| **all** | **129** | **124** | **21.5365** | 8.04 | **0.7617** | 0.218 | |
+
+**Flat.** No monotone trend, and both correlations against per-problem
+accuracy cross zero on a 4,000-resample bootstrap over problems:
+
+| | correlation | 95 percent interval |
+|---|---|---|
+| accuracy against median margin | **-0.0094** | [-0.1927, +0.1817] |
+| accuracy against fraction above 10 | **+0.0544** | [-0.1402, +0.2527] |
+
+Every bin sits above both thresholds. The lowest bin mean is 18.97 nats
+against a 15.0 threshold and 0.661 against 0.60, and it is the bin with the
+widest sd and fewest problems.
+
+Recalibrating on the band the survivors will occupy changes nothing worth
+changing. The M=16 floor of three incorrect samples admits problems at
+accuracy at or below 13 of 16, so:
+
+| calibration set | n | median margin | fraction above 10 |
+|---|---|---|---|
+| all 124 usable | 124 | 21.537 | 0.7617 |
+| **accuracy at or below 0.8125** | 116 | **21.582** | **0.7577** |
+| accuracy at or below 0.50 | 91 | 21.941 | 0.7637 |
+
+The survivor band reproduces the full set to within 0.05 nats and 0.004.
+**The thresholds are therefore unchanged at 15.0 and 0.60**, and they are
+unchanged because the check said so, not because they were convenient.
+
+**Registered sensitivity.** One bin would not carry MD4 on its own: restricted
+to problems at accuracy 0.500 to 0.750, the fraction is 0.6610 with sd 0.293,
+and at a projected n=42 the bound is 0.5867, below 0.60. MD3 survives that bin
+at 16.46. This is registered rather than reported afterwards, because it is
+the one way MD4 could fail without the underlying claim being wrong: if the
+survivors concentrate in that band, a FAIL is evidence about which problems
+survived, not about how hard samples commit. The reported verdict carries the
+survivors' accuracy distribution beside it either way.
+
 ## Registered limitations
 
 Stated here so they are registered rather than discovered in the writeup.
@@ -123,13 +174,16 @@ Stated here so they are registered rather than discovered in the writeup.
    plurality-keyed claims were calibrated at. MD3 and MD4 measure the same
    mechanism through the answer key instead. No plurality-keyed verdict may
    be reported from this run.
-5. **The analysed set may be selected.** If accuracy is near the probe
-   signal, most problems will be excluded and the survivors will be the
-   problems this model gets wrong, which is not the population MD1 and MD2
-   were calibrated on. Doc 2 section 7.2 requires the per-problem
-   heterogeneity be published beside any pooled figure, and here it must
-   lead: the exclusion count, the surviving n, and the accuracy distribution
-   are reported before either bound.
+5. **The surviving problem set is selected on accuracy.** The three-incorrect
+   floor admits only problems at accuracy at or below 13 of 16, and if this
+   model's accuracy is near the probe signal most problems are excluded. The
+   stratification check above says the statistic does not vary across that
+   selection, which is why the thresholds stand; that result is cited whether
+   the claims pass or fail, and it is what makes a PASS on a selected subset
+   interpretable. Doc 2 section 7.2 requires per-problem heterogeneity be
+   published beside any pooled figure, and here it leads: the exclusion count,
+   the surviving n, and the survivors' accuracy distribution against v1's are
+   reported before either bound.
 6. **The margin depends on a fix younger than the claims.** Qwen3.5-9B
    returns the OpenAI-nested logprob shape and `derive_row` read only the
    parallel-array shape, so before the fix every margin on this model was
@@ -143,26 +197,25 @@ set before the run. Projected $1.77. The 69-problem holdout is analysed once
 and only once, exactly as under v1; the 8 probe problems are already burned
 for both models and are exploratory.
 
-## Why this is not tagged
+## Why this was held, and what released it
 
-The instruction that authorised this work reserved the spend decision and
-directed that the registration be left drafted and untagged. It is being
-followed literally.
+This file existed as an untagged draft first. That is recorded rather than
+tidied away, because the gap between drafting and tagging is where a
+pre-registration either is one or is not.
 
-The stated reason for leaving it untagged was that credits might not stretch
-to it. **That reason no longer holds.** The wall came down: the thinking
-control works, the cap is found, the run costs $1.77 against $2.55, and the
-resolution check passes at M=16. The obstacle now is authorisation, not money
-and not statistics.
+It was held because the instruction that authorised the work reserved the
+spend decision, and because a tag matching `argmax-prereg-*` can never be
+moved or deleted under CLAUDE.md, so a prematurely cut tag is permanent. The
+originally stated reason, that credits might not stretch, had already stopped
+applying: the thinking control works, the cap is found, and the run costs
+$1.77 against $2.55.
 
-Tagging a pre-registration is the act that makes it binding, and cutting one
-that a human has not approved would make the tag a formality. Under CLAUDE.md
-a tag matching `argmax-prereg-*` can never be moved or deleted, so a
-prematurely cut tag is permanent. Nothing here is registered until a human
-says so.
+It was released by an explicit instruction to tag, after the stratification
+check it also required came back flat. The thresholds are the ones the draft
+carried, 15.0 and 0.60, unchanged because the check supported them.
 
-Everything above is decided and written down before any confirmatory sample
-exists, which is the property that makes it a pre-registration when it is
-eventually cut. If it is tagged unchanged, it is a pre-registration. If any
-threshold, exclusion rule, or M changes first, this draft is superseded and
-the change is recorded here rather than edited away.
+Everything above was decided and written down before any confirmatory sample
+existed, which is the property that makes it a pre-registration rather than a
+description. If any threshold, exclusion rule, or M is changed after this
+point, the change is recorded here and a new version is cut. This one is not
+edited.
