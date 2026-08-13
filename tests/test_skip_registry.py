@@ -35,7 +35,7 @@ def test_every_registered_skip_names_a_real_test(nodeid: str):
 
 
 def test_every_registered_reason_says_what_would_unblock_it():
-    """"pre-Step 0" is the only reason anything here is allowed to skip."""
+    """ "pre-Step 0" is the only reason anything here is allowed to skip."""
     for nodeid, reason in EXPECTED_SKIPS.items():
         assert "pre-Step 0" in reason, (
             f"{nodeid} skips for a reason that is not the Step 0 block: {reason!r}"
