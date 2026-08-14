@@ -1,85 +1,15 @@
-# Where the disagreement lives
+# When Self-Consistency Backfires, v2
 
-**Draft, v2 of arXiv:2608.11403.** Structure follows `notes/outline_v2.md`,
-which was ordered by `notes/prior_work.md` rather than by the order the work
-was done.
+**Draft, v2 of arXiv:2608.11403.** Merged manuscript: the original's results
+carried over, its interpretation revised, new sections integrated.
 
-**Status of numbers in this file.** Every figure is either produced by
-`derive.py` from the stored raw records and reproducible by the falsification
-suite, or marked `[BLANK]`. A `[BLANK]` is not a placeholder to be filled with
-a plausible value; it marks a quantity this project does not have. Sentences
-describing a compute-matched comparison are absent entirely, because no
-`budget_matched` rows exist yet and doc 2 forbids writing one without them.
+**Status of numbers.** Every figure is either quoted from v1 (marked as such
+and not recomputed), produced by `derive.py` from the stored raw records, or
+marked `[BLANK]`. A `[BLANK]` marks a quantity this project does not have.
+No sentence describing a compute-matched comparison appears anywhere, because
+no `budget_matched` rows exist and doc 2 forbids writing one without them.
 
-Predecessor cited throughout as arXiv:2608.11403, read from
-`paper/backfire_preprint.pdf`.
-
----
-
-## Status: this is an addendum, not yet the manuscript
-
-**Confirmed by inspection.** This file contains only the new material. A v2
-replaces arXiv:2608.11403 rather than supplementing it, so it must carry that
-paper's abstract, setup, and results with the new work integrated. It does not
-yet. The original is 4,232 words in seven sections:
-
-| original section | present here | disposition on merge |
-|---|---|---|
-| Abstract | rewritten below, provisional | replace |
-| 1 Introduction | partly | merge; framing changes below |
-| 2 Setup | **absent** | carry over, extend with margin instrumentation |
-| 3 Pre-Registered Confirmatory Results | **absent** | carry over unchanged |
-| 4.1 Backfire affects the majority of problems | **absent** | carry over unchanged |
-| 4.2 The oracle upper bound is real but not reachable | **absent** | carry over, add the flat-aggregate-curve caveat |
-| 4.3 Two verifier-free gates fail to capture it | **absent** | carry over, **reinterpret** |
-| 4.4 Why: confidence does not track correctness | **absent** | carry over, **substantially revise** |
-| 5 Discussion | **absent** | rewrite around the new material |
-| 6 Limitations | partly | merge |
-| 7 Conclusion | **absent** | rewrite |
-
-Merging is the next task. Nothing below should be read as final ordering.
-
-### What the original's framing must change, because the new work reinterprets it
-
-Four changes, in descending order of how much they alter a claim.
-
-1. **Section 4.4's title and thesis, "confidence does not track correctness",
-   is now too strong and partly misdiagnosed.** The original inferred a single
-   mechanism from the joint failure of two gates. The new work separates them:
-   the **token-entropy** gate failed on **aggregation**, because a per-token
-   average over roughly 613 tokens is dominated by fluency and the answer token
-   is one of them, and that is a measurement artefact rather than a fact about
-   confidence. Repairing the aggregation, by measuring at the answer span,
-   produces a signal that still fails, but for a different reason: saturation.
-   The merged section must present these as two failures with two causes, not
-   one thesis with two witnesses.
-
-2. **The correctness claim needs a unit attached.** "Confidence does not track
-   correctness" is false as stated at the across-question unit: our own margin
-   separates correct from incorrect samples by +0.0589 with an interval
-   excluding zero, and Kumaran (arXiv:2606.29490) reports AUROC 0.62 to 0.80
-   for the same quantity across questions. What we can defend is the
-   within-question claim. The merged text must say **which** decision the
-   signal fails at rather than asserting a general absence of information.
-
-3. **The abstract's "we do not test reasoning-native models, which we flag as
-   the central open question" must become a scoped negative result.** It is no
-   longer open in the same way: on hosted serverless inference at these
-   budgets, it is unmeasurable, and section 4 reports three separate walls.
-   The open question survives, but it is now open **for the open-weights
-   route**, not open in general.
-
-4. **Model coverage becomes asymmetric and must be labelled everywhere.** The
-   original's backfire result covers two models from different families. The
-   new registered claims cover **one**. A merged paper carrying both must not
-   let the reader infer that everything here rests on two models.
-
-Two smaller items. Section 4.2's oracle headroom should note that the
-**aggregate** accuracy curve over the grid spans only 0.52 points, so the
-14-to-17 point headroom is entirely per-problem and an aggregate reading of it
-is wrong. And the original's own pre-registration split (47 exploratory, 151
-confirmatory) should be reported alongside the disclosure that three of the 50
-exploratory ids sit inside the confirmatory 151.
+v1 read from `paper/backfire_preprint.pdf`, cited as arXiv:2608.11403.
 
 ---
 
@@ -87,10 +17,10 @@ exploratory ids sit inside the confirmatory 151.
 
 Self-consistency by majority vote reduces per-problem accuracy on most GPQA
 Diamond problems for small instruction-tuned models: 56.6 percent of problems
-for Qwen2.5-7B and 65.7 percent for Llama-3-8B (arXiv:2608.11403). The obvious
-remedy is a verifier-free confidence gate that decides which problems to vote
-on. This paper reports that the most natural repair to that remedy also fails,
-and separates two failures the earlier work treated as one.
+for Qwen2.5-7B and 65.7 percent for Llama-3-8B. The obvious remedy is a
+verifier-free confidence gate that decides which problems to vote on. This
+paper reports that the most natural repair to that remedy also fails, and
+separates three signal failures that v1 treated as one.
 
 A token-entropy gate fails for a measurement reason rather than a substantive
 one: a per-token average over a chain of roughly 613 tokens is dominated by
@@ -112,12 +42,17 @@ that has already committed. **We did not find this result in our search of the
 prior literature**, though the dilution it corrects for, and the practice of
 measuring at the answer span, are both established.
 
-These claims rest on **one model**. A registered second-model replication was
-sampled and could not be evaluated: its cap was selected from a probe of eight
-non-random problems that proved unrepresentative, the run's answer rate came in
-at 0.8931 against a registered comparability condition of 0.9950, and scoring a
-pool selected for finishing fastest would have violated the rule this paper
-argues for. We report that rejection rather than the result.
+The plurality-agreement gate's failure, unlike the other two, remains without a
+mechanism. It is not token-level, so neither dilution nor saturation explains
+it, and we report it as an open problem rather than absorbing it into an
+account that does not cover it.
+
+These new claims rest on **one model**. A registered second-model replication
+was sampled and could not be evaluated: its cap was selected from a probe of
+eight non-random problems that proved unrepresentative, the run's answer rate
+came in at 0.8931 against a registered comparability condition of 0.9950, and
+scoring a pool selected for finishing fastest would have violated the rule this
+paper argues for. We report that rejection rather than the result.
 
 We separately report that on **hosted serverless inference at a small budget**,
 three reasoning-native models could not be evaluated at all, for three distinct
@@ -128,294 +63,477 @@ this bounds what a metered per-token API buys rather than what is knowable, and
 we name open weights on fixed-cost compute as the route a follow-up should
 take. Total project spend was $4.67, itemised.
 
+## Changes from v1
+
+For readers who cited the original. **The headline results are unchanged. What
+moved is the explanation of why the gates fail.**
+
+### Corrections to claims made in v1
+
+| v1 claim | status in v2 | why |
+|---|---|---|
+| §4.4 title and thesis, "confidence does not track correctness" | **CORRECTED** | v1 inferred one mechanism from two gates failing together. The failures have different causes and one of them is a measurement artefact. See §4.4. |
+| §5, "Both gates read confidence, but confidence on these problems does not indicate correctness" | **CORRECTED, narrowed to a unit** | False as stated across questions. The answer-token margin separates correct from incorrect samples by +0.0589 with an interval excluding zero, and independent work reports AUROC 0.62 to 0.80 for the same quantity across questions. The defensible claim is within-question. |
+| Abstract, "we do not test reasoning-native models, which we flag as the central open question" | **PARTLY ANSWERED, and rescoped** | Not open in the same way: on hosted serverless inference at a small budget it is unmeasurable, and §5 reports three separately measured walls. It remains open for the open-weights route. |
+| §6 Limitations, the entropy gate's failure grouped with agreement's under one "known mechanism" | **SEPARATED** | The entropy gate was reading a diluted statistic. That is miscounted evidence, not evidence about confidence. |
+
+### Additions
+
+| new material | section |
+|---|---|
+| Answer-token margin, the "richer signal" v1's Limitations named as future work | §4.4, §4.5 |
+| The reasoning wall, three models, scoped to hosted serverless inference | §5 |
+| A registered replication that the paper's own comparability rule rejected | §6 |
+| Thread A, a reconstructed few-sample estimator | §7 |
+| Corrections and disclosures | §10 |
+
+**v2 closes a limitation v1 stated about itself.** v1's Limitations said:
+"Richer signals such as final-answer log-probability margins or confidence
+dynamics across samples could behave differently, and our negative result does
+not rule them out. Evaluating final-answer margins requires per-token
+log-probability arrays, which our pipeline did not store." This paper stores
+them and evaluates that signal. It does not behave differently in the way that
+sentence hoped.
+
+### Unchanged
+
+Every result in §3, §4.1, §4.2 and §4.3, all pre-registered verdicts from v1,
+and every number in Tables 1, 2 and 3. **No v1 result was recomputed,
+re-estimated, or withdrawn.** v2 adds a run; it does not revise v1's data.
+
+---
+
 ## 1. Introduction
 
-arXiv:2608.11403 established that majority voting over sampled chains reduces
-accuracy on 56.6 and 65.7 percent of GPQA Diamond problems, depending on the
-model. That is prior work and is cited, not claimed, here.
+*(v1 text, retained; two paragraphs added at the end.)*
 
-The natural response is selective voting: compute a confidence signal per
-sample, and use it to decide which samples to trust or whether to vote at all.
-The signal most readily available from any provider is the model's own token
-probability. **This paper tests that response and reports that it fails, for a
-reason that is not the one usually given.**
+Inference-time compute is a primary lever for LLM reasoning, and
+self-consistency, sample several chains of thought and return the plurality
+answer, is among the simplest and most widely used techniques in this family
+(Wang et al., 2023). It is commonly assumed to be a low-risk accuracy boost.
 
-The usual reason offered is that sequence-averaged confidence is diluted by
-high-confidence filler tokens. That is true, it is already established (section
-3), and it is not our finding. We measure confidence at the answer token
-itself, where dilution cannot apply, and it still does not separate the samples
-that a voting procedure must separate.
+That assumption fails on hard problems. When a model places its highest
+probability on an incorrect answer across independent samples, more samples
+only entrench the wrong vote. We call this backfire. We then ask the question a
+cost-conscious practitioner would ask: can a cheap, verifier-free signal
+computed from a few samples tell you which problems to vote on and which to
+skip?
 
-### Contributions
+**New in v2.** v1 tested two such signals, plurality agreement and token-level
+entropy, found both fail, and offered one explanation for both. This version
+tests a third, the answer-token log-probability margin, which v1's own
+Limitations named as the obvious next candidate and could not evaluate because
+its pipeline stored only a mean entropy scalar. We collect the per-token
+arrays, measure the margin at the answer span, and report that it also fails.
 
-1. **A registered, held-out commitment result on one model.** A sample whose
-   answer contradicts its own problem's plurality emits that answer at a
-   median margin of 20.52 nats. The disagreement self-consistency exploits is
-   not located at the answer token.
-2. **The reasoning wall, scoped to hosted serverless inference.** Three
-   reasoning-native models, three distinct and separately measured failures to
-   evaluate, with an itemised bill, and the open-weights route named as what a
-   follow-up uses.
-3. **A methodological rule with a test behind it**: comparability between
-   models is keyed on answer rate, not on matched token caps.
-4. **Thread A**, a negative result on a reconstructed few-sample estimator.
+The three failures do not share an explanation, and separating them is the main
+interpretive change in this version. One is a measurement artefact, one has a
+mechanism we can state and test, and one remains unexplained.
 
-We also report, in section 7, the case where rule 3 rejected one of our own
-registered results.
+## 2. Setup
 
-## 2. The commitment result
+*(v1 text, retained in substance; a new subsection added for the margin
+instrumentation.)*
 
-### 2.1 Setup
+**Dataset and design.** The full GPQA Diamond benchmark (Rein et al., 2024),
+198 graduate-level multiple-choice questions in biology, chemistry and physics.
+Pre-registered confirmatory design: 47 problems exploratory, 151 confirmatory.
+Hypotheses and thresholds locked and git-tagged before any confirmatory
+analysis, at `backfire-prereg-v1.0`. Exploratory, confirmatory and pooled
+values are reported throughout; PASS/FAIL is decided on the confirmatory set
+only.
 
-198 GPQA Diamond problems, Qwen2.5-7B-Instruct-Turbo, M = 64 samples per
-problem, cap 2048, logprobs at depth 5. 12,672 samples.
+**Models.** Two instruction-tuned models from different families, served on
+Together AI: Qwen2.5-7B-Instruct-Turbo and Meta-Llama-3-8B-Instruct-Lite. Both
+small (7 to 8B) and non-reasoning. N = 64 samples per problem, temperature 0.7,
+a single locked prompt template byte-identical across runs as verified by
+SHA-256. Five-pass answer extraction; parse rate 99.5 percent (Qwen) and 98.6
+percent (Llama).
+
+**Metrics, routing and gates, uncertainty.** As v1: `MV acc(N)` is expected
+majority-vote accuracy over N samples with ties broken uniformly at random,
+estimated by Monte Carlo. Backfire is `mv_gain < 0`. The oracle routes each
+problem to the best N across {1, 2, 4, 8, 16, 32, 64} using ground truth and is
+an upper bound, not a deployable method. The agreement gate returns the probe
+plurality when its fraction over k samples is at least tau, else votes at
+N = 64. The entropy gate returns the probe plurality when mean per-token
+entropy over k = 4 probe samples falls below a threshold, else votes at N = 64.
+95 percent intervals are problem-level bootstrap, 1000 iterations, seed 42.
+
+### 2.1 New in v2: the answer-token margin
+
+v1 retained only a mean per-token entropy scalar, which is why it could not
+evaluate a margin. This version re-samples Qwen2.5-7B-Instruct-Turbo on all
+198 problems at M = 64, cap 2048, requesting log-probabilities at depth 5, and
+stores the full response object. 12,672 samples.
 
 The **answer-token margin** is the log-probability of the emitted option letter
 minus that of the highest-scoring alternative option letter, at the answer
-position. Censoring rule and its justification are in section 3.
+position.
 
-Split discipline: 129 problems were exposed to exploratory analysis and are
-recorded as such in `notes/exploration_ledger.md`. **69 problems were never
-read by any exploratory analysis.** The claims below were registered at
-`argmax-prereg-margin-desc-v1.0`, with thresholds fixed, before those 69 were
-examined, and were examined once.
-
-### 2.2 Registered claims and verdicts
-
-| id | quantity, over samples dissenting from their problem's plurality | estimate | one-sided 95% lower bound | registered threshold | verdict |
-|---|---|---|---|---|---|
-| **MD1** | per-problem median margin | **20.5232** | 18.8376 | 15.0 | **PASS** |
-| **MD2** | per-problem fraction above 10 nats | **0.7567** | 0.7105 | 0.60 | **PASS** |
-
-64 of 69 problems carried at least three dissenting samples; 5 were excluded
-by the registered rule and are counted, not imputed.
-
-**Answer rate, reported beside the accuracy-bearing quantities as doc 4
-section 4.1 requires:** 0.9950 [0.9936, 0.9961], against the published Qwen
-figure of 0.9946 [0.9932, 0.9958]. 12,344 margins measured, 265
-right-censored.
-
-The holdout reproduces the exposed set closely: 20.52 against 20.62, and
-0.757 against 0.749. Both are reported; only the holdout figures were
-registered.
-
-### 2.3 Reading
-
-A sample that contradicts the plurality of its own problem still emits its
-answer at a median of 20.5 nats, which is odds of roughly 800 million to one
-against the nearest alternative option. **Dissenting samples are as committed
-as agreeing ones.**
-
-The implication for selective voting is direct. The variance that
-self-consistency exploits does not live at the answer token. It lives upstream,
-in which chain got written, and the answer token is a near-deterministic
-readout of a chain that has already committed.
-
-### 2.4 The counterweight, stated here rather than buried
-
-The margin is not devoid of information about correctness. Across samples, the
-fraction above 10 nats separates correct from incorrect samples by **+0.0589**,
-with a cluster-bootstrap interval excluding zero. That is a real effect and it
-is small.
-
-**We therefore do not claim that token log-probabilities are uninformative**,
-and any reading of this paper that reaches that conclusion has overshot. The
-claim is narrower and is about a unit: a signal with genuine **across-question**
-discriminative power is close to useless for the **within-question** routing
-decision that self-consistency actually poses.
-
-This distinction matters because it reconciles our result with recent work
-reaching an apparently opposite conclusion. Kumaran (arXiv:2606.29490) reports
-that calibrated log-probability confidence behaves as an answer-evidence signal
-coupled to correctness, at AUROC 0.62 to 0.80. That quantity, a
-temperature-scaled softmax over the option letters, is ours at the same locus.
-Its unit is not: every result there is trial-level across questions, with one
-answer drawn per question, and the design never conditions on samples that
-disagree with each other because it never has two samples of one question to
-compare. **We agree with that paper on its unit and report a different one.**
-
-## 3. Mechanism and instrumentation
-
-This section exists to rule out an alternative explanation for section 2, not
-to make a claim.
-
-### 3.1 Dilution is real, established, and not ours
-
-Averaging a per-token log-probability over a chain of roughly 613 tokens, of
-which the answer token is one, produces a number dominated by fluency rather
-than by the answer. This is the motivating premise of relevance-weighted
-uncertainty estimation (Duan et al., SAR, arXiv:2307.01379), a restatement in a
-new setting of the length pathology long known in machine translation (Murray
-and Chiang, arXiv:1808.10006), and the target of recent length-invariant
-estimators (arXiv:2505.19060). Measuring at the answer span rather than the
-sequence average is likewise established, in SAR, in DeepConf's windowed
-confidence, in claim-conditioned probability, and in CIKM 2025's
-"one-token-deep" analysis of multiple-choice uncertainty.
-
-**We adopt the fix rather than proposing it.** Its only role here is to close
-off the objection that section 2's negative result is an artefact of measuring
-in the wrong place. It is not: we measured in the right place and the signal is
-still saturated.
-
-### 3.2 The margin and its censoring rule
-
-The provider returns the top k alternatives per token, k = 5 in practice. Five
-slots need not contain every option letter.
+**Censoring.** The provider returns the top k alternatives per token, k = 5 in
+practice, and five slots need not contain every option letter.
 
 - **Two or more option letters present: measured.** The second-highest present
-  option is a returned value, and any absent letter is at or below the smallest
-  returned value, so it cannot outrank it. The margin is exact.
+  option is a returned value and any absent letter lies at or below the
+  smallest returned value, so no absent letter can outrank it. The margin is
+  exact.
 - **Fewer than two present: right-censored** at the top letter minus the
-  smallest returned logprob. Recorded as a bound.
+  smallest returned log-probability, and recorded as a bound.
 - **Never imputed.** Filling a missing letter at the censoring bound would
   understate the margin exactly on the problems where the model is most
   certain, which are the ones a confidence gate cares about most.
 
 12,344 measured, 265 censored.
 
-### 3.3 A reproducibility note: response shape is a property of the model
+**Comparability with v1's runs.** The new run's answer rate is 0.9950 [0.9936,
+0.9961] against v1's published 0.9946 [0.9932, 0.9958] for the same model, a
+difference of 0.0004 with almost entirely overlapping intervals. The two runs
+therefore describe the same output population, not merely the same prompts.
 
-Together returns logprobs in two shapes, and which one arrives is decided by
-the model, not the provider: parallel arrays for Qwen2.5-7B, OpenAI-nested for
-Qwen3.5-9B. A parser written against the first does not fail loudly on the
-second; it finds no alternatives and returns nothing. This produced a null
-margin on every sample of the second model, with no error raised anywhere,
-and was caught by a 32-sample probe rather than after a 3,168-sample run.
+**Split discipline for the new claims.** Exposure was tracked per analysis: 129
+problems were read by some exploratory analysis and 69 were not. The claims in
+§4.5 were registered with thresholds fixed, at
+`argmax-prereg-margin-desc-v1.0`, before those 69 were examined, and were
+examined once.
 
-A parser validated on one model is unvalidated on the next.
+## 3. Pre-Registered Confirmatory Results
 
-## 4. The reasoning wall, on hosted serverless inference
+*(v1, UNCHANGED. No number in this section was recomputed.)*
 
-### 4.0 Scope, stated before the measurements
+All four pre-registered hypotheses pass on the 151 confirmatory problems.
+Thresholds were fixed before any confirmatory analysis and set with margin on
+the permissive side of the exploratory point estimates rather than at them, so
+each is a genuine prediction rather than a restatement.
 
-**The claim in this section is about hosted serverless inference, and it does
-not hold for open weights on owned or free compute.** Stated first because
-unscoped it has a one-line rebuttal, and the rebuttal is correct.
+| Hyp | Prediction (both models) | Qwen2.5-7B | Llama-3-8B | Result |
+|---|---|---|---|---|
+| PH1 | backfire rate >= 33% | 60.3% [53.0, 68.2] | 65.6% [58.3, 73.5] | PASS |
+| PH2 | agree gate capture <= 10% | 0.8% [-89.1, 68.1] | -1.6% [-92.9, 74.2] | PASS |
+| PH3 | top-agree-bin acc. <= 70% | 51.2% (n=43) | 14.3% (n=21) | PASS |
+| PH4 | entropy gate capture <= 10% | 0.5% | 0.9% | PASS |
 
-All three models below are **downloadable**. Nothing here says a
-reasoning-native model cannot be evaluated on GPQA Diamond. It says that on a
-metered, per-token, hosted API at a small budget, three of them could not be:
-one had no serverless route at any price, one never reached a comparable
-answer rate at any cap we could afford, and one returned nothing at all at any
-affordable cap.
+Table 1: Confirmatory hypotheses (n = 151). Captures here are measured against
+the binary {N = 1, N = 64} oracle relative to an `MV acc(64)` baseline, which
+is why they are much smaller than the grid-oracle captures in §4.3. PH2's
+intervals are wide enough to be consistent with capture well above the 10
+percent threshold: the pre-registered decision rule is on the point estimate,
+and the intervals are reported alongside it.
+
+## 4. Results
+
+### 4.1 Backfire affects the majority of problems, precisely estimated
+
+*(v1, UNCHANGED.)*
+
+Pooled backfire rate 56.6 percent [49.5, 63.6] for Qwen and 65.7 percent
+[59.1, 71.7] for Llama. Expanding from 47 to 198 problems roughly halved the
+interval width and both rates sit well above the 33 percent threshold.
+
+**The aggregate and per-problem pictures diverge.** Voting barely moves
+aggregate accuracy (Qwen 0.342 to 0.369, Llama 0.273 to 0.313) while harming
+the majority of problems individually. The worst single problem loses 47 points
+(Qwen) or 46 (Llama); a few gain as much as 66 or 70. The asymmetry is real but
+rare.
+
+| Domain | Qwen n | Qwen backfire | Llama n | Llama backfire |
+|---|---|---|---|---|
+| Biology | 19 | 36.8% | 19 | 42.1% |
+| Chemistry | 93 | 66.7% | 93 | 68.8% |
+| Physics | 86 | 50.0% | 86 | 67.4% |
+| Pooled | 198 | 56.6% | 198 | 65.7% |
+
+Table 2: Per-domain backfire rate (pooled 198). Reported descriptively; the
+per-domain counts, biology especially, are too small to support claims about
+why backfire concentrates where it does.
+
+### 4.2 The oracle upper bound is real but not reachable
+
+*(v1 results UNCHANGED; one caveat added.)*
+
+A grid oracle routing each problem to the best majority-vote accuracy across N
+in {1, 2, 4, 8, 16, 32, 64} reaches 0.482 (Qwen) and 0.439 (Llama), a ceiling
+14 points above N = 1 for Qwen and 17 for Llama. It marks how much accuracy a
+perfect per-problem routing decision could recover. It is an upper bound, not a
+method.
+
+**Added in v2.** That headroom is entirely per-problem and must not be read as
+aggregate. Measured on the confirmatory 151, the whole aggregate accuracy curve
+across the grid spans **0.52 accuracy points**. A reader who takes 14 to 17
+points as recoverable aggregate headroom has misread the quantity: the ceiling
+comes from routing individual problems in opposite directions, and those
+movements very nearly cancel in the mean.
+
+### 4.3 Two verifier-free gates fail to capture it
+
+*(v1, UNCHANGED. The title still says two: v2 adds a third **signal**, not a
+third gate, and builds no margin gate. See §4.4.)*
+
+Neither cheap gate recovers the headroom. The agreement gate (k = 8, tau =
+0.75) reaches 0.368 accuracy for Qwen and 0.312 for Llama against 0.369 and
+0.313 for fixed-budget voting at N = 64, differences of 0.0006 and 0.0014. We
+report these magnitudes rather than a significance claim, having computed no
+paired test.
+
+Measured against `MV acc(1)`, the agreement gate captures 18.7 percent of
+available grid-oracle headroom for Qwen and 23.4 percent for Llama. Those
+figures credit the gate with headroom that voting alone already recovers.
+Measured against `MV acc(64)`, which isolates what the routing decision adds
+over simply voting, capture is PH2 in Table 1: 0.8 percent for Qwen and -1.6
+percent for Llama. **What the gate buys relative to a flat N = 64 is compute,
+not accuracy.**
+
+Every gate-versus-baseline comparison uses fixed-budget voting at a flat
+N = 64. **We do not compute a compute-matched baseline**, in v1 or in v2.
+
+The entropy gate is evaluated entirely within the confirmatory 151, since
+log-probabilities existed only for that split. Its threshold was selected
+in-sample on that same set, so its reported capture is optimistic. It captures
+0.2 percent of grid-oracle headroom for Qwen and 31.2 percent for Llama. Mean
+per-token entropy modestly predicts which problems backfire (AUC 0.631 Qwen,
+0.523 Llama), but predictive signal does not translate into routing accuracy,
+because the gate cannot act on it without misclassifying enough problems to
+erase the gain. Across all 22 operating points swept, none beats fixed-budget
+meaningfully.
+
+### 4.4 Why: three signals, three different failures
+
+**This section replaces v1's §4.4, "Why: confidence does not track
+correctness".** v1 offered a single account for two failing gates. With a third
+signal measured, that account no longer holds as stated: the three failures
+have three different statuses, and only one of them is explained by
+miscalibration.
+
+#### Signal 1: plurality agreement. Fails, and we cannot say why.
+
+*(v1 evidence, UNCHANGED.)*
+
+| Confidence bin | Qwen n | Qwen frac correct | Llama n | Llama frac correct |
+|---|---|---|---|---|
+| [0.25, 0.50) | 56 | 33.9% | 79 | 30.4% |
+| [0.50, 0.75) | 83 | 27.7% | 84 | 33.3% |
+| [0.75, 1.00] | 59 | 52.5% | 35 | 28.6% |
+
+Table 3: Calibration by agreement bin (pooled 198). Confidence is the plurality
+fraction over all samples.
+
+Even the highest-agreement bin is far from reliable: Qwen's plurality is
+correct 52.5 percent of the time there, and Llama's only 28.6 percent, lower
+than its own low-agreement bin. Llama's accuracy is not monotone in agreement,
+rising then falling across the three bins.
+
+**What v2 changes here is the status of the explanation, not the evidence.**
+Plurality agreement is computed over *answers*, not over tokens. Neither
+dilution nor answer-token saturation can apply to it: it never touches a
+log-probability. The account developed below for the other two signals
+therefore says nothing about this one.
+
+**Agreement's failure remains without a mechanism, and we state that as an open
+problem rather than absorbing it.** We can describe it, in Table 3, and we
+cannot explain it. Calling it an instance of general overconfidence, as v1 did,
+is a label rather than an account: it does not predict that Llama's top bin
+should be *worse* than its bottom one, and it does not say what would have to
+be true for agreement to work on some other benchmark. **This is the largest
+unresolved question in the paper**, and it is as unresolved in v2 as in v1. The
+difference is that v1's framing made it look answered.
+
+#### Signal 2: mean token entropy. Miscounted evidence, not evidence about confidence.
+
+The entropy gate averaged a per-token quantity over the whole chain. In this
+model's completions that chain is roughly 613 tokens, of which the answer token
+is **one**. Almost all of the average is prose: syntax, connectives,
+restatement of the question, all of which the model predicts easily and
+confidently. A gate thresholding that number is thresholding fluency.
+
+**This is a measurement artefact and should not be reported as a fact about
+confidence.** v1's §4.4 treated the entropy gate's failure as a second witness
+for "confidence does not track correctness". It is not a witness at all: the
+quantity being thresholded was not a measurement of the model's confidence in
+its answer.
+
+That averaged confidence is diluted by high-confidence filler is established
+rather than new. It is the motivating premise of relevance-weighted uncertainty
+estimation (Duan et al., 2024), a restatement in a new setting of the length
+pathology long known in machine translation (Murray and Chiang, 2018), and the
+target of recent length-invariant estimators. Measuring at the answer span
+instead is likewise established, in that line and in windowed and
+claim-conditioned confidence. **We adopt the fix rather than proposing it.**
+
+Its role here is narrow: it closes off "you measured in the wrong place" as an
+explanation for the next result.
+
+#### Signal 3: the answer-token margin. Fails on saturation, with a mechanism.
+
+Measured at the answer token, where dilution cannot apply, the signal is
+saturated. §4.5 gives the registered test. The mechanism it supports:
+
+**The answer token is a near-deterministic readout of a chain that has already
+committed.** A sample whose answer contradicts the plurality of its own problem
+still emits that answer at a median 20.52 nats, odds of roughly 800 million to
+one against the nearest alternative option. Dissenting samples are as committed
+as agreeing ones. The variance self-consistency exploits therefore does not
+live at the answer token; it lives upstream, in which chain got written.
+
+This is a mechanism rather than a restatement because it is falsifiable and was
+registered in advance: had dissenting samples been measurably less certain than
+agreeing ones, the thresholds in §4.5 would have failed.
+
+#### Summary, and what this does to v1's thesis
+
+| signal | token-level? | fails? | status of the explanation |
+|---|---|---|---|
+| plurality agreement | no | yes | **none. Open problem.** |
+| mean token entropy | yes | yes | measurement artefact: the statistic was diluted |
+| answer-token margin | yes | yes | mechanism: saturation, registered and tested |
+
+**v1's "confidence does not track correctness" is retired as a unifying
+thesis.** One of the three failures is not about confidence, one is about
+confidence in a way v1 did not state, and one is unexplained. This section must
+not be read as though every failure now has an account. Two of three do.
+
+### 4.5 The commitment result, registered and held out
+
+Registered at `argmax-prereg-margin-desc-v1.0` with thresholds fixed, then
+tested once on the 69 problems no exploratory analysis had read.
+
+| id | quantity, over samples dissenting from their problem's plurality | estimate | one-sided 95% lower bound | registered threshold | verdict |
+|---|---|---|---|---|---|
+| **MD1** | per-problem median margin | **20.5232** | 18.8376 | 15.0 | **PASS** |
+| **MD2** | per-problem fraction above 10 nats | **0.7567** | 0.7105 | 0.60 | **PASS** |
+
+64 of 69 problems carried at least three dissenting samples; 5 were excluded by
+the registered rule and are counted, not imputed. Answer rate on the store,
+reported beside these quantities as required: 0.9950 [0.9936, 0.9961]. The
+holdout reproduces the exposed set closely, 20.52 against 20.62 and 0.757
+against 0.749; only the holdout figures were registered.
+
+**The counterweight, stated here rather than buried.** The margin is not devoid
+of information about correctness. Across samples, the fraction above 10 nats
+separates correct from incorrect by **+0.0589**, with a cluster-bootstrap
+interval excluding zero. That is real and small.
+
+**We therefore do not claim that token log-probabilities are uninformative**,
+and any reading of this paper reaching that conclusion has overshot. The claim
+is about a unit: a signal with genuine **across-question** discriminative power
+is close to useless for the **within-question** routing decision that
+self-consistency poses.
+
+This reconciles the result with recent work reaching an apparently opposite
+conclusion. Kumaran (2026) reports that calibrated log-probability confidence
+behaves as an answer-evidence signal coupled to correctness, at AUROC 0.62 to
+0.80. That quantity, a temperature-scaled softmax over the option letters, is
+ours at the same locus. Its unit is not: every result there is trial-level
+across questions, with one answer drawn per question, and the design never
+conditions on samples that disagree with each other, because it never has two
+samples of one question to compare. **We agree with that paper on its unit and
+report a different one.**
+
+**No margin gate was built.** We measured the signal and report that it cannot
+support the routing decision. We did not construct a margin-thresholded gate
+and evaluate its accuracy, which is why §4.3 remains a two-gate result.
+
+## 5. The reasoning wall, on hosted serverless inference
+
+v1's Limitations reported that a preliminary reasoning-native evaluation had
+samples exhausting the output budget on hidden reasoning, and left the question
+open. This section reports what happened when we tried to close it.
+
+### 5.0 Scope, stated before the measurements
+
+**The claim is about hosted serverless inference and does not hold for open
+weights on owned or free compute.** Stated first because unscoped it has a
+one-line rebuttal, and the rebuttal is correct.
+
+All three models below are downloadable. Nothing here says a reasoning-native
+model cannot be evaluated on GPQA Diamond. It says that on a metered per-token
+hosted API at a small budget, three of them could not be.
 
 **What the constraint actually is.** Serverless pricing charges per output
-token, and reasoning-native models emit a great many of them. That makes the
-cost of a fixed experiment scale with the model's verbosity rather than with
-the size of the benchmark, and 198 problems at M = 16 becomes unaffordable at
-the caps these models need. The wall is a property of **the billing model**
-meeting **the generation length**, not of the models being hard to run.
+token, and reasoning-native models emit a great many. The cost of a fixed
+experiment therefore scales with the model's verbosity rather than with the
+size of the benchmark. The wall is a property of the billing model meeting the
+generation length, not of the models being hard to run.
 
-**The route a follow-up should take is therefore open weights on fixed-cost
-compute**, where the marginal cost of an output token is zero and the binding
-constraint becomes wall-clock and memory instead. Kaggle's free tier, for
-example, offers two T4 GPUs at 32 GB total with roughly 30 GPU-hours per week,
-which is enough for a 7 to 9B model in reduced precision and long generations,
-though not for a 32B model without quantisation or offload. Under that budget
-the caps that defeated us here are affordable, and the questions this section
-had to abandon become answerable. What changes is not the science but the
-denominator.
+**The route a follow-up should take is open weights on fixed-cost compute**,
+where the marginal cost of an output token is zero and the binding constraint
+becomes wall-clock and memory. Kaggle's free tier offers two T4 GPUs at 32 GB
+total with roughly 30 GPU-hours per week, enough for a 7 to 9B model in reduced
+precision at long generations, though not for a 32B model without quantisation
+or offload. Under that budget the caps that defeated us are affordable. What
+changes is not the science but the denominator.
 
-We report the serverless walls because they are what this project met and
-because they are unreported elsewhere, not because they bound the problem.
+### 5.1 Position relative to prior work
 
-### 4.1 Position relative to prior work
-
-That token budgets change evaluation outcomes is established. Budget-dependent
+That token budgets change evaluation outcomes is established: budget-dependent
 ranking reversals have been reported on GPQA Diamond at the same 198 items,
-significant at p < 0.01, with a three-tier truncation analysis
-(arXiv:2608.12150). That paper is stronger than this one on the general claim.
+significant at p < 0.01, with a three-tier truncation analysis. That work is
+stronger than this on the general claim, and **it deliberately excludes
+reasoning-native models**, naming o1, DeepSeek-R1 and QwQ, because their
+dual-stream architecture changes the semantics of `max_tokens`. This section
+reports that excluded region.
 
-**It deliberately excludes reasoning-native models**, naming o1, DeepSeek-R1
-and QwQ, on the stated grounds that their dual-stream architecture changes the
-semantics of `max_tokens`. This section reports that excluded region.
+### 5.2 Three models, three measured walls
 
-### 4.2 Three models, three measured walls
-
-Each established by a real request, never inferred from a price list or a model
-card.
+Each established by a real request, never inferred from a price list.
 
 | model | wall | measurement |
 |---|---|---|
-| **QwQ-32B** | unreachable | `model_not_available`; no serverless route |
-| **MiniMax-M2.7** | never at a comparable cap | answer rate 0.6460 at cap 16,384; 0.2649 at the published 2048 |
-| **Qwen3.5-9B** | nothing at any affordable cap | answer rate **0.0000** at 2048 and at 4096, with **mean completion equal to the cap exactly**; 0.5938 at 8192 |
+| QwQ-32B | unreachable | `model_not_available`; no serverless route |
+| MiniMax-M2.7 | never at a comparable cap | answer rate 0.6460 at cap 16,384; 0.2649 at the published 2048 |
+| Qwen3.5-9B | nothing at any affordable cap | answer rate **0.0000** at 2048 and 4096, **mean completion equal to the cap exactly**; 0.5938 at 8192 |
 
-Reference: Qwen2.5-7B-Instruct-Turbo at cap 2048 answers **0.9950** over
-12,672 samples.
+Reference: Qwen2.5-7B-Instruct-Turbo at cap 2048 answers 0.9950 over 12,672
+samples.
 
-The Qwen3.5-9B row is the sharpest. Every one of 52 samples at 2048 and 4096
-ran to the ceiling, and at 4096 the visible channel received 38 characters.
-The model card recommends 32,768 output tokens for general queries, so the
-published study's 2048 is a sixteenth of this model class's own lower
-recommendation. This is not a model failing at a reasonable cap; it is a cap
-fixed before this class of model was the default.
+Every one of 52 samples at 2048 and 4096 ran to the ceiling, and at 4096 the
+visible channel received 38 characters. The model card recommends 32,768 output
+tokens for general queries, so v1's 2048 is a sixteenth of this model class's
+own lower recommendation. This is not a model failing at a reasonable cap; it
+is a cap fixed before this class of model was the default.
 
-### 4.3 The wall has a door, and the door changes the experiment
+### 5.3 The door, and what it changes
 
-Together honours a thinking control on Qwen3.5-9B. Two spellings, the model
-card's `chat_template_kwargs {"enable_thinking": false}` and the provider's
-`reasoning {"enabled": false}`, are both accepted and indistinguishable in
-effect: mean completion 1537.3 against 1532.8 at cap 2048, identical
-truncation, no reasoning field returned either way.
+Together honours a thinking control on Qwen3.5-9B. Two spellings are accepted
+and indistinguishable in effect: mean completion 1537.3 against 1532.8 at cap
+2048, identical truncation, no reasoning field returned either way.
 
 **A reasoning model with reasoning disabled is a second non-reasoning model.**
-What became purchasable was therefore not the replication that was wanted, and
-we do not describe it as one.
+What became purchasable was not the replication that was wanted, and we do not
+describe it as one.
 
-### 4.4 The bill
-
-| | samples | spend |
-|---|---|---|
-| capability gate, five candidates | 5 | under $0.01 |
-| cap probe, 2048 / 4096 / 8192 | 84 | $0.1032 |
-| thinking-control probe | 32 | $0.0137 |
-| cap probe at 6144, thinking off | 32 | $0.0178 |
-| **probe total** | **148** | **$0.1347** |
-| margin-v1, the one complete run | 12,672 | $3.4122 |
-| margin-v2, incomplete (section 5) | 1,253 | $1.2554 minus probes |
-| **realized, all phases** | **14,073** | **$4.667639** |
-
-arXiv:2608.12150 reports 56,476 API calls and no monetary cost. We report the
-ledger because the negative results in this paper are only interpretable
-alongside what was affordable.
-
-**The bill is computed, not confirmed.** Every row is stored token counts
-multiplied by a dated price snapshot. The ledger is complete against the raw
-store (14,073 rows against 14,073 sample records) and every row recomputes to
-$4.667639 with no disagreements, so it is internally consistent and
-reproducible. Together documents no balance or usage endpoint, and a dashboard
-reading of the remaining balance ($1.16 on 2026-08-14) cannot close the loop:
-a balance alone cannot distinguish an undercounting ledger from an unrecorded
-starting figure. **Provider total spend, to compare against $4.667639:**
-`[BLANK]`. Until that is recorded the bill is described as computed and
-unconfirmed, and we note that the predecessor's unverifiable $3.9234 is the
-failure this is trying not to repeat.
-
-### 4.5 Comparability is keyed on answer rate, not on matched caps
+### 5.4 Comparability is keyed on answer rate, not on matched caps
 
 Two models at the same cap with different length distributions produce two
-different output populations wearing one benchmark's name. MiniMax-M2.7 at the
-published 2048 answers 0.2649; comparing its answered samples against Qwen's
+different output populations wearing one benchmark's name. MiniMax-M2.7 at
+2048 answers 0.2649; comparing its answered samples against Qwen's
 near-complete ones compares two different sets of problems.
 
 **Rule.** Two conditions are comparable when their answer rates match, and the
-answer rate is published beside every accuracy. Enforced by a test over both
-structured artifacts and prose tables in this repository.
+answer rate is published beside every accuracy.
 
-This differs from the post-hoc filtering used in arXiv:2608.12150 in when it
-applies: it is a design constraint on what to sample, not a repair applied to
-an existing comparison. Section 5 is what happened when we applied it to
-ourselves.
+### 5.5 The bill
 
-### 4.6 Projecting cost from a small probe
+| | samples | spend |
+|---|---|---|
+| probes, all phases | 148 | $0.1347 |
+| the margin run on the v1 model | 12,672 | $3.4122 |
+| the incomplete second-model run (§6) | 1,253 | remainder |
+| **realized, all phases** | **14,073** | **$4.667639** |
+
+**The bill is computed, not confirmed.** Every row is stored token counts times
+a dated price snapshot. The ledger is complete against the raw store (14,073
+rows against 14,073 sample records) and every row recomputes to $4.667639 with
+no disagreements. Together documents no balance or usage endpoint, and a
+dashboard balance reading ($1.16 on 2026-08-14) cannot close the loop: a
+balance alone cannot distinguish an undercounting ledger from an unrecorded
+starting figure. **Provider total spend, to compare against $4.667639:**
+`[BLANK]`.
+
+### 5.6 Projecting cost from a small probe
 
 Mean completion length is a per-problem property at **119.66 times** the
-variance a homogeneous null produces. A probe over k problems therefore
-inherits that between-problem spread, and taking more samples per problem does
-not reduce it.
-
-Resampling the 198 per-problem means, 20,000 trials per k:
+variance a homogeneous null produces. A probe over k problems inherits that
+between-problem spread, and taking more samples per problem does not reduce it.
 
 | k problems | median error | 5th percentile | uplift for 95% coverage |
 |---|---|---|---|
@@ -425,76 +543,61 @@ Resampling the 198 per-problem means, 20,000 trials per k:
 | 32 | -0.17% | -9.10% | 10.0% |
 
 Probes are near-unbiased in the median, yet just over half underestimate at
-every k, because per-problem means are right-skewed. **A ceiling set at the
-projection is therefore wrong about half the time**; it is set at the
-calibrated upper bound for the k actually used.
+every k, because per-problem means are right-skewed. A ceiling set at the
+projection is therefore wrong about half the time.
 
-## 5. When the rule rejected our own registered result
+## 6. When the comparability rule rejected our own registered result
 
-The second-model replication, registered as
-`argmax-prereg-margin-desc-v2.0` and **not evaluated**.
+The second-model replication, registered as `argmax-prereg-margin-desc-v2.0`
+and **not evaluated**.
 
-MD3 and MD4 restated the section 2 mechanism keyed on correctness rather than
-plurality, with thresholds 15.0 nats and 0.60 set below the v1 exposed
-estimates of 21.5365 and 0.7617 so that each was a prediction. The tag was cut
-before any confirmatory sample existed. A stratification check found no
-dependence of either quantity on per-problem accuracy, so the thresholds were
-held rather than recalibrated.
+MD3 and MD4 restated the §4.4 mechanism keyed on correctness rather than
+plurality, with thresholds 15.0 nats and 0.60 set below the exposed estimates
+of 21.5365 and 0.7617 so each was a prediction. The tag was cut before any
+confirmatory sample existed.
 
 **Cap selection failed, and not randomly.** A 32-sample probe at cap 6144
 measured answer rate 1.0000 and truncation 0.0000. The run measured **0.8931**
-[0.8747, 0.9090] and truncation **0.2905**, with mean completion 65.3 percent
-above projection.
+[0.8747, 0.9090] and truncation **0.2905**.
 
 Config drift was ruled out before the selection explanation was accepted: one
-`param_hash` across all 1,253 samples, matching the thinking-off configuration;
-zero nonzero reasoning-token counts; cap 6144 throughout.
+`param_hash` across all 1,253 samples matching the thinking-off configuration,
+zero nonzero reasoning-token counts, cap 6144 throughout.
 
 The cause is measurable because the sampler iterates problem-major and so
 re-sampled the probe's own problems first:
 
 | problems, iteration order | n | mean completion | truncation |
 |---|---|---|---|
-| **the 8 probe problems** | 128 | **2082.9** | 0.0312 |
-| every other problem reached | 1,125 | **3546.4** | 0.3200 |
+| the 8 probe problems | 128 | 2082.9 | 0.0312 |
+| every other problem reached | 1,125 | 3546.4 | 0.3200 |
 
 The probe reproduced itself and was **precise about an unrepresentative
-slice**: the rest of the benchmark runs 1.703 times longer. The k=8 uplift of
-22.7 percent could not have covered a 65.3 percent error, because that table
-describes a **random** draw of 8 problems and a fixed lowest-id slice is not
-one. Its error is not resampleable, because there is one such slice and it is
-the same every time.
+slice**: the rest of the benchmark runs 1.703 times longer. The k = 8 uplift of
+22.7 percent could not cover a 65.3 percent error, because that table describes
+a **random** draw of 8 problems, and a fixed lowest-id slice is not one.
 
-**Consequence.** At 29 percent truncation, the pool that would be scored is
+**Consequence.** At 29 percent truncation the pool that would be scored is
 selected for finishing fastest, and those samples are missing non-randomly.
-Scoring them would produce a number about the subset of samples that fit inside
-6144 tokens and report it as a number about the model, which is the confound
-sections 3 and 4.5 exist to prevent. **MD3 and MD4 are therefore registered and
-unevaluated.** They are not withdrawn and not falsified.
+Scoring them would produce a number about the subset of samples fitting inside
+6144 tokens and report it as a number about the model. **MD3 and MD4 are
+therefore registered and unevaluated.** Not withdrawn, not falsified.
 
-Nor was the replication recoverable at a different cap. A right-censored fit
-to the 1,253 samples puts the cap required for the registered 0.9950 answer
-rate near 41,000 output tokens and the corresponding run at about $4.19, with
-$1.16 remaining. Even a 0.95 rate, which would still fail the condition,
-requires roughly 16,268 tokens and $3.84. **The replication was not lost by
-choosing 6144; it was not purchasable at any cap on this budget.** The
-extrapolation is long and mildly optimistic about completion, which pushes the
-required cap up rather than down; the conclusion does not depend on it, since
-even a 16,384 cap chosen without any fitting exceeds the balance.
-
-A random-draw cap probe at 8192 and 12288 was specified and costed and **not
-run**. No measurements exist at those caps.
+Nor was the replication recoverable at another cap. A right-censored fit to the
+1,253 samples puts the cap required for the registered 0.9950 answer rate near
+41,000 output tokens and the run at about $4.19, with $1.16 remaining. **The
+replication was not lost by choosing 6144; it was not purchasable at any cap on
+this budget.**
 
 **The point.** A methodological rule that never rejects anything is decoration.
 This one rejected a result its own authors had registered, sampled and paid
-for, and the alternative was a single dropped footnote away.
+for.
 
-## 6. Thread A
+## 7. Thread A: a reconstructed few-sample estimator
 
-A reconstructed few-sample estimator, registered at
-`argmax-prereg-threadA-v1.0`, evaluated on the predecessor's confirmatory 151
-problems. Paired per-problem regret difference, estimator minus naive baseline;
-negative favours the estimator.
+Registered at `argmax-prereg-threadA-v1.0`, evaluated on v1's confirmatory 151.
+Paired per-problem regret difference, estimator minus naive baseline; negative
+favours the estimator.
 
 | id | k | difference | 95% CI | verdict |
 |---|---|---|---|---|
@@ -503,69 +606,148 @@ negative favours the estimator.
 | TA2b | 16 | -0.0040 | [-0.0085, +0.0004] | **FAIL** |
 
 TA1 passes by more than the resolution that produced it: the registered floor
-`ta1_resolution_floor` is 0.0161 against an observed 0.0213. **TA2b fails by
-0.0004**, and is reported as a failure rather than rounded into the pattern of
-the other two.
+is 0.0161 against an observed 0.0213. **TA2b fails by 0.0004** and is reported
+as a failure rather than rounded into the pattern of the other two.
 
-A shrinkage baseline was added **post hoc** and is labelled as such throughout:
-at k = 4 and k = 16 every shrinkage strength is worse than the plain baseline,
-and at k = 8 the weakest shrinkage helps slightly. It is not registered and
-decides nothing.
+A shrinkage baseline was added **post hoc** and is labelled as such: at k = 4
+and k = 16 every shrinkage strength is worse than the plain baseline, and at
+k = 8 the weakest helps slightly. It is not registered and decides nothing.
 
-## 7. Corrections and disclosures
+## 8. Discussion
 
-Recorded as a section rather than a footnote.
+*(v1 text retained where its claims survive; the "why the gates fail"
+paragraph is replaced.)*
+
+**Why backfire occurs.** *(v1, unchanged.)* On hard problems the model's
+sampling distribution concentrates on a wrong answer, so voting locks in the
+error. Backfire is not a sampling artifact; it reflects the per-problem answer
+distribution. GPQA distractors are designed to be plausible, which amplifies
+the effect.
+
+**Why the gates fail. (REPLACED.)** v1 said: "Both gates read confidence
+(agreement, or low entropy), but confidence on these problems does not indicate
+correctness." That sentence is withdrawn as stated. The entropy gate was not
+reading confidence; it was reading a diluted average dominated by prose. The
+margin, which does read confidence at the right place, fails because the answer
+token is saturated whether or not the sample agrees with its own plurality. And
+the agreement gate's failure is explained by neither account. Three signals,
+three statuses, set out in §4.4.
+
+**Positioning.** *(v1, retained.)* Prior work established that self-consistency
+helps where models have higher baseline accuracy; we show it hurts the majority
+of problems on a hard benchmark. Adaptive-consistency early stopping is
+essentially our agreement gate, validated on easier datasets where backfire is
+rare. Chen et al. (2024) attribute non-monotone majority-vote accuracy to a
+mixture of easy and hard queries and estimate the optimal call count from few
+samples; we measure the fraction of individual problems harmed rather than the
+shape of the aggregate curve, which matters because aggregate accuracy here is
+nearly flat while a majority of problems degrade underneath it. Tan et al.
+(2025) study self-consistent errors and find consistency-based detectors fail
+on exactly those cases, arguing for an external verifier; their setting is
+error detection rather than compute allocation, but the conclusion converges
+with ours.
+
+**Added in v2.** The external-signal direction v1 pointed to is now better
+motivated, and for a sharper reason than v1 could give. It is not merely that
+the model's own confidence is miscalibrated. It is that at the answer token
+there is almost no variance left to read: the sample has committed, and the
+information that would distinguish a right chain from a wrong one was consumed
+upstream. A signal read at the end of a chain is reading a decision, not a
+deliberation. That argues for signals read *earlier* in the chain, not only for
+signals external to it.
+
+**Implications.** On hard inputs, do not assume self-consistency is safe, and
+do not expect agreement, token entropy, or an answer-token margin to tell you
+when it is. We tested all three and all three fail.
+
+## 9. Limitations
+
+*(v1 limitations retained; those v2 resolves are marked; new ones added.)*
+
+**Retained from v1, unchanged.** Llama is near chance (0.273 single-sample,
+just above the 0.25 baseline), so Qwen is the stronger demonstration and Llama
+corroborates the direction. One benchmark, GPQA Diamond, graduate-level
+science. The 47-problem exploratory subset was easier than the full benchmark
+(Qwen N = 1 accuracy 0.418 against 0.342 pooled). Monte Carlo boundary
+sensitivity: 14 of Qwen's 151 confirmatory problems have exactly zero gain, and
+because backfire is defined strictly as `mv_gain < 0` the sensitivity is
+one-sided and the rate can only rise. The oracle is an upper bound and the
+fraction-captured ratio is noisy. The entropy threshold was selected in-sample,
+so its capture is optimistic.
+
+**Resolved in v2.** v1's "Limited gate family" limitation said final-answer
+log-probability margins could behave differently and could not be evaluated
+because per-token arrays were not stored. They are stored and evaluated in §4.4
+and §4.5. The signal does not behave differently in the way that sentence
+hoped.
+
+**Partly resolved and rescoped.** v1's "Two small, non-reasoning models" left
+reasoning-native evaluation as the central open question. §5 reports it is
+unmeasurable on hosted serverless inference at a small budget and names the
+open-weights route. The question remains open there.
+
+**New in v2.**
+
+- **The new claims rest on one model.** The registered second-model replication
+  was sampled and could not be evaluated (§6). Cross-family replication was
+  never purchasable: four of five priced candidates in the 7 to 9B range
+  refused serverless requests.
+- **Agreement's failure has no mechanism** (§4.4). This is the largest
+  unresolved question in the paper, and v2 makes it more visible rather than
+  smaller.
+- **The reasoning wall is a serverless result**, not a statement about what is
+  knowable.
+- **The bill is unconfirmed by the provider** (§5.5).
+- **No compute-matched baseline**, in v1 or v2. Every gate comparison is
+  against a flat N = 64.
+- **No margin gate was built**, so the margin's failure is inferred from the
+  signal's distribution rather than measured as a routing outcome.
+- An exploratory **U-shaped relation between per-problem completion length and
+  accuracy** (0.4441, 0.3400, 0.2218, 0.3316, 0.4098 by length quintile) is
+  suggestive and **not established**: the shape-agnostic quadratic term gives
+  p = 0.083. Two mechanisms were ruled out, truncation selection and
+  within-problem bimodality. It was found on an already-exposed set with its
+  sharpest contrast chosen after inspection.
+
+## 10. Corrections and disclosures
 
 1. **A superseded predecessor draft was cited** in place of the published
-   preprint, and its headline numbers disagree. A falsification test now scans
-   every document in the repository for citations to superseded drafts.
+   preprint. A falsification test now scans every document in the repository.
 2. **Three per-problem properties were described as independent** before being
    tested. Within one model at n = 127, per-problem accuracy against the
-   sub-2-nat margin tail gives -0.2614 [-0.3912, -0.1156], excluding zero. The
-   one-factor reading rested on three correlations near 0.3 at n = 30 with
-   every interval crossing zero, one of which used a cross-model length proxy.
-   Both readings are retained with their sample sizes.
-3. **The margin-v1 run changed concurrency mid-run**, and because the sampler
-   iterates problem-major the resulting regime comparison is between problems
-   rather than within them. It is reported as confounded and decides nothing.
-   Three manifests are marked `reconstructed` rather than contemporaneous.
+   sub-2-nat margin tail gives -0.2614 [-0.3912, -0.1156], excluding zero.
+3. **The margin run changed concurrency mid-run**; because the sampler iterates
+   problem-major the resulting regime comparison is between problems rather
+   than within them, and it decides nothing. Three manifests are marked
+   `reconstructed`.
 4. **An option-order claim was corrected after tagging.** Options are shuffled
-   by `random.Random(row_index)`, reproducing the predecessor's shuffle;
-   `prompt_hash` is equal across both model stores for all 198 problems,
-   verified.
+   by `random.Random(row_index)`, reproducing v1's shuffle; `prompt_hash` is
+   equal across both model stores for all 198 problems, verified.
 5. **The answer-rate pairing rule did not cover prose tables** until a quintile
-   table of accuracies was published in a note without them. The rule and its
-   test now cover markdown.
-6. **The v2 cap was chosen from 8 non-random problems**, giving the failure in
-   section 5. Probe problems are now drawn at random with a recorded seed.
+   table of accuracies was published without them.
+6. **The v2 cap was chosen from 8 non-random problems** (§6). Probe problems are
+   now drawn at random with a recorded seed.
+7. **v1's own split has a leak:** 3 of its 50 exploratory ids sit inside the
+   confirmatory 151. Disclosed here; v1's verdicts are not recomputed.
 
-## 8. Limitations
+## 11. Conclusion
 
-- **One benchmark**, GPQA Diamond, 198 problems.
-- **The reasoning wall is a serverless result.** All three models are
-  downloadable, and on fixed-cost compute the caps that defeated us are
-  affordable. The section bounds what a metered API buys at this budget, not
-  what is knowable.
-- **One model** for the registered claims. The second-model replication was
-  registered, sampled and could not be evaluated (section 5). Cross-family
-  replication was never purchasable: four of five priced candidates in the 7 to
-  9B range refused serverless requests.
-- **Total spend under $6.** Stated because several design choices are
-  unintelligible without it.
-- **The bill is unconfirmed by the provider** (section 4.4).
-- An exploratory **U-shaped relationship between per-problem completion length
-  and accuracy** (0.4441, 0.3400, 0.2218, 0.3316, 0.4098 by length quintile)
-  is suggestive and **not established**: the shape-agnostic quadratic term
-  gives p = 0.083. Two mechanisms were ruled out, truncation selection and
-  within-problem bimodality. It was found on an already-exposed set with its
-  sharpest contrast chosen after inspection, and it appears here rather than in
-  results for that reason.
+On hard reasoning problems, self-consistency backfires on the majority of
+problems, pre-registered and confirmed on the full GPQA Diamond benchmark for
+Qwen and corroborated by a second family from a near-chance baseline. **That
+result is unchanged from v1.**
 
-## What is not in this draft, and why
+What has changed is the explanation for why cheap verifier-free gates cannot
+recover the headroom. v1 attributed it to confidence not tracking correctness.
+With a third signal measured at the right place, that account no longer covers
+the evidence. The entropy gate was reading a diluted statistic rather than a
+confidence signal. The answer-token margin, read where dilution cannot apply,
+fails because the answer token is saturated: a sample that contradicts its own
+problem's plurality is as committed as one that agrees with it, so the variance
+a router would need has already been spent upstream. And the agreement gate's
+failure is explained by neither, and remains open.
 
-- **No compute-matched comparison sentence.** Doc 2 requires each to carry a
-  `claim_id` resolving to rows in the `budget_matched` table. No such rows
-  exist, so no such sentence is written.
-- **No MD3 or MD4 verdict.** Section 5.
-- **No abstract.** Written last, from the body.
-- **No provider-confirmed spend total.** `[BLANK]` in section 4.4.
+Recovering the headroom likely requires a signal external to the model's own
+samples, or one read earlier in the chain than the answer. Whether
+reasoning-native models escape any of this remains open, and on hosted
+serverless inference at a small budget it is not measurable at all.
