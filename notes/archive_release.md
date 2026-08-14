@@ -119,21 +119,38 @@ excludes unanswered samples, consistent with the phase config's
 apply either policy; that was not a foregone conclusion and is why the field
 was kept rather than collapsed.
 
-**The Qwen residual.** Llama reproduces exactly on all three figures and has
-exactly 64 samples on every problem. Qwen matches `MV acc(1)` to four decimals
-and differs on the two Monte Carlo quantities, and it is the model with
-unequal pool sizes: 47 problems hold 65 to 72 samples, so `MV acc(64)` there
-requires subset draws rather than a single evaluation. v1's own Limitations
-documents this sensitivity and gives a worked instance of a one-problem
-difference on its exploratory split, and records that 14 of its 151
-confirmatory problems have exactly zero gain. A two-problem difference on 198,
-confined to the model with variable pools, is that sensitivity.
+**The Qwen residual: SETTLED, and it vanishes.** No seed sweep was needed
+because a seed recipe exists. `scripts/run_phase13_analysis.py` in the
+predecessor creates `numpy.random.default_rng(42)`, shares one generator
+across problems in sorted `problem_id` order, enumerates subsets exactly when
+the count is at most 5,000 and otherwise draws 2,000 Monte Carlo subsets.
+Reproducing that exactly, together with the temperature filter the paper
+documents:
 
-**Not silently accepted.** The instruction was to stop and report if the
-derived view and the paper disagree. They agree exactly where the computation
-is deterministic and differ only where the paper itself documents
-run-to-run movement. Reporting rather than uploading, because the residual is
-a judgement call and not mine to make.
+| model | quantity | published | reproduced | |
+|---|---|---|---|---|
+| Qwen2.5-7B | MV acc(1) | 0.342 | **0.3419** | match |
+| | MV acc(64) | 0.369 | **0.3686** | match |
+| | backfire | 56.6% | **56.6%** (112/198) | **exact** |
+| Llama-3-8B-Lite | MV acc(1) | 0.273 | **0.2729** | match |
+| | MV acc(64) | 0.313 | **0.3131** | match |
+| | backfire | 65.7% | **65.7%** (130/198) | **exact** |
+
+**The verification passes on both models.** Two conventions carried it, and
+neither is guessable from the data:
+
+1. **Tie-breaking is lexicographic, not uniform random.** `_plurality` sorts
+   the tied answers and returns the first. **v1's Setup says ties are broken
+   "uniformly at random".** The code and the paper disagree and the published
+   numbers follow the code. Both rules are ground-truth agnostic so neither
+   favours accuracy, but they do not produce the same number. Recorded as
+   disclosure 8 in the draft.
+2. **The temperature filter matters.** Without it Qwen gives 0.3716 and 113 of
+   198; with it, 0.3686 and 112. Three problems hold side-test samples at other
+   temperatures, exactly as v1's Setup says.
+
+Reproducing under the paper's *stated* rules rather than its *implemented*
+ones gave 0.3752 and 55.6 percent, which is how this was found.
 
 ## Also missing, and required by doc 3 section 7
 

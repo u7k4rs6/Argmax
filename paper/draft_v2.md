@@ -822,6 +822,13 @@ open-weights route. The question remains open there.
    now drawn at random with a recorded seed.
 7. **v1's own split has a leak:** 3 of its 50 exploratory ids sit inside the
    confirmatory 151. Disclosed here; v1's verdicts are not recomputed.
+8. **v1's Setup describes uniform-random tie-breaking; its code breaks ties
+   lexicographically.** Found while reproducing v1's figures from an archived
+   derived view: `_plurality` sorts the tied answers and returns the first.
+   Both rules are ground-truth agnostic, so neither favours accuracy, and
+   **the published numbers follow the code.** Reproducing v1 requires the
+   lexicographic rule; the Setup sentence is wrong. v1's verdicts are
+   unaffected and are not recomputed.
 
 ## 11. Conclusion
 
