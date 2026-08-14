@@ -118,15 +118,88 @@ problems with low truncation reintroduces the selection at the problem level.
 | implied balance, from the $2.55 stated remaining at v1 completion | **$1.29** |
 | implied balance, on the most generous reconstruction | $1.43 |
 
-**Short by $0.28 to $0.42.** And that understates it: the 119 unsampled
-problems are the ones the run had not reached, the sampled bands trend longer
-with position, and the $0.000894 average is held down by the cheap probe-set
-problems at the front. The true remaining cost is above $1.71.
+**Short by $0.28 to $0.42.**
 
-These balances are reconstructed from the ledger and the last stated credit
-figure, not queried from the provider. The conclusion does not turn on the
-reconstruction: both are short, and finishing at a cap that fails
-comparability would buy a number this project could not report.
+The $1.71 estimate is itself uncertain, and not in a direction that can be
+signed. **The 119 unsampled problems are unknown.** The sampled bands do not
+trend: 16 to 39 averages 3922.1 and 40 to 78 averages 3438.0, so position
+does not predict length beyond the probe set being short. What the bands show
+is that the **between-band spread is wide**, from 2082.9 to 3922.1, so an
+average over the 79 problems reached is a weak predictor of the 119 not
+reached. The $0.000894 rate is also held down by the cheap probe-set problems
+at the front.
+
+**The shortfall holds regardless.** Covering it would need the remaining
+problems to be cheaper than everything measured after the probe set, and the
+gap is 16 to 25 percent of the remaining cost under either balance
+reconstruction. The conclusion does not depend on the estimate being precise.
+
+### The balances are reconstructed, and that is a defect in a claimed contribution
+
+An itemised bill is one of this project's stated contributions, cited against
+the predecessor's unverifiable $3.9234. **It currently rests on the same kind
+of number.**
+
+What is verified, and it is not nothing:
+
+| check | result |
+|---|---|
+| ledger rows against raw sample records | **14,073 = 14,073**, difference 0 |
+| every row's `cost_usd` recomputed from `usage_raw` and its named pricing snapshot | **$4.667639 = $4.667639**, 0 rows disagreeing |
+| per-model totals | Qwen2.5-7B: 12,672 samples, 3,742,976 in, 7,631,158 out, $3.4122. Qwen3.5-9B: 1,401 samples, 368,961 in, 4,770,703 out, $1.2554 |
+
+So the ledger is internally consistent, complete against the raw store, and
+reproducible from stored token counts. **What it is not is confirmed by the
+provider.** Every figure is `tokens x snapshot price`, and it inherits any
+error in the snapshot, any rounding Together applies, and any minimum-charge
+or rounding rule not in the snapshot.
+
+**No programmatic route exists.** Checked rather than assumed: `/v1/models`
+authenticates and returns 200 on this key, and every plausible billing path
+under both `api.together.xyz` and `api.together.ai` returns the dashboard's
+404 page. The credits documentation describes only the web billing settings
+and documents no endpoint. The dashboard itself redirects to sign-in, and this
+agent has no session and will not be given credentials.
+
+**Owed, and the only thing that closes it:** a human reads three numbers off
+the Together billing dashboard, total spend to date, current balance, and the
+date, and they are recorded here beside the ledger figure with the
+discrepancy stated. Until then the bill is a computed estimate that
+reconciles against itself, and the draft must describe it that way rather
+than as a verified invoice. **A reconstruction presented as an audit is the
+predecessor's failure repeated with better bookkeeping.**
+
+## Restricting to the problems that do answer is not available
+
+The obvious rescue is to keep the v2 problems whose own answer rates reach
+0.995 and evaluate MD3 and MD4 on those. **It must not be attempted.** It is
+not the "shown insensitive" branch of doc 2 section 7.1, and it does not
+rescue the comparison.
+
+Section 7.1 permits proceeding when a result is **shown insensitive** to the
+comparability threat. That means the threat varies and the answer does not.
+This restriction does not vary the threat, it removes the affected units, and
+those units are not a random subset. **Which samples answer is a property of
+the problem**, exactly as completion length is: the between-band spread above
+runs from 0.0312 truncation on the probe set to 0.3750 on problems 16 to 39.
+Keeping the problems that answer therefore **changes which problems are
+compared** rather than changing how they are compared. The result would be a
+statement about the subpopulation of GPQA Diamond problems that fit inside
+6144 tokens on this model, presented as a statement about the model, and the
+subpopulation is different for v1, which does not have the constraint at all.
+
+**This is the same argument this project already made against restricting
+MiniMax-M2.7 to its answered subpopulation** (`notes/predecessor_cap.md`,
+`notes/reasoning_wall.md`). At 0.6460 answer rate at 16,384 and 0.2649 at
+2048, comparing MiniMax's answered samples against Qwen's near-complete ones
+compares two different sets of problems wearing one benchmark's name. The v2
+case is the same argument at a milder rate, and a rule that applies at 0.2649
+and not at 0.8931 is a rule chosen after seeing which way it cuts.
+
+The per-problem restriction is worse than the pooled version in one respect.
+It is invisible in the output: a table of 40-odd problems with answer rates of
+0.995 and above looks like a clean comparison, and the reader cannot see the
+problems that were dropped or that dropping them was the analysis.
 
 ## What this costs, stated plainly
 
@@ -166,5 +239,8 @@ section, not in a replication section.
 - Do not re-register the same claims at a larger cap as if v2.0 had not
   happened. If a future budget allows it, that is v3.0 and it cites this note
   for why v2.0 was not evaluated.
+- **Do not restrict to the problems whose answer rates reach 0.995.** See the
+  section above. It changes which problems are compared, it is the argument
+  already rejected for MiniMax, and it hides the analysis in the output.
 - Do not move or delete `argmax-prereg-margin-desc-v2.0`. It is a correct
   record of a claim that was properly registered and could not be tested.

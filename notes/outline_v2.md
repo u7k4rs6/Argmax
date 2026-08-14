@@ -129,10 +129,19 @@ Reference: Qwen2.5-7B at 2048 answers 0.9950 over 12,672 samples.
   second non-reasoning model, so the purchasable replication is not the one
   wanted.
 - **The bill.** 148 probe samples, $0.1347 against a $0.15 ceiling, against
-  $1.79 projected for the run itself. arXiv:2608.12150 reports 56,476 API
-  calls and no monetary cost. Argue that reporting the cost of a negative is
-  itself the contribution, in a literature where a single multi-model effort
-  runs to $40,000.
+  $1.79 projected for the run itself; $4.6676 realized across all phases.
+  arXiv:2608.12150 reports 56,476 API calls and no monetary cost. Argue that
+  reporting the cost of a negative is itself the contribution, in a
+  literature where a single multi-model effort runs to $40,000.
+- **Caveat the bill honestly, or it repeats the failure it criticises.** The
+  ledger is complete against the raw store (14,073 = 14,073) and every row
+  recomputes from `usage_raw` and its named snapshot to the cent. It is
+  **not** provider-confirmed: Together documents no balance or usage
+  endpoint, and the dashboard is the only source. Either a human records the
+  dashboard figures beside the ledger before submission, or the paper says
+  plainly that the bill is a computed estimate reconciled against itself.
+  Citing the predecessor's unverifiable $3.9234 while presenting an
+  unverified figure is not available.
 - The probe caught the null-margin defect before 3,168 samples inherited it.
 
 ### 4.1 Comparability keys on answer rate, not on matched caps
