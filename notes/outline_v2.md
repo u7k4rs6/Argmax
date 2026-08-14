@@ -3,8 +3,9 @@
 Ordered by what survived `notes/prior_work.md`, not by the order the work was
 done. **Every verdict is a blank.** A number appears below only where it is
 already computed, registered and reported; anything from the margin-v2 store
-is `[PENDING v2]`, and nothing is written in until the run lands and the
-falsification suite reproduces it.
+carries its resolution explicitly. The margin-v2 store produced no evaluable
+verdict, for the reason recorded in `notes/v2_comparability_failure.md`, so
+there is nothing left pending from it.
 
 Working title, to be replaced: *Where the disagreement lives: localized
 confidence does not resolve self-consistency's failures on hard problems.*
@@ -28,8 +29,8 @@ token is saturated whether the sample is in the majority or the minority.
 - The natural fix: gate on confidence. State the fix, state that this paper
   tests it and it does not work, in the abstract.
 - Contributions, in order:
-  1. A registered, held-out **commitment** result: dissenting samples are as
-     saturated as agreeing ones.
+  1. A registered, held-out **commitment** result, on **one model**:
+     dissenting samples are as saturated as agreeing ones.
   2. The **reasoning wall**, three models measured, with the bill.
   3. A **methodological rule**: comparability keys on answer rate, not on
      matched caps, with a test enforcing it.
@@ -62,32 +63,26 @@ before the holdout was read.
   We agree with it on its unit. State the unit difference explicitly:
   across-question discrimination against within-question routing.
 
-### 2.1 Replication on a second model
+### 2.1 There is no second model. Say so here, once.
 
-`[PENDING v2]` throughout. Registered at `argmax-prereg-margin-desc-v2.0`,
-tagged before sampling, thresholds held at 15.0 and 0.60 after a
-stratification check found no dependence on per-problem accuracy.
+**The risk this section previously carried as open is now the outcome.** The
+second-model replication was registered, sampled, and could not be evaluated.
+It moves to section 4.3 as a comparability failure, which is where it is
+informative.
 
-| | |
-|---|---|
-| MD3, median margin among **incorrect** samples | `[PENDING v2]` |
-| MD4, fraction above 10 nats among incorrect | `[PENDING v2]` |
-| problems surviving the three-incorrect floor | `[PENDING v2]` |
-| survivors' accuracy distribution against v1's | `[PENDING v2]` |
-| answer rate against the v1 reference of 0.9950 | `[PENDING v2]` |
+What section 2 must therefore state plainly, in the results and again in the
+abstract: **the commitment result rests on one model.** Qwen2.5-7B-Instruct,
+198 GPQA Diamond problems, 12,672 samples, with the claims decided on a
+69-problem holdout no exploratory analysis had read. Not two models, not a
+family, not a replication. A registered, held-out, single-model result.
 
-**Open risk, to be resolved before this section can be written:** the partial
-v2 store is at answer rate 0.8931 against a probe prediction of 1.0000, and
-truncation 0.2905 against a probed 0.0000. If that holds, cap 6144 fails the
-answer-rate comparability rule this paper is arguing for, and the section
-either reports a replication at an unmatched answer rate and says so, or
-reports the failure to achieve comparability as the result. Both are
-publishable; guessing which in advance is not.
+Do not soften this with "preliminary" or "we expect it to generalise". The
+reason there is no second model is itself reported, in 4.3, and it is a
+better sentence than any hedge.
 
-Registered limitations to state in-line: thinking disabled so this is a
-second non-reasoning model, same family across one generation and one size,
-caps deliberately unmatched, MD1 and MD2 not testable at M=16 and not
-replicated, and the surviving set selected on accuracy.
+MD3 and MD4 remain **registered and unevaluated** under
+`argmax-prereg-margin-desc-v2.0`. If a reader looks up the tag they must find
+the reason, so the tag is cited here and resolved in 4.3.
 
 ## 3. Mechanism and instrumentation (METHODS, not results)
 
@@ -145,7 +140,8 @@ Reference: Qwen2.5-7B at 2048 answers 0.9950 over 12,672 samples.
 The rule, with the test behind it. Distinguish from arXiv:2608.12150's
 three-tier filtering: theirs is applied post hoc to an existing comparison,
 ours is a design constraint applied before sampling, which is why v2 was
-sampled at 6144 against v1's 2048. `[PENDING v2]` on whether it succeeded.
+sampled at 6144 against v1's 2048. It did not succeed, and 4.3 reports that
+as the section's main result rather than as an aside.
 
 ### 4.2 Projections from small probes
 
@@ -156,6 +152,42 @@ k=8, 15.2 at k=16, 10.0 at k=32. Report both underestimates, 5.4 and 13.8
 percent, **and the v2 run's own overrun**, which at +65.3 percent on mean
 completion is far outside the k=8 spread and is the strongest single argument
 for drawing probe problems at random rather than by lowest id.
+
+### 4.3 A fourth wall: the rule cost us a registered replication
+
+The strongest material in the paper, because it is the only place the
+methodology is shown paying its own price rather than being recommended.
+Full detail in `notes/v2_comparability_failure.md`.
+
+- Registered at `argmax-prereg-margin-desc-v2.0`, tagged before any
+  confirmatory sample existed, thresholds held at 15.0 and 0.60 after a
+  stratification check found no accuracy dependence.
+- Cap 6144 chosen under the section 4.1 rule from a 32-sample probe measuring
+  answer rate **1.0000**, truncation **0.0000**.
+- The run: answer rate **0.8931** [0.8747, 0.9090], truncation **0.2905**,
+  mean completion **+65.3 percent**, over 1,253 samples on 79 problems.
+- **Config drift ruled out first**: one `param_hash` across all 1,253 samples
+  matching the thinking-off config, zero nonzero `reasoning_tokens`, cap 6144
+  throughout. The instrument was correct.
+- **The cause, measured**: the sampler re-sampled the probe's own 8 problems
+  first, and they reproduce the probe at 2082.9 mean completion and 0.0312
+  truncation, against **3546.4 and 0.3200 for the other 1,125 samples**. The
+  rest of the benchmark is **1.703x** the probe set. The probe was precise
+  about an unrepresentative slice.
+- **Why the k=8 uplift of 22.7 percent did not cover a 65.3 percent error**:
+  that table describes a *random* draw of 8 problems. A fixed lowest-id slice
+  is not a random draw and its error is not resampleable, because there is one
+  such slice and it is the same one every time.
+- **The decision**: MD3 and MD4 are registered and **not evaluated**. At 29
+  percent truncation the scored pool is selected for finishing fastest, which
+  is the confound sections 4.1 and 3 exist to prevent. Evaluating them would
+  have broken, in this paper, the rule this paper argues for.
+- The money made it moot anyway: $1.71 to finish against a reconstructed
+  balance of $1.29 to $1.43.
+
+**Land the point explicitly.** A methodological rule that never rejects
+anything is decoration. This one rejected a result its own authors had
+registered, sampled and paid for, and the alternative was one footnote away.
 
 ## 5. Thread A
 
@@ -181,15 +213,16 @@ what has accumulated:
    across both stores for all 198 verified.
 5. The answer-rate pairing rule not covering notes until a quintile table fell
    through the gap.
-6. `[PENDING v2]` the v2 cap decision, if the answer rate does not reach the
-   reference.
+6. The v2 cap chosen from 8 non-random problems, the resulting 0.8931 answer
+   rate against a registered 0.9950, and MD3/MD4 left registered and
+   unevaluated. Cross-reference 4.3.
 
 ## 7. Limitations
 
 - One benchmark, GPQA Diamond, 198 problems.
-- Two models, same family, one generation and one size apart, and the second
-  with reasoning disabled. Cross-family replication was not purchasable: four
-  of five priced candidates refused serverless requests.
+- **One model.** The second-model replication was registered, sampled and
+  could not be evaluated (4.3). Cross-family replication was never purchasable
+  either: four of five priced candidates refused serverless requests.
 - Total spend under $6. State it. It is the reason for several design choices
   and hiding it would make those choices look arbitrary.
 - The completion-length U (accuracy 0.4441, 0.3400, 0.2218, 0.3316, 0.4098 by
@@ -201,7 +234,8 @@ what has accumulated:
 
 ## What must be true before drafting prose
 
-1. The v2 run completes, or a decision is recorded about its answer rate.
+1. DONE. The v2 decision is recorded in `notes/v2_comparability_failure.md`:
+   registered, unevaluated, cause measured.
 2. Every `[PENDING]` above resolves to a number produced by `derive.py` and
    checked by the falsification suite.
 3. Every compute-matched sentence carries a `claim_id` resolving to rows in
