@@ -233,6 +233,74 @@ The v2 store is not waste. It is the measurement that shows a cap chosen from
 no successful run would have produced. It belongs in the reasoning-wall
 section, not in a replication section.
 
+## A random-draw cap probe: costed, guarded, not run
+
+Authorised conditionally at roughly $0.20, **only if the dashboard confirms
+enough balance**. The dashboard could not be reached and no human has read it,
+so **the precondition is unmet and nothing was sampled.** Spending on the
+strength of the same reconstruction this note has just called insufficient
+would contradict the section above.
+
+### The guard, written before any such probe runs
+
+**A usable cap is not permission to evaluate MD3 or MD4.** Whatever a future
+probe returns, those claims stay registered and unevaluated. The reason is not
+that 6144 was the wrong cap. It is that **the store at a usable cap does not
+exist**, and no cap-probe result creates one. A reader arriving later at a
+line reading "cap 12288 reaches answer rate 0.97" must not take it as licence
+to score the 1,253 samples that were drawn at 6144 under 29 percent
+truncation. Those samples remain selected for finishing fastest, and a
+different cap's answer rate says nothing about them.
+
+If a full run at a usable cap is ever purchased, it is a new phase against a
+new registration, and it cites this note.
+
+### What it would cost, which is not $0.20
+
+Projected from a right-censored lognormal fit to the 1,253 v2 samples,
+mu = 8.0521, sigma = 1.0000, median 3140 tokens:
+
+| cap | P(complete) | E[completion tokens] | $/sample | 128 samples |
+|---|---|---|---|---|
+| 8192 | 0.8312 | 3887 | 0.001022 | **$0.1308** |
+| 12288 | 0.9138 | 4385 | 0.001146 | **$0.1467** |
+
+16 problems x 8 samples x 2 caps = 256 samples, **$0.2775**, and **$0.3197**
+once the k=16 uplift of 15.2 percent from doc 2 section 5.3.1 is applied, as
+that section now requires. That is 60 percent over the stated $0.20. The
+ceiling for such a run is $0.32 above realized, not $0.20.
+
+### The result it would have bought, for free
+
+The fit answers the question the probe was for without spending anything, and
+the answer is unfavourable:
+
+| target completion rate | cap required | $/sample | full 198 x 16 run |
+|---|---|---|---|
+| 0.900 | 11,312 | 0.001124 | **$3.56** |
+| 0.950 | 16,268 | 0.001212 | **$3.84** |
+| 0.990 | 32,159 | 0.001306 | **$4.14** |
+| **0.995, the registered reference** | **41,272** | 0.001322 | **$4.19** |
+
+**No affordable cap reaches the registered comparability condition.** Meeting
+0.9950 needs roughly 41,000 output tokens per sample and a $4.19 run, against
+a reconstructed balance of $1.29 to $1.43. Even 0.95, which would still fail
+the condition, needs 16,268 tokens and $3.84.
+
+So the replication was not lost by choosing 6144. **It was not purchasable at
+any cap on this budget**, and the 6144 choice determined only how the failure
+presented. That is the number section 4.3 needed, and it is a stronger version
+of the section's point than a probe result would have been.
+
+**Caveats, because this is an extrapolation.** The fit is to a store censored
+at 6144 with 29 percent of samples censored, so predictions at 41,000 tokens
+extrapolate far beyond the data. The fitted sigma landing on exactly 1.0000
+suggests the optimiser found a flat region, and the fit predicts 0.7489
+completion at 6144 against 0.7095 observed, so it is mildly optimistic about
+completion. Both push the required caps **up**, not down. The qualitative
+conclusion does not rest on the fit's precision: even at 16,384, a cap chosen
+without any fitting, the run costs $3.84 and the balance is under $1.50.
+
 ## Do not
 
 - Do not evaluate MD3 or MD4 on this store.
@@ -242,5 +310,8 @@ section, not in a replication section.
 - **Do not restrict to the problems whose answer rates reach 0.995.** See the
   section above. It changes which problems are compared, it is the argument
   already rejected for MiniMax, and it hides the analysis in the output.
+- **Do not read a cap-probe result as permission to evaluate MD3 or MD4.** A
+  usable cap does not create a store at that cap. The 1,253 samples remain
+  drawn at 6144 under 29 percent truncation whatever a probe says.
 - Do not move or delete `argmax-prereg-margin-desc-v2.0`. It is a correct
   record of a claim that was properly registered and could not be tested.

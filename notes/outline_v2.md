@@ -193,6 +193,14 @@ Full detail in `notes/v2_comparability_failure.md`.
   have broken, in this paper, the rule this paper argues for.
 - The money made it moot anyway: $1.71 to finish against a reconstructed
   balance of $1.29 to $1.43.
+- **The strongest version of the point, and it costs nothing to state.** A
+  censored fit to the 1,253 samples puts the cap needed for the registered
+  0.9950 answer rate at roughly 41,000 output tokens and the run at **$4.19**.
+  Even 0.95 needs 16,268 tokens and $3.84. **The replication was not lost by
+  picking 6144. It was not purchasable at any cap on this budget**, and the
+  cap choice determined only how the failure presented. Caveat the
+  extrapolation: the fit is censored at 6144 and mildly optimistic about
+  completion, which pushes the required cap up rather than down.
 
 **Land the point explicitly.** A methodological rule that never rejects
 anything is decoration. This one rejected a result its own authors had
