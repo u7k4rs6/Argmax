@@ -134,7 +134,34 @@ problems to be cheaper than everything measured after the probe set, and the
 gap is 16 to 25 percent of the remaining cost under either balance
 reconstruction. The conclusion does not depend on the estimate being precise.
 
-### The balances are reconstructed, and that is a defect in a claimed contribution
+### Dashboard balance: $1.16, and the reconstructions were both wrong
+
+Read from the Together billing dashboard by a human on 2026-08-14 and recorded
+here as the first provider-sourced figure in this project.
+
+| source | balance |
+|---|---|
+| **dashboard, 2026-08-14** | **$1.16** |
+| reconstruction from the $2.55 stated at v1 completion | $1.29, **high by 11 percent** |
+| most generous reconstruction | $1.43, **high by 23 percent** |
+
+Both reconstructions overstated the money available, in the same direction,
+by more than a rounding difference. The shortfall conclusion above is
+unaffected and in fact strengthened: $1.71 to finish against $1.16 is short by
+$0.55, not $0.28.
+
+**The loop is not closed.** A balance alone cannot distinguish an
+undercounting ledger from a wrong starting figure: $1.16 is consistent with
+this project having spent more than $4.667639 from a $5.83 start, and equally
+consistent with having spent exactly $4.667639 from a $5.83 start that nobody
+recorded. The two cannot be separated without the number that sits on the
+other side of the subtraction.
+
+**What closes it:** the provider's own **total spend to date**, compared
+directly against the ledger's $4.667639. Until that figure is recorded here,
+the bill remains computed and unconfirmed, and the draft says so.
+
+### The balances were reconstructed, and that is a defect in a claimed contribution
 
 An itemised bill is one of this project's stated contributions, cited against
 the predecessor's unverifiable $3.9234. **It currently rests on the same kind
@@ -235,13 +262,17 @@ section, not in a replication section.
 
 ## A random-draw cap probe: costed, guarded, not run
 
-Authorised conditionally at roughly $0.20, **only if the dashboard confirms
-enough balance**. The dashboard could not be reached and no human has read it,
-so **the precondition is unmet and nothing was sampled.** Spending on the
-strength of the same reconstruction this note has just called insufficient
-would contradict the section above.
+Authorised conditionally, **only if the dashboard confirms enough balance**.
+It now does: **$1.16**, read by a human on 2026-08-14. The probe was held
+until that figure existed, because spending on the strength of the
+reconstruction this note had just called insufficient would have contradicted
+the section above it.
 
-### The guard, written before any such probe runs
+Budget $0.35. Ceiling set at the projection plus the calibrated k=16 uplift of
+15.2 percent from doc 2 section 5.3.1, which is the first time that table is
+used the way it was written, and set to abort rather than overrun.
+
+### The guard, recorded before the probe ran
 
 **A usable cap is not permission to evaluate MD3 or MD4.** Whatever a future
 probe returns, those claims stay registered and unevaluated. The reason is not
