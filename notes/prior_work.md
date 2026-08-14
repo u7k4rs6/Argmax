@@ -108,13 +108,30 @@ claim:
   So it reports that log-probs *do* track correctness, on a two-stage
   abstention paradigm over SimpleQA, MMLU-Pro, SuperGPQA and HLE.
 
-  **This is a tension to address, not a citation to drop in.** Either the
-  difference is the setting (a 7B non-reasoning model on GPQA Diamond at
-  temperature 0.7, against frontier models), or the unit (per-sample margin
-  against calibrated per-question confidence), or the conditioning (dissent
-  from a self-consistency plurality against objective correctness). The draft
-  has to say which it thinks, and it cannot claim log-probs are uninformative
-  in general on the basis of one model.
+  **Reconciled, on the unit, after reading the paper rather than its
+  abstract.** Kumaran's Cal-LP is our quantity: a temperature-scaled softmax
+  over the option letters at the answer position, calibrated on a held-out
+  set. So the locus matches exactly and the disagreement cannot be explained
+  away as measuring different things. What differs is the unit the claim is
+  over. Every Cal-LP result in that paper is **trial-level and across
+  questions**: Phase 1 produces **one** answer per question, the reported
+  statistic is AUROC over trials, defined there as the probability that a
+  randomly chosen correct trial receives higher confidence than a randomly
+  chosen incorrect one, and Cal-LP reaches 0.62 to 0.80 on that. Self
+  consistency does not appear in the design, no question is sampled more than
+  once in Phase 1, and **the paper never conditions on samples that disagree
+  with each other**, because it never has two samples of the same question to
+  compare. Our claim is the orthogonal one: **within** a question, across
+  samples that already disagree, the answer token cannot say which to trust.
+  Our own data agrees with Kumaran on his unit and we must say so, since the
+  fraction above 10 nats separates correct from incorrect samples by +0.0589
+  with an interval excluding zero. **So there is no conflict, and the draft
+  must not claim log-probabilities are uninformative.** The claim is that a
+  signal with real across-question discrimination is close to useless for the
+  within-question routing decision self-consistency actually poses, which is
+  a statement about where the variance sits and not about whether the signal
+  carries any. Kumaran is a supporting citation for the setup and a
+  correction to any stronger phrasing.
 
 - **"Models commit early in the reasoning chain"** work, where later tokens
   are reported to have diminishing causal influence on the final answer. That
@@ -173,3 +190,83 @@ opposite.
 survey. The commitment result is "not found by me", not "novel". The two
 positive results in section 1 and 2 are the reliable half of this note: those
 papers exist and say what they say.
+
+## 5. The reasoning wall, searched with the same aggression
+
+It was the only unexamined contribution. It is now partly examined and partly
+taken.
+
+### Taken: budget-dependent rankings, on our exact benchmark
+
+**"Who Thinks Best Depends on How Long You Let Them: Budget-Dependent
+Rankings in LLM Evaluation", arXiv:2608.12150.** The uncomfortable one. Same
+benchmark, GPQA Diamond at 198 items, alongside GSM8K and MATH-500. Its
+finding is that model rankings **reverse** across token budgets on every
+benchmark with reversals significant at p < 0.01, with LLaMA-3.3 70B leading
+at budget 256 and GPT-OSS 20B dominating at 4096 on GSM8K. It also handles
+truncation as a confound directly, with a three-tier analysis over all items,
+per-model completed items, and items every model completed, and reports that
+the effect survives the filtering.
+
+**That is our cap-incomparability result, established more thoroughly than we
+establish it, on the same benchmark.** Anyone reviewing us will know it. We
+must cite it as the finding and position ourselves against it, not restate it.
+
+### The gap it leaves, and it is exactly ours
+
+The paper **deliberately excludes reasoning-native models**, naming o1,
+DeepSeek-R1 and QwQ, on the stated grounds that their dual-stream
+architecture changes the semantics of `max_tokens`. Its four models are
+LLaMA-3 8B, Qwen-3 32B, LLaMA-3.3 70B and GPT-OSS 20B.
+
+So the strongest prior work on budget-dependent evaluation carves out
+precisely the class we measured, and carves it out for the reason our result
+is about. We measure what happens in the excluded region: at cap 2048 and
+4096 a reasoning-native 9B model returns answer rate 0.0000 with mean
+completion **equal to the cap exactly**, which is not a ranking reversal but
+the total collapse of the measurement, and it is what "the semantics of
+`max_tokens` change" looks like when someone runs it.
+
+### Also established, and only worth a sentence each
+
+- **Token budgets move benchmark accuracy a great deal.** Widely reported,
+  including 30-point swings from a harness default of `max_new_tokens=128`.
+  Not novel.
+- **Truncated outputs scored as incorrect bias comparisons downward**, and
+  models with different truncation rates are not comparable at a fixed cap.
+  Stated in the evaluation-validity literature. This is the premise of our
+  answer-rate rule, not a finding of ours.
+- **Model deprecation and endpoint churn break replication.** Covered
+  squarely, for instance arXiv:2512.00651 on LLM-for-software-engineering,
+  which already recommends disclosing API version and access date and
+  including an open-weights baseline "if commercial endpoints disappear".
+  Our four `model_not_available` refusals are an instance of a known problem.
+- **Evaluation cost as a barrier** is documented at the other end of the
+  scale, with figures like $40,000 for one multi-model benchmark effort.
+
+### What survives as ours
+
+Three things, and the draft should claim only these:
+
+1. **Measurements inside the excluded region.** Three reasoning-native models,
+   three distinct walls, each measured by real request rather than inferred:
+   unreachable, answering at 0.6460 only at 16,384, and 0.0000 at any
+   affordable cap. arXiv:2608.12150 says the semantics change; we report the
+   numbers.
+2. **Comparability keyed on answer rate rather than on matched caps**, stated
+   as a rule with a test behind it rather than as a filtering step applied
+   once. Their three-tier analysis is the same instinct applied post hoc; ours
+   is a design constraint applied before sampling, which is why cap 6144 was
+   chosen for a second model against a first model's 2048.
+3. **The cost of establishing a negative, reported.** arXiv:2608.12150
+   mentions 56,476 API calls and reports **no monetary cost at all**. We
+   report $0.1347 over 148 probe samples against a $0.15 ceiling, and a full
+   ledger. In a literature where the cheap-versus-frontier gap is the reason
+   small groups cannot replicate anything, an itemised bill for a negative
+   result is a contribution in itself, and it is the one nobody else here is
+   making.
+
+**Downgrade the framing accordingly.** The reasoning wall is not "we
+discovered reasoning models cannot be evaluated cheaply". It is "the standard
+budget-comparability result excludes reasoning-native models by construction,
+here is that region measured, and here is what it cost".
