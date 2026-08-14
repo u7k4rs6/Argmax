@@ -825,10 +825,40 @@ open-weights route. The question remains open there.
 8. **v1's Setup describes uniform-random tie-breaking; its code breaks ties
    lexicographically.** Found while reproducing v1's figures from an archived
    derived view: `_plurality` sorts the tied answers and returns the first.
-   Both rules are ground-truth agnostic, so neither favours accuracy, and
-   **the published numbers follow the code.** Reproducing v1 requires the
-   lexicographic rule; the Setup sentence is wrong. v1's verdicts are
-   unaffected and are not recomputed.
+   The published numbers follow the code. Quantified rather than only stated:
+
+   | | Qwen2.5-7B | Llama-3-8B-Lite |
+   |---|---|---|
+   | problems with a full-pool plurality tie | **5 of 198** | **2 of 198** |
+   | N=64 subsets where the correct answer is in a tie | 47 | **0** |
+   | MV acc(64), lexicographic | 0.3686 | 0.3131 |
+   | MV acc(64), uniform random, 5,000 seeds | mean 0.3726, sd 0.0051 | identical, no variance |
+   | percentile of the lexicographic result | **31.7** | not applicable |
+   | backfire, lexicographic | 112/198 | 130/198 |
+   | backfire, uniform random | mean 111.0, range 109 to 113 | identical, no variance |
+
+   **Llama is entirely unaffected.** Neither of its two tied problems has the
+   correct answer among the tied letters, and no N=64 subset anywhere in its
+   pool puts the correct answer in a tie, so its 0.313 and 65.7 percent are
+   convention-independent.
+
+   **Lexicographic is not a biased choice on this dataset.** The correct
+   answer is A on 48 problems, B on 51, C on 47 and D on 52 after the
+   row-index shuffle, chi-square 0.343 on 3 degrees of freedom against 7.815
+   at 5 percent. So the earliest letter carries no systematic advantage here,
+   not merely none in expectation. The lexicographic result sits at the 32nd
+   percentile of the random distribution: inside it, slightly unlucky, not an
+   outlier.
+
+   **It is a third-decimal effect and it changes no conclusion.** Across
+   5,000 uniform-random seeds Qwen's backfire count spans 109 to 113 of 198,
+   every value far above the 33 percent pre-registered threshold and every
+   value a majority; MV acc(64) spans 0.3619 to 0.3833, and MV acc(1) is
+   0.3419, so voting still lifts the aggregate slightly under every seed while
+   harming most problems individually. The convention moves MV acc(64) by
+   about 0.004 and the backfire count by about one problem. **No registered
+   verdict, and no claim in either version of this paper, depends on which
+   rule is used.** v1's verdicts are not recomputed.
 
 ## 11. Conclusion
 
