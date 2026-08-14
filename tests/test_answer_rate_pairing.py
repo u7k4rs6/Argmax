@@ -270,7 +270,9 @@ def test_tables_are_found_with_their_line_numbers(tmp_path):
 def test_every_markdown_file_in_the_repo_pairs():
     """The enforcement, over notes, files and the repository root."""
     report = PairingReport()
-    roots = [REPO / "notes", REPO / "files", REPO / "docs"]
+    # paper/ included: an unpaired accuracy in the draft is the one that
+    # reaches a reader.
+    roots = [REPO / "notes", REPO / "files", REPO / "docs", REPO / "paper"]
     paths = [p for root in roots if root.exists() for p in sorted(root.rglob("*.md"))]
     paths += sorted(REPO.glob("*.md"))
     for path in paths:

@@ -208,7 +208,17 @@ ALLOWED_ARTIFACTS = (
     "paper/backfire_colm_submission.pdf",
 )
 
-DOC_GLOBS = ("*.md", "files/*.md", "notes/*.md", "docs/**/*.md", "data/*.md")
+#: `paper/*.md` is here because the draft is the document where a citation to
+#: a superseded source does the most damage, and it was outside this scan
+#: until the draft existed.
+DOC_GLOBS = (
+    "*.md",
+    "files/*.md",
+    "notes/*.md",
+    "docs/**/*.md",
+    "data/*.md",
+    "paper/*.md",
+)
 
 
 def _documents() -> list[Path]:
