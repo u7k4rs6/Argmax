@@ -332,7 +332,7 @@ def test_datasets_md_is_not_excluded_with_the_store(tmp_path):
     """The regression this exclusion list was rewritten for.
 
     `data/` was excluded wholesale with the reason "never contains authored
-    prose". `data/DATASETS.md` is authored prose, it carries the licence notes
+    prose". `DATASETS.md` is authored prose, it carries the licence notes
     doc 3 s7 depends on, and the glob list this walk replaced scanned it.
     """
     from argmax.repo import is_excluded

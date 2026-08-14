@@ -210,7 +210,7 @@ Concrete rules:
 - Any tier added alongside GPQA gets the same treatment by default, then
   relaxed only after its licence is read and recorded.
 
-### 5.2 `data/DATASETS.md`
+### 5.2 `docs/DATASETS.md`
 
 One row per benchmark: source URL, exact version or revision, licence,
 redistribution terms, whether question text may be published, access method
@@ -275,8 +275,10 @@ Three consequences:
    the raw store reproduces the derived table. Publishing the first openly and
    the second under gate preserves guarantee 1 without publishing questions.
 
-`DATASETS.md` currently lives under gitignored `data/`, so the licence notes
-this release must carry are not reproducible from a clone. That is owed.
+The licence notes live at **`docs/DATASETS.md`**, tracked in the repository so
+a release built from a clone carries them. They previously sat under
+gitignored `data/`, which blocked three separate things: the release build, the
+citation-provenance scan, and the answer-rate pairing scan. Moved 2026-08-14.
 
 ## 8. CI and third-party access
 

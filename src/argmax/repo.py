@@ -40,10 +40,11 @@ EXCLUSIONS: tuple[tuple[str, str], ...] = (
     (".mypy_cache", "type-checker scratch state, regenerated on every run"),
     (".playwright-mcp", "tool scratch output, not authored by this project"),
     # NOT a blanket exclusion. The earlier reason given here, "never contains
-    # authored prose", was false: data/DATASETS.md is the licence-notes
+    # authored prose", was false: DATASETS.md is the licence-notes
     # document doc 3 s7 depends on, and the glob list this walk replaced
     # included data/*.md and scanned it. Inverting the default dropped a
-    # document, which is the same failure the inversion was meant to end.
+    # document, which is the same failure the inversion was meant to end. The
+    # file has since moved to docs/DATASETS.md so it is tracked at all.
     (
         "data/raw",
         "gitignored sample store; machine-written records only, and CLAUDE.md "

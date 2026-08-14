@@ -81,9 +81,59 @@ not evaluate an answer-token margin.
 `backfire_preprint.tex`, `.bbl`, `references.bib`, the COLM style and bst, and
 four figures. As expected, LaTeX and figures only.
 
-## Blocker 3: no Zenodo credentials
+## Blocker 3: no Zenodo credentials, and no reserved DOIs exist
 
-No `ZENODO_TOKEN` or equivalent in the environment. Publishing is a human step.
+No `ZENODO_TOKEN`, `ZENODO_API_TOKEN`, `ZENODO_ACCESS_TOKEN` or sandbox
+equivalent in the environment. **And no reserved DOI is recorded anywhere in
+this repository**: nothing matching `10.5281` appears in any tracked file.
+Drafts cannot be saved against reserved DOIs that do not exist, so the upload
+step is a human one from end to end: create the two records, reserve the DOIs,
+upload, verify, publish.
+
+## Verification of the predecessor derived view against the published paper
+
+Built into the public tree as `derived/predecessor_samples.jsonl`, 25,730 rows
+over both models, carrying only `problem_id`, `model`, `extracted_answer`
+(null unless a bare option letter), `is_correct`, `input_tokens`,
+`output_tokens`. No `raw_text`, no prompts, no question or option text. 248 of
+25,730 records had an `extracted_answer` that was not a bare letter; the field
+was **dropped to null rather than redacted**, as instructed.
+
+Recomputed from that view alone, against the published figures:
+
+| model | quantity | published | recomputed | |
+|---|---|---|---|---|
+| **Llama-3-8B-Lite** | MV acc(1) | 0.273 | **0.2729** | match |
+| | MV acc(64) | 0.313 | **0.3131** | match |
+| | backfire rate | 65.7% | **65.7%** | **exact** |
+| **Qwen2.5-7B** | MV acc(1) | 0.342 | **0.3420** | match |
+| | MV acc(64) | 0.369 | 0.3752 | **+0.0062** |
+| | backfire rate | 56.6% | 55.6% | **2 problems** |
+
+**The policy that reconciles the aggregates.** Scoring unanswered samples as
+incorrect gives 0.3393 and 0.2684, which is wrong for both. Excluding them
+gives 0.3420 and 0.2729, which matches both. So the published `MV acc(1)`
+excludes unanswered samples, consistent with the phase config's
+`unanswered_sample_policy: exclude`. The derived view retains
+`extracted_answer` as null and `is_correct` separately, so a reproducer can
+apply either policy; that was not a foregone conclusion and is why the field
+was kept rather than collapsed.
+
+**The Qwen residual.** Llama reproduces exactly on all three figures and has
+exactly 64 samples on every problem. Qwen matches `MV acc(1)` to four decimals
+and differs on the two Monte Carlo quantities, and it is the model with
+unequal pool sizes: 47 problems hold 65 to 72 samples, so `MV acc(64)` there
+requires subset draws rather than a single evaluation. v1's own Limitations
+documents this sensitivity and gives a worked instance of a one-problem
+difference on its exploratory split, and records that 14 of its 151
+confirmatory problems have exactly zero gain. A two-problem difference on 198,
+confined to the model with variable pools, is that sensitivity.
+
+**Not silently accepted.** The instruction was to stop and report if the
+derived view and the paper disagree. They agree exactly where the computation
+is deterministic and differ only where the paper itself documents
+run-to-run movement. Reporting rather than uploading, because the residual is
+a judgement call and not mine to make.
 
 ## Also missing, and required by doc 3 section 7
 

@@ -1,6 +1,6 @@
 """The pre-release leakage check.
 
-Doc 3 section 5.1 and `data/DATASETS.md` both require it and neither calls it
+Doc 3 section 5.1 and `docs/DATASETS.md` both require it and neither calls it
 optional: **before any public release of the raw store, grep the released
 artifacts for n-grams from the question set and fail on a hit.**
 
