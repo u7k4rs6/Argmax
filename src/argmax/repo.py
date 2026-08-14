@@ -39,10 +39,19 @@ EXCLUSIONS: tuple[tuple[str, str], ...] = (
     (".ruff_cache", "linter scratch state, regenerated on every run"),
     (".mypy_cache", "type-checker scratch state, regenerated on every run"),
     (".playwright-mcp", "tool scratch output, not authored by this project"),
+    # NOT a blanket exclusion. The earlier reason given here, "never contains
+    # authored prose", was false: data/DATASETS.md is the licence-notes
+    # document doc 3 s7 depends on, and the glob list this walk replaced
+    # included data/*.md and scanned it. Inverting the default dropped a
+    # document, which is the same failure the inversion was meant to end.
     (
-        "data",
-        "gitignored sample store; never contains authored prose, and CLAUDE.md "
+        "data/raw",
+        "gitignored sample store; machine-written records only, and CLAUDE.md "
         "forbids committing anything under it",
+    ),
+    (
+        "data/derived",
+        "gitignored derived tables; a pure function of raw, machine-written",
     ),
     (
         "runs",
@@ -61,8 +70,12 @@ def is_excluded(path: Path, root: Path) -> str | None:
         parts = path.relative_to(root).parts
     except ValueError:
         return "outside the repository root"
+    rel = "/".join(parts)
     for fragment, reason in EXCLUSIONS:
-        if fragment in parts:
+        if "/" in fragment:
+            if rel == fragment or rel.startswith(fragment + "/"):
+                return reason
+        elif fragment in parts:
             return reason
     return None
 

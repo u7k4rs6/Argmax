@@ -316,13 +316,28 @@ def test_every_exclusion_carries_a_reason():
         assert len(reason) > 15, f"exclusion {fragment!r} has a token reason"
 
 
-def test_gitignored_stores_stay_excluded(tmp_path):
-    """data/ and runs/ are excluded on purpose, not by omission."""
+def test_gitignored_sample_stores_stay_excluded(tmp_path):
+    """The sample stores are excluded on purpose, not by omission."""
     from argmax.repo import is_excluded
 
-    for name in ("data", "runs", ".venv"):
+    for name in ("data/raw", "data/derived", "runs", ".venv"):
         d = tmp_path / name
-        d.mkdir()
+        d.mkdir(parents=True)
         f = d / "x.md"
         f.write_text("x", encoding="utf-8")
         assert is_excluded(f, tmp_path), f"{name}/ should be excluded"
+
+
+def test_datasets_md_is_not_excluded_with_the_store(tmp_path):
+    """The regression this exclusion list was rewritten for.
+
+    `data/` was excluded wholesale with the reason "never contains authored
+    prose". `data/DATASETS.md` is authored prose, it carries the licence notes
+    doc 3 s7 depends on, and the glob list this walk replaced scanned it.
+    """
+    from argmax.repo import is_excluded
+
+    (tmp_path / "data").mkdir()
+    doc = tmp_path / "data" / "DATASETS.md"
+    doc.write_text("licence notes", encoding="utf-8")
+    assert is_excluded(doc, tmp_path) is None

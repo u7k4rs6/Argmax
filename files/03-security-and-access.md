@@ -239,13 +239,44 @@ Split the release rather than choosing between "publish everything" and
 
 - **Public repo:** code, configs, derived tables, figures, prereg registry,
   tests.
-- **Archived artifact (Zenodo or a gated HF dataset repo):** the raw sample
-  store, after the leakage check, carrying the canary string, the licence
-  notes from `DATASETS.md`, and a manifest index. Cite its DOI in the
-  paper.
+- **Public artifact (Zenodo):** the **derived** table, the ledger, the
+  manifests, the pre-registration registry and the code. Everything needed to
+  reproduce every number in the paper. Carries the canary string, the licence
+  notes from `DATASETS.md`, and a manifest index. Cite its DOI in the paper.
+- **Gated artifact (HF dataset repo or equivalent):** the **raw** sample
+  store, released under the same access terms as the benchmark itself.
 
-This preserves reproducibility, which is guarantee 1 in the architecture
-document, without publishing benchmark questions.
+**Amended 2026-08-14, and the amendment is a finding.** This section
+previously said the raw store is archived publicly "after the leakage check",
+which assumed the check would pass. It does not:
+
+```
+leakage check: 198 files, 12672 lines, 129247 10-gram fingerprints
+  HITS: 5669
+LeakageDetected: release blocked.
+```
+
+**The cause is not a stored prompt.** The `sample` record holds `prompt_hash`
+and never the prompt, exactly as section 5 requires. It is `raw_text`: the
+model restates the question inside its own chain of thought, so completions
+carry benchmark question and option text that the request never stored.
+
+Three consequences:
+
+1. **No chain-of-thought store on a gated benchmark is publishable verbatim.**
+   The redaction rules in section 5 govern what this project writes. They
+   cannot govern what the model writes back, and the model writes the question
+   back.
+2. **Redaction is not the answer here.** Editing matched n-grams out of stored
+   records would mutate raw, which the architecture document forbids as
+   append-only, and would silently change the object every derived number is a
+   function of.
+3. **The split above is the answer.** The derived table reproduces the paper;
+   the raw store reproduces the derived table. Publishing the first openly and
+   the second under gate preserves guarantee 1 without publishing questions.
+
+`DATASETS.md` currently lives under gitignored `data/`, so the licence notes
+this release must carry are not reproducible from a clone. That is owed.
 
 ## 8. CI and third-party access
 

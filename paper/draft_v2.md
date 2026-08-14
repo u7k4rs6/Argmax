@@ -23,20 +23,24 @@ paper reports that the most natural repair to that remedy also fails, and
 separates three signal failures that v1 treated as one.
 
 A token-entropy gate fails for a measurement reason rather than a substantive
-one: a per-token average over a chain of roughly 613 tokens is dominated by
-fluency, and the answer token is one of them. We therefore measure confidence
+one: a per-token average over a chain averaging 602 tokens is dominated by
+fluency. Measured, the chain average sits 0.0005 nats from the average over
+non-answer tokens and 0.1695 nats from the answer token's own value. We therefore measure confidence
 at the answer span itself, where that dilution cannot apply. **On
 Qwen2.5-7B-Instruct-Turbo, 198 problems at 64 samples each, a sample whose
 answer contradicts its own problem's plurality still emits that answer at a
 median margin of 20.52 nats, with 75.7 percent of such samples above 10 nats.**
 Both quantities were pre-registered with thresholds fixed in advance and tested
-once on 69 problems that no exploratory analysis had read; both passed. The
-same margin does separate correct from incorrect samples across the benchmark,
-by 0.0589 on the fraction above 10 nats with an interval excluding zero, so the
-claim is not that token log-probabilities carry no information. It is that a
-signal with genuine across-question discrimination is close to useless for the
-**within-question** decision self-consistency actually poses: which of several
-disagreeing samples of the same problem to trust. The disagreement lives
+once on 69 problems that no exploratory analysis had read; both passed. **The
+unit is the whole result.** Pooled across the benchmark the same margin does
+separate correct from incorrect samples, by +0.0604 on the fraction above 10
+nats [+0.0183, +0.1017], excluding zero; measured within each problem and
+paired across its own samples it does not, at -0.0168 [-0.0527, +0.0182],
+crossing zero. So the claim is not that token log-probabilities carry no
+information. It is that a signal with genuine across-question discrimination
+is close to useless for the **within-question** decision self-consistency
+actually poses: which of several disagreeing samples of the same problem to
+trust. The disagreement lives
 upstream, in which chain was written, and the answer token reads out a chain
 that has already committed. **We did not find this result in our search of the
 prior literature**, though the dilution it corrects for, and the practice of
@@ -73,7 +77,7 @@ moved is the explanation of why the gates fail.**
 | v1 claim | status in v2 | why |
 |---|---|---|
 | §4.4 title and thesis, "confidence does not track correctness" | **CORRECTED** | v1 inferred one mechanism from two gates failing together. The failures have different causes and one of them is a measurement artefact. See §4.4. |
-| §5, "Both gates read confidence, but confidence on these problems does not indicate correctness" | **CORRECTED, narrowed to a unit** | False as stated across questions. The answer-token margin separates correct from incorrect samples by +0.0589 with an interval excluding zero, and independent work reports AUROC 0.62 to 0.80 for the same quantity across questions. The defensible claim is within-question. |
+| §5, "Both gates read confidence, but confidence on these problems does not indicate correctness" | **CORRECTED, narrowed to a unit** | False as stated across questions: pooled, the answer-token margin separates correct from incorrect by +0.0604 [+0.0183, +0.1017], and independent work reports AUROC 0.62 to 0.80 for the same quantity across questions. Within a problem, paired, it does not: -0.0168 [-0.0527, +0.0182]. The defensible claim is the within-question one. |
 | Abstract, "we do not test reasoning-native models, which we flag as the central open question" | **PARTLY ANSWERED, and rescoped** | Not open in the same way: on hosted serverless inference at a small budget it is unmeasurable, and §5 reports three separately measured walls. It remains open for the open-weights route. |
 | §6 Limitations, the entropy gate's failure grouped with agreement's under one "known mechanism" | **SEPARATED** | The entropy gate was reading a diluted statistic. That is miscounted evidence, not evidence about confidence. |
 
@@ -184,7 +188,11 @@ practice, and five slots need not contain every option letter.
   understate the margin exactly on the problems where the model is most
   certain, which are the ones a confidence gate cares about most.
 
-12,344 measured, 265 censored.
+**12,344 measured, 265 right-censored, and 63 with no margin at all**, summing
+to 12,672. The 63 are exactly the samples from which no answer was extracted:
+with no answer span there is no answer token to measure at. They are the same
+63 that give the answer rate of 0.9950, they are recorded rather than dropped,
+and they are never scored as incorrect.
 
 **Comparability with v1's runs.** The new run's answer rate is 0.9950 [0.9936,
 0.9961] against v1's published 0.9946 [0.9932, 0.9958] for the same model, a
@@ -339,11 +347,29 @@ difference is that v1's framing made it look answered.
 
 #### Signal 2: mean token entropy. Miscounted evidence, not evidence about confidence.
 
-The entropy gate averaged a per-token quantity over the whole chain. In this
-model's completions that chain is roughly 613 tokens, of which the answer token
-is **one**. Almost all of the average is prose: syntax, connectives,
-restatement of the question, all of which the model predicts easily and
-confidently. A gate thresholding that number is thresholding fluency.
+The entropy gate averaged a per-token quantity over the whole chain. In the
+margin-v1 store that chain averages **602.21 tokens**, of which the answer
+token is **one**. (v1's own figure of roughly 613 is from the predecessor's
+store; the two are the same model at the same cap and the small difference is
+not load-bearing.)
+
+**Measured rather than asserted**, over 2,560 samples on 40 problems drawn with
+a recorded seed, using per-token entropy over the returned top-5 alternatives:
+
+| quantity | nats |
+|---|---|
+| mean over the **whole chain**, which is what the gate thresholded | **0.2232** |
+| mean over **non-answer tokens** | **0.2237** |
+| at the **answer token** | **0.0536** (median **0.0000**) |
+
+The chain average sits **0.0005 nats** from the non-answer average and
+**0.1695 nats** from the answer token's own value. The answer token is
+0.1700 nats below the prose it is averaged with [-0.1778, -0.1619].
+
+So the gate's statistic is, to four decimal places, a measurement of the prose.
+A gate thresholding it is thresholding fluency. The answer token's median
+entropy of exactly zero is the same saturation that §4.5 registers, visible in
+a second statistic.
 
 **This is a measurement artefact and should not be reported as a fact about
 confidence.** v1's §4.4 treated the entropy gate's failure as a second witness
@@ -353,11 +379,16 @@ its answer.
 
 That averaged confidence is diluted by high-confidence filler is established
 rather than new. It is the motivating premise of relevance-weighted uncertainty
-estimation (Duan et al., 2024), a restatement in a new setting of the length
-pathology long known in machine translation (Murray and Chiang, 2018), and the
-target of recent length-invariant estimators. Measuring at the answer span
-instead is likewise established, in that line and in windowed and
-claim-conditioned confidence. **We adopt the fix rather than proposing it.**
+estimation (Duan et al., 2024), and the target of recent length-invariant
+estimators. The related pathology in machine translation is that sentence-level
+model probability produces both a beam problem and a brevity problem, which
+Murray and Chiang (2018) trace to **label bias** and correct with a sentence
+level term, finding a per-word reward slightly better than length
+normalization. That is a different mechanism from ours and we cite it as a
+precedent for correcting a length-coupled score, not as the same finding.
+Measuring at the answer span instead is likewise established, in that line and
+in windowed and claim-conditioned confidence. **We adopt the fix rather than
+proposing it.**
 
 Its role here is narrow: it closes off "you measured in the wrong place" as an
 explanation for the next result.
@@ -407,26 +438,45 @@ reported beside these quantities as required: 0.9950 [0.9936, 0.9961]. The
 holdout reproduces the exposed set closely, 20.52 against 20.62 and 0.757
 against 0.749; only the holdout figures were registered.
 
-**The counterweight, stated here rather than buried.** The margin is not devoid
-of information about correctness. Across samples, the fraction above 10 nats
-separates correct from incorrect by **+0.0589**, with a cluster-bootstrap
-interval excluding zero. That is real and small.
+#### The two units, measured
+
+The margin is not devoid of information about correctness, and the difference
+between the two units is not an argument we make about the result. It is the
+result.
+
+Fraction of samples above 10 nats, correct minus incorrect, cluster bootstrap
+over problems at 10,000 resamples:
+
+| unit | population | estimate | 95% interval | |
+|---|---|---|---|---|
+| **pooled, sample-level** | all 198 problems; 4,283 correct and 8,322 incorrect samples with measured margins | **+0.0604** | [+0.0183, +0.1017] | **excludes zero** |
+| **per-problem, paired** | the 186 problems carrying at least one of each | **-0.0168** | [-0.0527, +0.0182] | **crosses zero** |
+
+Pooled, correct samples sit above 10 nats 0.8228 of the time against 0.7624
+for incorrect. Paired within a problem, the difference reverses sign and
+cannot be distinguished from zero.
+
+**On the population split.** 186 rather than 198 because a paired difference is
+undefined where a problem has no correct or no incorrect sample: 2 problems are
+all-correct and 10 all-incorrect. Those 12 contribute to the pooled row and not
+the paired one. Neither row uses the 129-problem exposed set or the 121-problem
+subset that appear elsewhere in this project for different statistics; both are
+computed over the full store.
 
 **We therefore do not claim that token log-probabilities are uninformative**,
-and any reading of this paper reaching that conclusion has overshot. The claim
-is about a unit: a signal with genuine **across-question** discriminative power
-is close to useless for the **within-question** routing decision that
-self-consistency poses.
+and any reading of this paper reaching that conclusion has overshot. Across
+questions the margin carries a real, small signal. Within a question it does
+not carry one we can detect, and within a question is where a router stands.
 
-This reconciles the result with recent work reaching an apparently opposite
-conclusion. Kumaran (2026) reports that calibrated log-probability confidence
+This makes the reconciliation with recent work a measurement rather than an
+argument. Kumaran (2026) reports that calibrated log-probability confidence
 behaves as an answer-evidence signal coupled to correctness, at AUROC 0.62 to
 0.80. That quantity, a temperature-scaled softmax over the option letters, is
 ours at the same locus. Its unit is not: every result there is trial-level
 across questions, with one answer drawn per question, and the design never
 conditions on samples that disagree with each other, because it never has two
-samples of one question to compare. **We agree with that paper on its unit and
-report a different one.**
+samples of one question to compare. **Our pooled row reproduces the direction
+that paper reports. Our paired row is the one it never measured.**
 
 **No margin gate was built.** We measured the signal and report that it cannot
 support the routing decision. We did not construct a margin-thresholded gate
@@ -464,13 +514,24 @@ changes is not the science but the denominator.
 
 ### 5.1 Position relative to prior work
 
-That token budgets change evaluation outcomes is established: budget-dependent
-ranking reversals have been reported on GPQA Diamond at the same 198 items,
-significant at p < 0.01, with a three-tier truncation analysis. That work is
-stronger than this on the general claim, and **it deliberately excludes
-reasoning-native models**, naming o1, DeepSeek-R1 and QwQ, because their
-dual-stream architecture changes the semantics of `max_tokens`. This section
-reports that excluded region.
+That token budgets change evaluation outcomes is established. Guedes de Souza
+and Panisson (2026) vary the generation budget across seven levels from 64 to
+4,096 tokens, over four models and three benchmarks including GPQA Diamond at
+the same 198 items, 56,476 inferences in total, and report that **model
+rankings reverse across budgets on all benchmarks (p < 0.01, McNemar)**, with
+3 to 19 percent of items non-monotone even after controlling for truncation
+through a three-tier analysis over all items, per-model completed items, and
+commonly completed items. That work is stronger than this on the general claim.
+
+Two things about it define this section's scope. First, **it deliberately
+excludes dedicated reasoning models**, naming o1, DeepSeek-R1 and QwQ, while
+describing its own four as open-weight reasoning models: the exclusion is
+specifically of hidden chain-of-thought architectures, which is exactly our
+three. Second, **its budget grid stops at 4,096 tokens.** Qwen3.5-9B returns an
+answer rate of 0.0000 at 2048 and at 4096, so across that entire grid the
+measurement this paper reports does not exist at all. Ranking reversal is a
+statement about which model wins; ours is that below a threshold nothing is
+measured.
 
 ### 5.2 Three models, three measured walls
 
@@ -515,10 +576,13 @@ answer rate is published beside every accuracy.
 
 | | samples | spend |
 |---|---|---|
-| probes, all phases | 148 | $0.1347 |
-| the margin run on the v1 model | 12,672 | $3.4122 |
-| the incomplete second-model run (§6) | 1,253 | remainder |
-| **realized, all phases** | **14,073** | **$4.667639** |
+| probes: capability gate, caps, thinking control | 148 | $0.1346 |
+| margin run on the v1 model, including its 4-sample smoke run | 12,672 | $3.4123 |
+| second-model run, excluding its probes (§6) | 1,253 | $1.1207 |
+| **realized, all phases** | **14,073** | **$4.6676** |
+
+Rows are disjoint: the 148 probe samples are not counted again in the
+second-model row. Ledger total to full precision is $4.667639.
 
 **The bill is computed, not confirmed.** Every row is stored token counts times
 a dated price snapshot. The ledger is complete against the raw store (14,073
@@ -529,7 +593,36 @@ balance alone cannot distinguish an undercounting ledger from an unrecorded
 starting figure. **Provider total spend, to compare against $4.667639:**
 `[BLANK]`.
 
-### 5.6 Projecting cost from a small probe
+### 5.6 A gated benchmark cannot have its chains published
+
+An infrastructure constraint we did not anticipate and found by running the
+check rather than by reasoning about it.
+
+Doc-level policy in this project is that benchmark question text is never
+committed: the sample record stores `prompt_hash` and never the prompt. A
+pre-release leakage check reduces the gated question source to hashed n-grams
+and scans the release tree for them. Run over the margin-v1 store it reports
+**5,669 hits across 198 files, 12,672 lines and 129,247 fingerprints, and
+blocks the release.**
+
+The cause is not a stored prompt. It is `raw_text`: **the model restates the
+question inside its own chain of thought.** The request never carried the
+question into storage; the response did.
+
+The consequence generalises past this project. **A chain-of-thought sample
+store on a gated benchmark cannot be published verbatim**, however careful the
+storing pipeline is, because the leak is authored by the model rather than by
+the pipeline. Redaction rules written for what a project writes do not cover
+what the model writes back. This sits awkwardly beside reproducibility: the
+raw store is what regenerates every derived number, and it is the artifact that
+cannot be released.
+
+Our resolution is a two-part release, a derived-only public artifact and a
+gated raw one, on the same access terms as the benchmark. We flag it because
+every paper that publishes reasoning traces on a gated benchmark faces it, and
+we have not seen it stated.
+
+### 5.7 Projecting cost from a small probe
 
 Mean completion length is a per-problem property at **119.66 times** the
 variance a homogeneous null produces. A probe over k problems inherits that

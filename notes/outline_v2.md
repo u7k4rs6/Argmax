@@ -1,5 +1,7 @@
 # Outline: v2 of arXiv:2608.11403
 
+v1 read from `paper/backfire_preprint.pdf`.
+
 Ordered by what survived `notes/prior_work.md`, not by the order the work was
 done. **Every verdict is a blank.** A number appears below only where it is
 already computed, registered and reported; anything from the margin-v2 store
