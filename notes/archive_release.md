@@ -38,11 +38,48 @@ anywhere in doc 3:
 Not decided here. It changes what doc 3 section 7 promises, so a human decides
 it.
 
-## Blocker 2: the predecessor's store is not on this machine
+## Correction: the predecessor's store IS on this machine
 
-`self-consistency-backfire` is not present. Only
-`backfire-arxiv-submission.tar.gz` is, which is the paper submission and not
-the sample store. The predecessor archive cannot be built from here.
+**I reported it missing. That was wrong, and the search was the wrong search.**
+I looked for a directory named after the git remote,
+`self-consistency-backfire`, found nothing, and concluded the store was absent.
+The working directory is named for the project's earlier title:
+
+**`~/Desktop/Compute-Elasticity`**
+
+Searching for the artifacts rather than the repository name finds it
+immediately. The same store had been read repeatedly earlier in this project,
+which should have made "not present" implausible on its face.
+
+### Inventory
+
+| path | files | records | model |
+|---|---|---|---|
+| `outputs/samples` | 198 | **13,058** | Qwen2.5-7B-Instruct-Turbo |
+| `outputs/samples_model2` | 198 | **12,672** | **Meta-Llama-3-8B-Instruct-Lite** |
+| `outputs/samples_qwq` | 47 | **404** | reasoning-model probe |
+| `data/problem_ids.json` | 1 | 198 ids | |
+| tag `backfire-prereg-v1.0` | | | present in the git history |
+
+13,058 + 12,672 = **25,730**, which is the figure this project has been quoting
+for the predecessor's prompt-template verification, so the store is the one the
+paper was written from.
+
+**Record shape, which matters for the archive.** Fields are
+`full_response`, `input_tokens`, `output_tokens`, `mean_token_entropy`,
+`extracted_answer`, `extraction_pass`, `correct`, `ground_truth`,
+`prompt_template_hash`, `seed_hex`, `temperature`, `subject`, `problem_id`,
+`sample_idx`, `schema_version`, `provider`, `latency_ms`, `timestamp`.
+
+There is **no verbatim `usage` block**: token counts are flattened to two
+integers. That is defect 1 as recorded in the Argmax documents, visible in the
+data. Anything the provider reported beyond those two numbers is gone and
+cannot be recovered. `mean_token_entropy` is a scalar, which is why v1 could
+not evaluate an answer-token margin.
+
+`backfire-arxiv-submission.tar.gz` contains 9 files and **no sample records**:
+`backfire_preprint.tex`, `.bbl`, `references.bib`, the COLM style and bst, and
+four figures. As expected, LaTeX and figures only.
 
 ## Blocker 3: no Zenodo credentials
 
