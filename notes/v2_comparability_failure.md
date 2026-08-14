@@ -260,19 +260,30 @@ The v2 store is not waste. It is the measurement that shows a cap chosen from
 no successful run would have produced. It belongs in the reasoning-wall
 section, not in a replication section.
 
-## A random-draw cap probe: costed, guarded, not run
+## A random-draw cap probe: specified, costed, and not run
 
-Authorised conditionally, **only if the dashboard confirms enough balance**.
-It now does: **$1.16**, read by a human on 2026-08-14. The probe was held
-until that figure existed, because spending on the strength of the
-reconstruction this note had just called insufficient would have contradicted
-the section above it.
+**Not run. No samples were drawn at 8192 or 12288, and none exist.**
 
-Budget $0.35. Ceiling set at the projection plus the calibrated k=16 uplift of
-15.2 percent from doc 2 section 5.3.1, which is the first time that table is
-used the way it was written, and set to abort rather than overrun.
+The history, because it matters for what section 4.3 may claim. The probe was
+first authorised conditionally on the dashboard confirming enough balance,
+and was held because the dashboard could not be reached. The balance was then
+read by a human at $1.16 and the probe was authorised, designed and costed:
+16 problems drawn at random from all 198 with seed 20260814 per doc 2 section
+5.3.1, 8 samples each at cap 8192 and 12288, thinking off, same locked
+template and row-index shuffle, budget $0.35, ceiling set at the projection
+plus the calibrated k=16 uplift of 15.2 percent, aborting rather than
+overrunning. **The launch was then declined and it has not been re-attempted.**
 
-### The guard, recorded before the probe ran
+So the random-draw probe remains the correction that has been specified and
+never executed. The design above is reproducible from this note if a future
+budget allows it, and the seed is recorded so the draw is fixed rather than
+chosen later.
+
+**Section 4.3 therefore rests on the projection below, not on a measurement
+at 8192 or 12288.** It must say so. Anyone writing "at cap 12288 the model
+answers X" from this note is writing fiction.
+
+### The guard, recorded before any such probe runs
 
 **A usable cap is not permission to evaluate MD3 or MD4.** Whatever a future
 probe returns, those claims stay registered and unevaluated. The reason is not
