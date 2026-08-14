@@ -1,0 +1,79 @@
+"""Which files in this repository a repository-wide check must read.
+
+## Why this exists
+
+Two checks scan documents: the citation-provenance check in
+`tests/falsification.py` and the answer-rate pairing check in
+`argmax.persist.pairing`. Both were written as an **allow-list of known
+locations**, a glob per directory somebody remembered at the time. Both then
+missed a directory, three times between them:
+
+1. `notes/` was outside the pairing check, and a table of per-problem
+   accuracies by completion-length quintile was published there with no answer
+   rates. Doc 4 section 9.1.1 records it.
+2. `paper/` was outside the citation-provenance check, so the draft, the one
+   document where citing a superseded source does real damage, was unscanned.
+3. `paper/` was outside the pairing check too, for the same reason.
+
+Three misses, one cause. **An allow-list of remembered places fails whenever
+somebody creates a place.** The default is wrong, so it is inverted here: walk
+everything, and exclude only what an explicit, justified entry excludes.
+
+Adding a directory to `EXCLUSIONS` requires a reason in the table. Adding a
+new directory of documents requires nothing, which is the point.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterator
+from pathlib import Path
+
+#: Each entry is (path fragment, why). The reason is not decoration: it is the
+#: thing a reviewer checks when a document turns out to be unscanned.
+EXCLUSIONS: tuple[tuple[str, str], ...] = (
+    (".git", "version control internals, not project documents"),
+    (".venv", "installed third-party packages; their docs are not our claims"),
+    ("node_modules", "same, for any JS tooling"),
+    ("__pycache__", "compiled bytecode, generated from files already scanned"),
+    (".pytest_cache", "test-runner scratch state, regenerated on every run"),
+    (".ruff_cache", "linter scratch state, regenerated on every run"),
+    (".mypy_cache", "type-checker scratch state, regenerated on every run"),
+    (".playwright-mcp", "tool scratch output, not authored by this project"),
+    (
+        "data",
+        "gitignored sample store; never contains authored prose, and CLAUDE.md "
+        "forbids committing anything under it",
+    ),
+    (
+        "runs",
+        "gitignored run artefacts and ledger; machine-written, not authored prose",
+    ),
+    (
+        "site-packages",
+        "installed dependencies wherever they land",
+    ),
+)
+
+
+def is_excluded(path: Path, root: Path) -> str | None:
+    """Return the reason `path` is excluded, or None if it must be scanned."""
+    try:
+        parts = path.relative_to(root).parts
+    except ValueError:
+        return "outside the repository root"
+    for fragment, reason in EXCLUSIONS:
+        if fragment in parts:
+            return reason
+    return None
+
+
+def iter_documents(root: Path, suffix: str = ".md") -> Iterator[Path]:
+    """Every authored document in the repository, excluding only the above.
+
+    Deliberately a walk rather than a set of globs. A check built on this
+    picks up a new directory the day it is created, which is the failure mode
+    the module docstring records three instances of.
+    """
+    for path in sorted(root.rglob(f"*{suffix}")):
+        if path.is_file() and is_excluded(path, root) is None:
+            yield path

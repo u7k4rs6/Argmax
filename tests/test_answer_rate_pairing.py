@@ -270,12 +270,59 @@ def test_tables_are_found_with_their_line_numbers(tmp_path):
 def test_every_markdown_file_in_the_repo_pairs():
     """The enforcement, over notes, files and the repository root."""
     report = PairingReport()
-    # paper/ included: an unpaired accuracy in the draft is the one that
-    # reaches a reader.
-    roots = [REPO / "notes", REPO / "files", REPO / "docs", REPO / "paper"]
-    paths = [p for root in roots if root.exists() for p in sorted(root.rglob("*.md"))]
-    paths += sorted(REPO.glob("*.md"))
+    # A WALK, not a list of remembered directories. notes/ was missed once and
+    # paper/ twice under the old allow-list default; see argmax.repo.
+    from argmax.repo import iter_documents
+
+    paths = list(iter_documents(REPO))
     for path in paths:
         check_markdown(path, report)
     assert len(paths) >= 15, "the markdown scan is covering almost nothing"
     assert not report.problems, "\n".join(report.problems)
+
+
+# --- the scan default itself ------------------------------------------------
+#
+# notes/ was missed once, paper/ twice. Three misses, one cause: an allow-list
+# of remembered directories. These tests assert the inverted default holds.
+
+
+def test_the_scan_walks_the_repo_rather_than_a_list_of_directories():
+    from argmax.repo import iter_documents
+
+    found = {p.relative_to(REPO).parts[0] for p in iter_documents(REPO)}
+    # every directory that has ever held an authored document
+    for expected in ("notes", "files", "paper"):
+        assert expected in found, f"{expected}/ is not being scanned"
+
+
+def test_a_new_directory_of_documents_is_scanned_without_being_registered(tmp_path):
+    """The property the allow-list did not have."""
+    from argmax.repo import iter_documents
+
+    novel = tmp_path / "somewhere_nobody_listed"
+    novel.mkdir()
+    (novel / "note.md").write_text("# hi", encoding="utf-8")
+    assert [p.name for p in iter_documents(tmp_path)] == ["note.md"]
+
+
+def test_every_exclusion_carries_a_reason():
+    """An exclusion without a stated reason is an allow-list in disguise."""
+    from argmax.repo import EXCLUSIONS
+
+    assert EXCLUSIONS
+    for fragment, reason in EXCLUSIONS:
+        assert fragment and reason, f"exclusion {fragment!r} has no reason"
+        assert len(reason) > 15, f"exclusion {fragment!r} has a token reason"
+
+
+def test_gitignored_stores_stay_excluded(tmp_path):
+    """data/ and runs/ are excluded on purpose, not by omission."""
+    from argmax.repo import is_excluded
+
+    for name in ("data", "runs", ".venv"):
+        d = tmp_path / name
+        d.mkdir()
+        f = d / "x.md"
+        f.write_text("x", encoding="utf-8")
+        assert is_excluded(f, tmp_path), f"{name}/ should be excluded"

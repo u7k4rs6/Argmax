@@ -208,26 +208,13 @@ ALLOWED_ARTIFACTS = (
     "paper/backfire_colm_submission.pdf",
 )
 
-#: `paper/*.md` is here because the draft is the document where a citation to
-#: a superseded source does the most damage, and it was outside this scan
-#: until the draft existed.
-DOC_GLOBS = (
-    "*.md",
-    "files/*.md",
-    "notes/*.md",
-    "docs/**/*.md",
-    "data/*.md",
-    "paper/*.md",
-)
-
-
+#: Scanning is now a WALK with an explicit exclusion list, not an allow-list of
+#: remembered directories. `notes/` was missed once and `paper/` twice under
+#: the old default; see `argmax.repo` for the record and the exclusions.
 def _documents() -> list[Path]:
-    seen: dict[str, Path] = {}
-    for pattern in DOC_GLOBS:
-        for path in REPO.glob(pattern):
-            if path.is_file():
-                seen[str(path)] = path
-    return sorted(seen.values())
+    from argmax.repo import iter_documents
+
+    return list(iter_documents(REPO))
 
 
 def test_documents_exist_to_check():

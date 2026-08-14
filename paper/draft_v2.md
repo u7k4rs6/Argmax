@@ -16,23 +16,117 @@ Predecessor cited throughout as arXiv:2608.11403, read from
 
 ---
 
+## Status: this is an addendum, not yet the manuscript
+
+**Confirmed by inspection.** This file contains only the new material. A v2
+replaces arXiv:2608.11403 rather than supplementing it, so it must carry that
+paper's abstract, setup, and results with the new work integrated. It does not
+yet. The original is 4,232 words in seven sections:
+
+| original section | present here | disposition on merge |
+|---|---|---|
+| Abstract | rewritten below, provisional | replace |
+| 1 Introduction | partly | merge; framing changes below |
+| 2 Setup | **absent** | carry over, extend with margin instrumentation |
+| 3 Pre-Registered Confirmatory Results | **absent** | carry over unchanged |
+| 4.1 Backfire affects the majority of problems | **absent** | carry over unchanged |
+| 4.2 The oracle upper bound is real but not reachable | **absent** | carry over, add the flat-aggregate-curve caveat |
+| 4.3 Two verifier-free gates fail to capture it | **absent** | carry over, **reinterpret** |
+| 4.4 Why: confidence does not track correctness | **absent** | carry over, **substantially revise** |
+| 5 Discussion | **absent** | rewrite around the new material |
+| 6 Limitations | partly | merge |
+| 7 Conclusion | **absent** | rewrite |
+
+Merging is the next task. Nothing below should be read as final ordering.
+
+### What the original's framing must change, because the new work reinterprets it
+
+Four changes, in descending order of how much they alter a claim.
+
+1. **Section 4.4's title and thesis, "confidence does not track correctness",
+   is now too strong and partly misdiagnosed.** The original inferred a single
+   mechanism from the joint failure of two gates. The new work separates them:
+   the **token-entropy** gate failed on **aggregation**, because a per-token
+   average over roughly 613 tokens is dominated by fluency and the answer token
+   is one of them, and that is a measurement artefact rather than a fact about
+   confidence. Repairing the aggregation, by measuring at the answer span,
+   produces a signal that still fails, but for a different reason: saturation.
+   The merged section must present these as two failures with two causes, not
+   one thesis with two witnesses.
+
+2. **The correctness claim needs a unit attached.** "Confidence does not track
+   correctness" is false as stated at the across-question unit: our own margin
+   separates correct from incorrect samples by +0.0589 with an interval
+   excluding zero, and Kumaran (arXiv:2606.29490) reports AUROC 0.62 to 0.80
+   for the same quantity across questions. What we can defend is the
+   within-question claim. The merged text must say **which** decision the
+   signal fails at rather than asserting a general absence of information.
+
+3. **The abstract's "we do not test reasoning-native models, which we flag as
+   the central open question" must become a scoped negative result.** It is no
+   longer open in the same way: on hosted serverless inference at these
+   budgets, it is unmeasurable, and section 4 reports three separate walls.
+   The open question survives, but it is now open **for the open-weights
+   route**, not open in general.
+
+4. **Model coverage becomes asymmetric and must be labelled everywhere.** The
+   original's backfire result covers two models from different families. The
+   new registered claims cover **one**. A merged paper carrying both must not
+   let the reader infer that everything here rests on two models.
+
+Two smaller items. Section 4.2's oracle headroom should note that the
+**aggregate** accuracy curve over the grid spans only 0.52 points, so the
+14-to-17 point headroom is entirely per-problem and an aggregate reading of it
+is wrong. And the original's own pre-registration split (47 exploratory, 151
+confirmatory) should be reported alongside the disclosure that three of the 50
+exploratory ids sit inside the confirmatory 151.
+
+---
+
 ## Abstract
 
-`[BLANK: written last]`
+Self-consistency by majority vote reduces per-problem accuracy on most GPQA
+Diamond problems for small instruction-tuned models: 56.6 percent of problems
+for Qwen2.5-7B and 65.7 percent for Llama-3-8B (arXiv:2608.11403). The obvious
+remedy is a verifier-free confidence gate that decides which problems to vote
+on. This paper reports that the most natural repair to that remedy also fails,
+and separates two failures the earlier work treated as one.
 
-The claims it must contain, so it cannot drift from the body:
+A token-entropy gate fails for a measurement reason rather than a substantive
+one: a per-token average over a chain of roughly 613 tokens is dominated by
+fluency, and the answer token is one of them. We therefore measure confidence
+at the answer span itself, where that dilution cannot apply. **On
+Qwen2.5-7B-Instruct-Turbo, 198 problems at 64 samples each, a sample whose
+answer contradicts its own problem's plurality still emits that answer at a
+median margin of 20.52 nats, with 75.7 percent of such samples above 10 nats.**
+Both quantities were pre-registered with thresholds fixed in advance and tested
+once on 69 problems that no exploratory analysis had read; both passed. The
+same margin does separate correct from incorrect samples across the benchmark,
+by 0.0589 on the fraction above 10 nats with an interval excluding zero, so the
+claim is not that token log-probabilities carry no information. It is that a
+signal with genuine across-question discrimination is close to useless for the
+**within-question** decision self-consistency actually poses: which of several
+disagreeing samples of the same problem to trust. The disagreement lives
+upstream, in which chain was written, and the answer token reads out a chain
+that has already committed. **We did not find this result in our search of the
+prior literature**, though the dilution it corrects for, and the practice of
+measuring at the answer span, are both established.
 
-1. Self-consistency backfires on most hard science problems for small models
-   (prior work, arXiv:2608.11403). The obvious remedy is to gate on a
-   confidence signal. **This paper is the negative answer to that remedy.**
-2. The answer-token margin, measured at the answer span rather than averaged
-   over the chain, is **saturated whether or not a sample agrees with its own
-   problem's plurality**. Registered in advance, tested once on a held-out set
-   of 69 problems, passed.
-3. **One model.** The second-model replication was registered, sampled, and
-   could not be evaluated. Why is section 5.
-4. Reasoning-native models could not be measured at all on this budget, and
-   the cost of establishing that is reported.
+These claims rest on **one model**. A registered second-model replication was
+sampled and could not be evaluated: its cap was selected from a probe of eight
+non-random problems that proved unrepresentative, the run's answer rate came in
+at 0.8931 against a registered comparability condition of 0.9950, and scoring a
+pool selected for finishing fastest would have violated the rule this paper
+argues for. We report that rejection rather than the result.
+
+We separately report that on **hosted serverless inference at a small budget**,
+three reasoning-native models could not be evaluated at all, for three distinct
+and separately measured reasons: no serverless route at any price, no
+comparable answer rate at any affordable cap, and zero extractable answers with
+generation consuming the entire budget. All three models are downloadable, so
+this bounds what a metered per-token API buys rather than what is knowable, and
+we name open weights on fixed-cost compute as the route a follow-up should
+take. Total project spend was $4.67, itemised.
 
 ## 1. Introduction
 
@@ -58,8 +152,10 @@ that a voting procedure must separate.
    answer contradicts its own problem's plurality emits that answer at a
    median margin of 20.52 nats. The disagreement self-consistency exploits is
    not located at the answer token.
-2. **The reasoning wall.** Three reasoning-native models, three distinct and
-   separately measured failures to evaluate, with an itemised bill.
+2. **The reasoning wall, scoped to hosted serverless inference.** Three
+   reasoning-native models, three distinct and separately measured failures to
+   evaluate, with an itemised bill, and the open-weights route named as what a
+   follow-up uses.
 3. **A methodological rule with a test behind it**: comparability between
    models is keyed on answer rate, not on matched token caps.
 4. **Thread A**, a negative result on a reconstructed few-sample estimator.
@@ -188,7 +284,40 @@ and was caught by a 32-sample probe rather than after a 3,168-sample run.
 
 A parser validated on one model is unvalidated on the next.
 
-## 4. The reasoning wall
+## 4. The reasoning wall, on hosted serverless inference
+
+### 4.0 Scope, stated before the measurements
+
+**The claim in this section is about hosted serverless inference, and it does
+not hold for open weights on owned or free compute.** Stated first because
+unscoped it has a one-line rebuttal, and the rebuttal is correct.
+
+All three models below are **downloadable**. Nothing here says a
+reasoning-native model cannot be evaluated on GPQA Diamond. It says that on a
+metered, per-token, hosted API at a small budget, three of them could not be:
+one had no serverless route at any price, one never reached a comparable
+answer rate at any cap we could afford, and one returned nothing at all at any
+affordable cap.
+
+**What the constraint actually is.** Serverless pricing charges per output
+token, and reasoning-native models emit a great many of them. That makes the
+cost of a fixed experiment scale with the model's verbosity rather than with
+the size of the benchmark, and 198 problems at M = 16 becomes unaffordable at
+the caps these models need. The wall is a property of **the billing model**
+meeting **the generation length**, not of the models being hard to run.
+
+**The route a follow-up should take is therefore open weights on fixed-cost
+compute**, where the marginal cost of an output token is zero and the binding
+constraint becomes wall-clock and memory instead. Kaggle's free tier, for
+example, offers two T4 GPUs at 32 GB total with roughly 30 GPU-hours per week,
+which is enough for a 7 to 9B model in reduced precision and long generations,
+though not for a 32B model without quantisation or offload. Under that budget
+the caps that defeated us here are affordable, and the questions this section
+had to abandon become answerable. What changes is not the science but the
+denominator.
+
+We report the serverless walls because they are what this project met and
+because they are unreported elsewhere, not because they bound the problem.
 
 ### 4.1 Position relative to prior work
 
@@ -413,6 +542,10 @@ Recorded as a section rather than a footnote.
 ## 8. Limitations
 
 - **One benchmark**, GPQA Diamond, 198 problems.
+- **The reasoning wall is a serverless result.** All three models are
+  downloadable, and on fixed-cost compute the caps that defeated us are
+  affordable. The section bounds what a metered API buys at this budget, not
+  what is knowable.
 - **One model** for the registered claims. The second-model replication was
   registered, sampled and could not be evaluated (section 5). Cross-family
   replication was never purchasable: four of five priced candidates in the 7 to
