@@ -111,6 +111,37 @@ Adding a shape to the reader is additive and must be shown to be: the fix
 above was accepted only after all 12,672 stored Qwen2.5-7B rows rebuilt
 byte-identical, so no already-registered verdict moved.
 
+### 2.1.1 A read-modify-write against an API whose GET omits fields deletes them
+
+The same error one level out, and it cost a live field rather than a parse.
+
+Preparing the Zenodo release, a restricted record was created carrying an
+`access_conditions` text: the terms under which a requester may be granted the
+raw chain-of-thought store. A later edit updated an unrelated part of the
+record by the ordinary route: `GET` the metadata, change one key, `PUT` the
+whole object back.
+
+**The GET does not return `access_conditions`.** So the PUT wrote an object
+that did not contain it, and the field was deleted. The write returned 200.
+Nothing in the response indicated a loss. It was found only because a human
+asked to read the conditions text back before publication, and it was gone.
+
+This is the same defect as reading one logprob shape and concluding the other
+model returns no alternatives: **treating what you can read as what exists.**
+There the reader saw no `top_logprobs` key and inferred no data; here the
+writer saw no `access_conditions` key and inferred no field.
+
+| Rule | Consequence |
+|---|---|
+| Never round-trip a remote object you did not fully read | A `GET` is a projection, not a copy. If the API does not document the projection as complete, assume it is not |
+| Prefer field-scoped writes (PATCH, or a documented single-field endpoint) over whole-object PUT | A whole-object write asserts the value of every field, including those you never saw |
+| After any write that could clear a field, read back **the specific fields you care about**, not just the status code | 200 means the write applied, not that it preserved |
+| When a field will not persist through the available API, put the content where it does persist and say so | The Zenodo conditions text now lives in the record description, which does round-trip |
+
+The general form: **an API's read surface and its write surface are not
+guaranteed to be the same shape**, and a read-modify-write silently assumes
+they are.
+
 ## 3. The `sample` record
 
 One JSON object per line, per API call. Fields marked **R** are required

@@ -150,3 +150,23 @@ at the tagged commit reproduces every derived table byte-identically; every
 manifest records git SHA, dirty flag, lockfile hash, dataset hash, model
 strings requested and returned, full parameters, capability probe id, pricing
 snapshot id, and prereg tag.
+
+## Archived artifacts
+
+Two Zenodo records, published 2026-08-16, supplementing arXiv:2608.11403 and
+its v2.
+
+| record | DOI | access | contents |
+|---|---|---|---|
+| **Derived data** | [10.5281/zenodo.21933418](https://doi.org/10.5281/zenodo.21933418) | **Open**, CC BY 4.0 | derived tables for both models, spend ledger, run manifests, pre-registration registry, provenance digests. No model completions, no benchmark question text. Reproduces every number in the paper. |
+| **Raw sample store** | [10.5281/zenodo.21933422](https://doi.org/10.5281/zenodo.21933422) | **Restricted, request-access** | per-sample records with verbatim completions, usage blocks and depth-5 logprob arrays |
+
+**The restricted record is not open data.** It is gated on the same terms as
+GPQA, because model chains of thought restate gated benchmark items: a
+pre-release leakage check over that tree reports 20,376 matched n-grams. The
+leak is authored by the model, not by the recording pipeline, which stores a
+prompt hash and never a prompt. Request access only if you already hold GPQA
+access.
+
+Both records carry the GPQA canary string and attribute GPQA (Rein et al.,
+2023, arXiv:2311.12022, CC BY 4.0).

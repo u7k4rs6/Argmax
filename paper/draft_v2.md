@@ -11,6 +11,12 @@ no `budget_matched` rows exist and doc 2 forbids writing one without them.
 
 v1 read from `paper/backfire_preprint.pdf`, cited as arXiv:2608.11403.
 
+**Data availability.** Derived, question-free data reproducing every number in
+this paper is archived open access at **10.5281/zenodo.21933418** (CC BY 4.0). The raw per-sample
+store, including model chains of thought, is archived at **10.5281/zenodo.21933422** as a
+**restricted, request-access** record, on the same terms as GPQA; it is not
+open data, for the reason given in section 5.6.
+
 ---
 
 ## Abstract
@@ -65,7 +71,8 @@ comparable answer rate at any affordable cap, and zero extractable answers with
 generation consuming the entire budget. All three models are downloadable, so
 this bounds what a metered per-token API buys rather than what is knowable, and
 we name open weights on fixed-cost compute as the route a follow-up should
-take. Total project spend was $4.67, itemised.
+take. Total project spend was $4.67, itemised. Derived data is archived openly at
+10.5281/zenodo.21933418; the raw store is archived at 10.5281/zenodo.21933422 under request-access.
 
 ## Changes from v1
 
@@ -585,7 +592,8 @@ Rows are disjoint: the 148 probe samples are not counted again in the
 second-model row. Ledger total to full precision is $4.667639.
 
 **The bill is computed, not confirmed.** Every row is stored token counts times
-a dated price snapshot. The ledger is complete against the raw store (14,073
+a dated price snapshot. The ledger is published in the open record (10.5281/zenodo.21933418) so
+the arithmetic is checkable. It is complete against the raw store (14,073
 rows against 14,073 sample records) and every row recomputes to $4.667639 with
 no disagreements. Together documents no balance or usage endpoint, and a
 dashboard balance reading ($1.16 on 2026-08-14) cannot close the loop: a
@@ -617,8 +625,9 @@ what the model writes back. This sits awkwardly beside reproducibility: the
 raw store is what regenerates every derived number, and it is the artifact that
 cannot be released.
 
-Our resolution is a two-part release, a derived-only public artifact and a
-gated raw one, on the same access terms as the benchmark. We flag it because
+Our resolution is a two-part release, a derived-only public artifact
+(10.5281/zenodo.21933418, open, CC BY 4.0) and a gated raw one (10.5281/zenodo.21933422, restricted with
+request-access), on the same access terms as the benchmark. We flag it because
 every paper that publishes reasoning traces on a gated benchmark faces it, and
 we have not seen it stated.
 

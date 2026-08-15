@@ -81,7 +81,7 @@ not evaluate an answer-token margin.
 `backfire_preprint.tex`, `.bbl`, `references.bib`, the COLM style and bst, and
 four figures. As expected, LaTeX and figures only.
 
-## Uploaded, verified, NOT published
+## PUBLISHED 2026-08-16
 
 Both records exist as drafts on zenodo.org with DOIs reserved. Recorded here
 because a reboot destroyed the scratchpad that held them once already.
@@ -91,8 +91,28 @@ because a reboot destroyed the scratchpad that held them once already.
 | **public, derived-only** | 21933418 | **10.5281/zenodo.21933418** | Open | 16 files, 22.3 MB | **15/15 sha256 PASS** |
 | **restricted, raw** | 21933422 | **10.5281/zenodo.21933422** | Restricted, request-access | 8 files, 577.4 MB | **7/7 sha256 PASS** |
 
-**Neither is published.** `state=unsubmitted` on both. A published Zenodo
-record cannot be deleted, so publication is a separate, explicit step.
+**Both are published and both DOIs resolve**, each on the first attempt
+through doi.org to `https://zenodo.org/records/<id>`. A published Zenodo record
+cannot be deleted, which is why publication was held as a separate explicit
+step and why the licence, attribution and access-conditions checks were run
+against the live drafts first. Two of those three checks found a problem.
+
+| record | live DOI | access | licence | resolves |
+|---|---|---|---|---|
+| derived | **10.5281/zenodo.21933418** | Open | CC BY 4.0 | yes, attempt 1 |
+| raw | **10.5281/zenodo.21933422** | Restricted, request-access | CC BY 4.0 | yes, attempt 1 |
+
+### What the pre-publication checks caught
+
+1. **GPQA was never attributed.** Both descriptions referred to "the
+   benchmark" and "gated benchmark items" without naming GPQA, citing Rein et
+   al. or linking it. The derived data is a CC BY 4.0 derivative, so that is a
+   licence failure rather than a stylistic one. Full attribution added to both.
+2. **The access-conditions text had been deleted, by me.** Recorded as a rule
+   in doc 4 section 2.1.1: the Zenodo GET does not return `access_conditions`,
+   so a read-modify-write PUT dropped it and returned 200. It was restored
+   into the record description, which does round-trip, after the field itself
+   proved unwritable through the available API.
 
 ### Zenodo caps a record at 100 files
 
