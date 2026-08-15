@@ -1,0 +1,63 @@
+{
+ "_README": "Required for every bib entry with no arXiv id: which source was opened, when, and by what means. An entry absent from this file fails tests/test_bibliography.py. Entries WITH an arXiv id are verified automatically against the API and cached in references.verified.json.",
+ "aggarwal2023adaptive": {
+  "source": "https://aclanthology.org/2023.emnlp-main.761/",
+  "method": "fetched ACL Anthology entry",
+  "verified_utc": "2026-08-16",
+  "checked": "title, 4 authors, venue, year, pages 12375-12396"
+ },
+ "chen2024more": {
+  "source": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/51173cf34c5faac9796a47dc2fdd3a71-Abstract-Conference.html",
+  "method": "fetched NeurIPS proceedings page",
+  "verified_utc": "2026-08-16",
+  "checked": "title, 7 authors in order, NeurIPS 37 (2024)"
+ },
+ "guo2017calibration": {
+  "source": "https://proceedings.mlr.press/v70/guo17a.html",
+  "method": "fetched PMLR proceedings page",
+  "verified_utc": "2026-08-16",
+  "checked": "title, 4 authors, ICML 34 (2017), pages 1321-1330"
+ },
+ "lightman2023verify": {
+  "source": "https://arxiv.org/abs/2305.20050",
+  "method": "fetched arXiv abstract page",
+  "verified_utc": "2026-08-16",
+  "checked": "title and all 10 authors in order; ICLR 2024 venue not independently re-checked"
+ },
+ "rein2023gpqa": {
+  "source": "https://arxiv.org/abs/2311.12022",
+  "method": "fetched arXiv abstract page",
+  "verified_utc": "2026-08-16",
+  "checked": "title and all 8 authors in order; COLM 2024 venue not independently re-checked"
+ },
+ "tan2025consistent": {
+  "source": "https://aclanthology.org/2025.emnlp-main.238/",
+  "method": "ACL Anthology entry located by search and read",
+  "verified_utc": "2026-08-16",
+  "checked": "title, all 11 authors in order, EMNLP 2025, pages 4755-4765"
+ },
+ "wang2023self": {
+  "source": "https://arxiv.org/abs/2203.11171",
+  "method": "fetched arXiv abstract page",
+  "verified_utc": "2026-08-16",
+  "checked": "title and all 8 authors in order; ICLR 2023 venue not independently re-checked"
+ },
+ "zhang2023sac3": {
+  "source": "https://aclanthology.org/2023.findings-emnlp.1032/",
+  "method": "fetched ACL Anthology entry",
+  "verified_utc": "2026-08-16",
+  "checked": "title, 5 authors, Findings EMNLP 2023, pages 15445-15458"
+ },
+ "duan2024shifting": {
+  "source": "https://aclanthology.org/2024.acl-long.276/",
+  "method": "fetched ACL Anthology entry including its BibTeX block",
+  "verified_utc": "2026-08-16",
+  "checked": "title, all 8 authors in order, ACL 2024, pages 5050-5063"
+ },
+ "murray2018correcting": {
+  "source": "arXiv:1808.10006 PDF, read directly via pdftotext",
+  "method": "opened the PDF",
+  "verified_utc": "2026-08-16",
+  "checked": "title, both authors, WMT 2018; abstract read to confirm the label-bias claim the paper cites"
+ }
+}

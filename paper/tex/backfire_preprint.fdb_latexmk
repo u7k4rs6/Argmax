@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex backfire_preprint"] 1786829115.7056 "backfire_preprint.aux" "backfire_preprint.bbl" "backfire_preprint" 1786829116.63602 0
+["bibtex backfire_preprint"] 1786829846.7546 "backfire_preprint.aux" "backfire_preprint.bbl" "backfire_preprint" 1786829847.66252 0
   "./colm2026_conference.bst" 1786474289 26973 af983813ca1a1414954dbceae7baa2a1 ""
   "./references.bib" 1786829106.06887 5204 7997b67576542bb202587aef17385f1a ""
-  "backfire_preprint.aux" 1786829116.58105 14288 6be3e6cbdae54315f4015ec7d65504b4 "pdflatex"
+  "backfire_preprint.aux" 1786829847.61194 14288 eaaa156c6f92f0fb5c9c65fbb1375adc "pdflatex"
   (generated)
   "backfire_preprint.bbl"
   "backfire_preprint.blg"
   (rewritten before read)
-["pdflatex"] 1786829115.71691 "backfire_preprint.tex" "backfire_preprint.pdf" "backfire_preprint" 1786829116.63616 0
+["pdflatex"] 1786829846.76571 "backfire_preprint.tex" "backfire_preprint.pdf" "backfire_preprint" 1786829847.66269 0
   "/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc" 1561323594 2496 4d35740f3a177992ff7b134746c0a1db ""
   "/home/utkuputku/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplb7t.tfm" 1136768653 1616 371d1ee60c04b008c8fd760060cd34f1 ""
@@ -118,10 +118,10 @@
   "/home/utkuputku/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1780893715 2250861 0b0ba3850b6b907813283e4e22454d91 ""
   "/home/utkuputku/.TinyTeX/texmf.cnf" 1780893697 637 edd806fb06a89761a6034e1968af9017 ""
   "backfire_both.png" 1786474289 51577 47214ed2c2685e71b1ecc8d25a5acaa8 ""
-  "backfire_preprint.aux" 1786829116.58105 14288 6be3e6cbdae54315f4015ec7d65504b4 "pdflatex"
-  "backfire_preprint.bbl" 1786829115.71356 5924 76ea5604087e9b959a18ca6b2652c0f8 "bibtex backfire_preprint"
-  "backfire_preprint.out" 1786829116.58184 4414 7f0b1b410545a2ade115c83ea236b781 "pdflatex"
-  "backfire_preprint.tex" 1786829106.06873 63765 a6e859ddb052d8a3f631d9a979e9b633 ""
+  "backfire_preprint.aux" 1786829847.61194 14288 eaaa156c6f92f0fb5c9c65fbb1375adc "pdflatex"
+  "backfire_preprint.bbl" 1786829846.76363 5924 76ea5604087e9b959a18ca6b2652c0f8 "bibtex backfire_preprint"
+  "backfire_preprint.out" 1786829847.61374 4414 7f0b1b410545a2ade115c83ea236b781 "pdflatex"
+  "backfire_preprint.tex" 1786829845.77954 64865 103db02777a10639c554c0db46e6d8dc ""
   "calibration_both.png" 1786474289 67332 7b32ea6005f65a149246e9d2c845d182 ""
   "colm2026_conference.sty" 1786474289 7727 238cc72ad95c78fc3c004773db9ec9c5 ""
   "gate_sweep_both.png" 1786474289 140130 4fb64a421029847de56120bf0429e69c ""

@@ -1,0 +1,112 @@
+{
+ "brown2024large": {
+  "arxiv_id": "2407.21787",
+  "authors": [
+   "Bradley Brown",
+   "Jordan Juravsky",
+   "Ryan Ehrlich",
+   "Ronald Clark",
+   "Quoc V. Le",
+   "Christopher R\u00e9",
+   "Azalia Mirhoseini"
+  ],
+  "title": "Large Language Monkeys: Scaling Inference Compute with Repeated Sampling",
+  "verified_utc": "2026-08-15",
+  "year": "2024"
+ },
+ "cobbe2021training": {
+  "arxiv_id": "2110.14168",
+  "authors": [
+   "Karl Cobbe",
+   "Vineet Kosaraju",
+   "Mohammad Bavarian",
+   "Mark Chen",
+   "Heewoo Jun",
+   "Lukasz Kaiser",
+   "Matthias Plappert",
+   "Jerry Tworek",
+   "Jacob Hilton",
+   "Reiichiro Nakano",
+   "Christopher Hesse",
+   "John Schulman"
+  ],
+  "title": "Training Verifiers to Solve Math Word Problems",
+  "verified_utc": "2026-08-15",
+  "year": "2021"
+ },
+ "fadeeva2025uncertaintyline": {
+  "arxiv_id": "2505.19060",
+  "authors": [
+   "Roman Vashurin",
+   "Maiya Goloburda",
+   "Preslav Nakov",
+   "Maxim Panov"
+  ],
+  "title": "UNCERTAINTY-LINE: Length-Invariant Estimation of Uncertainty for Large Language Models",
+  "verified_utc": "2026-08-15",
+  "year": "2025"
+ },
+ "kadavath2022language": {
+  "arxiv_id": "2207.05221",
+  "authors": [
+   "Saurav Kadavath",
+   "Tom Conerly",
+   "Amanda Askell",
+   "Tom Henighan",
+   "Dawn Drain",
+   "Ethan Perez",
+   "Nicholas Schiefer",
+   "Zac Hatfield-Dodds",
+   "Nova DasSarma",
+   "Eli Tran-Johnson",
+   "Scott Johnston",
+   "Sheer El-Showk",
+   "Andy Jones",
+   "Nelson Elhage",
+   "Tristan Hume",
+   "Anna Chen",
+   "Yuntao Bai",
+   "Sam Bowman",
+   "Stanislav Fort",
+   "Deep Ganguli",
+   "Danny Hernandez",
+   "Josh Jacobson",
+   "Jackson Kernion",
+   "Shauna Kravec",
+   "Liane Lovitt",
+   "Kamal Ndousse",
+   "Catherine Olsson",
+   "Sam Ringer",
+   "Dario Amodei",
+   "Tom Brown",
+   "Jack Clark",
+   "Nicholas Joseph",
+   "Ben Mann",
+   "Sam McCandlish",
+   "Chris Olah",
+   "Jared Kaplan"
+  ],
+  "title": "Language Models (Mostly) Know What They Know",
+  "verified_utc": "2026-08-15",
+  "year": "2022"
+ },
+ "kumaran2026confidence": {
+  "arxiv_id": "2606.29490",
+  "authors": [
+   "Dharshan Kumaran"
+  ],
+  "title": "Reported Confidence in LLMs Tracks Commitment More Than Correctness",
+  "verified_utc": "2026-08-15",
+  "year": "2026"
+ },
+ "souza2026budget": {
+  "arxiv_id": "2608.12150",
+  "authors": [
+   "Rodrigo Guedes de Souza",
+   "Alison R. Panisson"
+  ],
+  "title": "Who Thinks Best Depends on How Long You Let Them: Budget-Dependent Rankings in LLM Evaluation",
+  "verified_utc": "2026-08-15",
+  "year": "2026"
+ }
+}

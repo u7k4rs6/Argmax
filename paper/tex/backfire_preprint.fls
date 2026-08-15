@@ -245,8 +245,8 @@ INPUT ./two_units.png
 INPUT ./two_units.png
 INPUT ./two_units.png
 INPUT ./two_units.png
-INPUT /home/utkuputku/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
 INPUT /home/utkuputku/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplb8c.tfm
+INPUT /home/utkuputku/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
 INPUT /home/utkuputku/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplb8c.vf
 INPUT /home/utkuputku/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmb.tfm
 INPUT ./backfire_preprint.bbl

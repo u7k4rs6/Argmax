@@ -1002,6 +1002,22 @@ quintile table of accuracies was published without them.
 recorded seed.
 \item \textbf{v1's own split has a leak:} 3 of its 50 exploratory ids sit
 inside the confirmatory 151. Disclosed here; v1's verdicts are not recomputed.
+\item \textbf{A bibliography entry's authors were written from memory.} The
+entry for a length-invariant uncertainty estimator was added from a
+search-result title rather than from the paper: its author list named a person
+who is not an author and omitted two who are. It survived a merge, a build and
+a full pre-submission read, and was caught in an entry-by-entry audit asking
+which references had actually been opened. Corrected against the arXiv record.
+\textbf{The root cause is the one this paper has disclosed twice already}: a
+claim made from recollection rather than from a source, of the same kind as
+citing a superseded draft and as asserting three properties were independent
+before testing them. It is now a check rather than a habit: every entry
+carrying an arXiv id is compared against the arXiv API for title, full author
+list and year, and every entry without one must record which source was opened
+and when, with an entry lacking that record failing the suite. All sixteen
+entries, including the eleven inherited from v1, were re-verified this way; no
+further mismatch was found.
+
 \item \textbf{v1's Setup describes uniform-random tie-breaking; its code breaks
 ties lexicographically.} Found while reproducing v1's figures from the archived
 derived data: the plurality function sorts the tied answers and returns the
