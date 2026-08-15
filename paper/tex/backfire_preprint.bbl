@@ -1,0 +1,88 @@
+\begin{thebibliography}{16}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Aggarwal et~al.(2023)Aggarwal, Madaan, Yang, and Mausam]{aggarwal2023adaptive}
+Pranjal Aggarwal, Aman Madaan, Yiming Yang, and Mausam.
+\newblock Let's sample step by step: Adaptive-consistency for efficient reasoning and coding with llms.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing}, pp.\  12375--12396, 2023.
+
+\bibitem[Brown et~al.(2024)Brown, Juravsky, Ehrlich, Clark, Le, R{\'e}, and Mirhoseini]{brown2024large}
+Bradley Brown, Jordan Juravsky, Ryan Ehrlich, Ronald Clark, Quoc~V Le, Christopher R{\'e}, and Azalia Mirhoseini.
+\newblock Large language monkeys: Scaling inference compute with repeated sampling.
+\newblock \emph{arXiv preprint arXiv:2407.21787}, 2024.
+
+\bibitem[Chen et~al.(2024)Chen, Davis, Hanin, Bailis, Stoica, Zaharia, and Zou]{chen2024more}
+Lingjiao Chen, Jared Davis, Boris Hanin, Peter Bailis, Ion Stoica, Matei Zaharia, and James Zou.
+\newblock Are more {LLM} calls all you need? towards the scaling properties of compound {AI} systems.
+\newblock In \emph{Advances in Neural Information Processing Systems 37}, 2024.
+
+\bibitem[Cobbe et~al.(2021)Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser, Plappert, Tworek, Hilton, Nakano, Hesse, and Schulman]{cobbe2021training}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, Christopher Hesse, and John Schulman.
+\newblock Training verifiers to solve math word problems.
+\newblock \emph{arXiv preprint arXiv:2110.14168}, 2021.
+
+\bibitem[Duan et~al.(2024)Duan, Cheng, Wang, Zavalny, Wang, Xu, Kailkhura, and Xu]{duan2024shifting}
+Jinhao Duan, Hao Cheng, Shiqi Wang, Alex Zavalny, Chenan Wang, Renjing Xu, Bhavya Kailkhura, and Kaidi Xu.
+\newblock Shifting attention to relevance: Towards the predictive uncertainty quantification of free-form large language models.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics}, pp.\  5050--5063, 2024.
+
+\bibitem[Guedes~de Souza \& Panisson(2026)Guedes~de Souza and Panisson]{souza2026budget}
+Rodrigo Guedes~de Souza and Alison~R. Panisson.
+\newblock Who thinks best depends on how long you let them: Budget-dependent rankings in {LLM} evaluation.
+\newblock \emph{arXiv preprint arXiv:2608.12150}, 2026.
+
+\bibitem[Guo et~al.(2017)Guo, Pleiss, Sun, and Weinberger]{guo2017calibration}
+Chuan Guo, Geoff Pleiss, Yu~Sun, and Kilian~Q Weinberger.
+\newblock On calibration of modern neural networks.
+\newblock In \emph{Proceedings of the 34th International Conference on Machine Learning}, pp.\  1321--1330, 2017.
+
+\bibitem[Kadavath et~al.(2022)]{kadavath2022language}
+Saurav Kadavath et~al.
+\newblock Language models (mostly) know what they know.
+\newblock \emph{arXiv preprint arXiv:2207.05221}, 2022.
+
+\bibitem[Kumaran(2026)]{kumaran2026confidence}
+Dharshan Kumaran.
+\newblock Reported confidence in {LLM}s tracks commitment more than correctness.
+\newblock \emph{arXiv preprint arXiv:2606.29490}, 2026.
+
+\bibitem[Lightman et~al.(2024)Lightman, Kosaraju, Burda, Edwards, Baker, Lee, Leike, Schulman, Sutskever, and Cobbe]{lightman2023verify}
+Hunter Lightman, Vineet Kosaraju, Yura Burda, Harri Edwards, Bowen Baker, Teddy Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe.
+\newblock Let's verify step by step.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2024.
+
+\bibitem[Murray \& Chiang(2018)Murray and Chiang]{murray2018correcting}
+Kenton Murray and David Chiang.
+\newblock Correcting length bias in neural machine translation.
+\newblock In \emph{Proceedings of the Third Conference on Machine Translation}, pp.\  212--223, 2018.
+
+\bibitem[Rein et~al.(2024)Rein, Hou, Stickland, Petty, Pang, Dirani, Michael, and Bowman]{rein2023gpqa}
+David Rein, Betty~Li Hou, Asa~Cooper Stickland, Jackson Petty, Richard~Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel~R Bowman.
+\newblock {GPQA}: A graduate-level {Google}-proof {Q\&A} benchmark.
+\newblock In \emph{First Conference on Language Modeling}, 2024.
+
+\bibitem[Tan et~al.(2025)Tan, Sun, Liu, Su, Cao, Chen, Wang, Cai, Wang, Shen, and Cheng]{tan2025consistent}
+Hexiang Tan, Fei Sun, Sha Liu, Du~Su, Qi~Cao, Xin Chen, Jingang Wang, Xunliang Cai, Yuanzhuo Wang, Huawei Shen, and Xueqi Cheng.
+\newblock Too consistent to detect: A study of self-consistent errors in {LLM}s.
+\newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing}, pp.\  4755--4765, 2025.
+
+\bibitem[Vashurin et~al.(2025)Vashurin, Panov, and Shelmanov]{fadeeva2025uncertaintyline}
+Roman Vashurin, Maxim Panov, and Artem Shelmanov.
+\newblock {UNCERTAINTY-LINE}: Length-invariant estimation of uncertainty for large language models.
+\newblock \emph{arXiv preprint arXiv:2505.19060}, 2025.
+
+\bibitem[Wang et~al.(2023)Wang, Wei, Schuurmans, Le, Chi, Narang, Chowdhery, and Zhou]{wang2023self}
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc Le, Ed~Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou.
+\newblock Self-consistency improves chain of thought reasoning in language models.
+\newblock In \emph{The Eleventh International Conference on Learning Representations}, 2023.
+
+\bibitem[Zhang et~al.(2023)Zhang, Li, Das, Malin, and Kumar]{zhang2023sac3}
+Jiaxin Zhang, Zhuohang Li, Kamalika Das, Bradley Malin, and Sricharan Kumar.
+\newblock {SAC}$^3$: Reliable hallucination detection in black-box language models via semantic-aware cross-check consistency.
+\newblock In \emph{Findings of the Association for Computational Linguistics: EMNLP 2023}, pp.\  15445--15458, 2023.
+
+\end{thebibliography}

@@ -1,0 +1,9 @@
+
+# LaTeX build artefacts; the .tex, .bib, .sty, .bst and figures are tracked
+paper/tex/*.aux
+paper/tex/*.log
+paper/tex/*.out
+paper/tex/*.fls
+paper/tex/*.fdb_latexmk
+paper/tex/*.blg
+paper/tex/build.log

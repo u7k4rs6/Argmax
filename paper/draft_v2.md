@@ -611,7 +611,7 @@ committed: the sample record stores `prompt_hash` and never the prompt. A
 pre-release leakage check reduces the gated question source to hashed n-grams
 and scans the release tree for them. Run over the margin-v1 store it reports
 **5,669 hits across 198 files, 12,672 lines and 129,247 fingerprints, and
-blocks the release.**
+blocks the release**; run over the full raw release tree it reports **20,376**.
 
 The cause is not a stored prompt. It is `raw_text`: **the model restates the
 question inside its own chain of thought.** The request never carried the
@@ -687,9 +687,10 @@ therefore registered and unevaluated.** Not withdrawn, not falsified.
 
 Nor was the replication recoverable at another cap. A right-censored fit to the
 1,253 samples puts the cap required for the registered 0.9950 answer rate near
-41,000 output tokens and the run at about $4.19, with $1.16 remaining. **The
-replication was not lost by choosing 6144; it was not purchasable at any cap on
-this budget.**
+41,000 output tokens and the run at about $4.19, against $1.16 remaining; even
+a 0.95 rate, which would still fail the condition, requires roughly **16,268**
+tokens and **$3.84**. **The replication was not lost by choosing 6144; it was
+not purchasable at any cap on this budget.**
 
 **The point.** A methodological rule that never rejects anything is decoration.
 This one rejected a result its own authors had registered, sampled and paid

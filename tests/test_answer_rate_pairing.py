@@ -272,12 +272,17 @@ def test_every_markdown_file_in_the_repo_pairs():
     report = PairingReport()
     # A WALK, not a list of remembered directories. notes/ was missed once and
     # paper/ twice under the old allow-list default; see argmax.repo.
+    from argmax.persist.pairing import check_latex
     from argmax.repo import iter_documents
 
     paths = list(iter_documents(REPO))
     for path in paths:
-        check_markdown(path, report)
-    assert len(paths) >= 15, "the markdown scan is covering almost nothing"
+        if path.suffix == ".tex":
+            check_latex(path, report)
+        else:
+            check_markdown(path, report)
+    assert len(paths) >= 15, "the document scan is covering almost nothing"
+    assert any(p.suffix == ".tex" for p in paths), "the LaTeX manuscript is unscanned"
     assert not report.problems, "\n".join(report.problems)
 
 

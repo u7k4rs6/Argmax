@@ -347,3 +347,59 @@ def iter_markdown(root: Path) -> Iterator[Path]:
     for path in sorted(root.rglob("*.md")):
         if path.is_file():
             yield path
+
+
+# --- LaTeX tables ------------------------------------------------------------
+#
+# The markdown scanner reads pipe tables. A manuscript ported to LaTeX carries
+# the same accuracies in `tabular` environments, which that scanner cannot see
+# at all: extending the walk to `.tex` without this would have reported clean
+# coverage over a file whose tables were never parsed.
+
+_TEX_TABULAR = re.compile(r"\\begin\{tabular\}(.*?)\\end\{tabular\}", re.DOTALL)
+
+
+def _tex_rows(body: str) -> list[list[str]]:
+    rows = []
+    for raw in body.split(r"\\"):
+        line = re.sub(r"\\(toprule|midrule|bottomrule|hline)\b", "", raw).strip()
+        if not line:
+            continue
+        cells = []
+        for cell in line.split("&"):
+            cell = re.sub(r"\\(textbf|emph|texttt|mathrm|text)\{([^}]*)\}", r"\2", cell)
+            cell = cell.replace("\\%", "%").replace("$", "").replace("{", "").replace("}", "")
+            cells.append(cell.strip())
+        rows.append(cells)
+    return rows
+
+
+def check_latex(path: Path, report: PairingReport) -> None:
+    """Fail any LaTeX tabular with an accuracy column and no answer rate."""
+    text = path.read_text(encoding="utf-8")
+    for match in _TEX_TABULAR.finditer(text):
+        rows = _tex_rows(match.group(1))
+        if len(rows) < 2:
+            continue
+        header, body = rows[0], rows[1:]
+        columns = [
+            i
+            for i, cell in enumerate(header)
+            if _MD_ACCURACY.search(cell) and _column_holds_accuracies(body, i)
+        ]
+        if not columns:
+            continue
+        report.n_artifacts += 1
+        report.n_in_scope += 1
+        # a LaTeX table's caption sits outside the tabular; allow the enclosing
+        # table environment to carry the rate, which is where a caption lives
+        start = text.rfind(r"\begin{table}", 0, match.start())
+        end = text.find(r"\end{table}", match.end())
+        scope = text[start if start != -1 else match.start(): end if end != -1 else match.end()]
+        if not _MD_RATE.search(scope):
+            named = ", ".join(header[i] or f"column {i}" for i in columns)
+            line_no = text[: match.start()].count("\n") + 1
+            report.problems.append(
+                f"{path}:{line_no}: LaTeX table reports accuracies ({named}) with "
+                f"no answer_rate in the table or its caption"
+            )

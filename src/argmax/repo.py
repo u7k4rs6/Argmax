@@ -81,13 +81,24 @@ def is_excluded(path: Path, root: Path) -> str | None:
     return None
 
 
-def iter_documents(root: Path, suffix: str = ".md") -> Iterator[Path]:
+#: Authored-document suffixes. `.tex` is here because the manuscript is the
+#: document where a bad citation or an unpaired accuracy actually reaches a
+#: reader, and for a while it lived only as markdown that the scans covered
+#: while the LaTeX they were ported into was covered by nothing.
+DOCUMENT_SUFFIXES: tuple[str, ...] = (".md", ".tex")
+
+
+def iter_documents(root: Path, suffix: str | tuple[str, ...] = DOCUMENT_SUFFIXES) -> Iterator[Path]:
     """Every authored document in the repository, excluding only the above.
 
     Deliberately a walk rather than a set of globs. A check built on this
     picks up a new directory the day it is created, which is the failure mode
     the module docstring records three instances of.
     """
-    for path in sorted(root.rglob(f"*{suffix}")):
-        if path.is_file() and is_excluded(path, root) is None:
-            yield path
+    suffixes = (suffix,) if isinstance(suffix, str) else suffix
+    seen: set[Path] = set()
+    for suf in suffixes:
+        for path in sorted(root.rglob(f"*{suf}")):
+            if path.is_file() and path not in seen and is_excluded(path, root) is None:
+                seen.add(path)
+                yield path

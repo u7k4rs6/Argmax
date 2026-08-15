@@ -154,7 +154,8 @@ snapshot id, and prereg tag.
 ## Archived artifacts
 
 Two Zenodo records, published 2026-08-16, supplementing arXiv:2608.11403 and
-its v2.
+its v2. The v1 paper is read from `paper/backfire_preprint.pdf`; the v2 LaTeX
+source is `paper/tex/backfire_preprint.tex`.
 
 | record | DOI | access | contents |
 |---|---|---|---|
