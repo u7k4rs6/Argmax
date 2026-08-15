@@ -70,8 +70,8 @@ Hexiang Tan, Fei Sun, Sha Liu, Du~Su, Qi~Cao, Xin Chen, Jingang Wang, Xunliang C
 \newblock Too consistent to detect: A study of self-consistent errors in {LLM}s.
 \newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing}, pp.\  4755--4765, 2025.
 
-\bibitem[Vashurin et~al.(2025)Vashurin, Panov, and Shelmanov]{fadeeva2025uncertaintyline}
-Roman Vashurin, Maxim Panov, and Artem Shelmanov.
+\bibitem[Vashurin et~al.(2025)Vashurin, Goloburda, Nakov, and Panov]{fadeeva2025uncertaintyline}
+Roman Vashurin, Maiya Goloburda, Preslav Nakov, and Maxim Panov.
 \newblock {UNCERTAINTY-LINE}: Length-invariant estimation of uncertainty for large language models.
 \newblock \emph{arXiv preprint arXiv:2505.19060}, 2025.
 

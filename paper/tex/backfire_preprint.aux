@@ -20,37 +20,40 @@
 \def\@LN@column{1}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces $\text  {mv\_gain} = \text  {MV\_acc}(64) - \text  {MV\_acc}(1)$ per problem. Dark bars are backfire ($\text  {mv\_gain} < 0$).}}{5}{figure.1}\protected@file@percent }
 \newlabel{fig:backfire}{{1}{5}{$\text {mv\_gain} = \text {MV\_acc}(64) - \text {MV\_acc}(1)$ per problem. Dark bars are backfire ($\text {mv\_gain} < 0$)}{figure.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Per-domain backfire rate (pooled 198). Chemistry shows the highest backfire rate in both models and accounts for nearly half of all problems.}}{5}{table.2}\protected@file@percent }
-\newlabel{tab:domain}{{2}{5}{Per-domain backfire rate (pooled 198). Chemistry shows the highest backfire rate in both models and accounts for nearly half of all problems}{table.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Results (Pooled, 198 Problems)}{5}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Backfire affects the majority of problems, precisely estimated}{5}{subsection.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}The oracle upper bound is real but not reachable}{5}{subsection.4.2}\protected@file@percent }
 \newlabel{sec:oracle}{{4.2}{5}{The oracle upper bound is real but not reachable}{subsection.4.2}{}}
 \def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Per-domain backfire rate (pooled 198). Chemistry shows the highest backfire rate in both models and accounts for nearly half of all problems.}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:domain}{{2}{6}{Per-domain backfire rate (pooled 198). Chemistry shows the highest backfire rate in both models and accounts for nearly half of all problems}{table.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Accuracy vs mean compute: fixed-budget voting, the oracle upper bound, and the verifier-free agreement and entropy gates. The plotted oracle is the binary $\{N=1, N=64\}$ oracle (0.462 Qwen, 0.410 Llama), not the more generous grid oracle whose higher values are quoted in Section~\ref {sec:oracle}. The entropy series is computed on the confirmatory 151 only, a harder subset than the pooled 198 used for the other series, so its lower position does not by itself indicate a worse method.}}{6}{figure.2}\protected@file@percent }
 \newlabel{fig:pareto}{{2}{6}{Accuracy vs mean compute: fixed-budget voting, the oracle upper bound, and the verifier-free agreement and entropy gates. The plotted oracle is the binary $\{N=1, N=64\}$ oracle (0.462 Qwen, 0.410 Llama), not the more generous grid oracle whose higher values are quoted in Section~\ref {sec:oracle}. The entropy series is computed on the confirmatory 151 only, a harder subset than the pooled 198 used for the other series, so its lower position does not by itself indicate a worse method}{figure.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Two verifier-free gates fail to capture it}{6}{subsection.4.3}\protected@file@percent }
 \newlabel{sec:gates}{{4.3}{6}{Two verifier-free gates fail to capture it}{subsection.4.3}{}}
-\citation{guo2017calibration,kadavath2022language}
 \def\@LN@column{1}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Agreement-gate accuracy across the $(k, \tau )$ sweep. The lower row plots the difference from fixed-budget voting at a flat $N=64$. No operating point wins.}}{7}{figure.3}\protected@file@percent }
 \newlabel{fig:sweep}{{3}{7}{Agreement-gate accuracy across the $(k, \tau )$ sweep. The lower row plots the difference from fixed-budget voting at a flat $N=64$. No operating point wins}{figure.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Why: three signals, three different failures}{7}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:why}{{4.4}{7}{Why: three signals, three different failures}{subsection.4.4}{}}
+\citation{guo2017calibration,kadavath2022language}
 \citation{duan2024shifting}
 \citation{fadeeva2025uncertaintyline}
 \citation{murray2018correcting}
 \def\@LN@column{1}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Calibration by agreement bin (pooled 198). Confidence is the plurality fraction over all samples.}}{8}{table.3}\protected@file@percent }
-\newlabel{tab:calibration}{{3}{8}{Calibration by agreement bin (pooled 198). Confidence is the plurality fraction over all samples}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Why: three signals, three different failures}{8}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:why}{{4.4}{8}{Why: three signals, three different failures}{subsection.4.4}{}}
 \citation{kumaran2026confidence}
 \def\@LN@column{1}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Fraction of plurality answers correct by agreement bin. Both models fall far below the calibration diagonal; Llama's highest-agreement bin is less accurate than its lowest, with no monotone trend across bins.}}{9}{figure.4}\protected@file@percent }
 \newlabel{fig:calibration}{{4}{9}{Fraction of plurality answers correct by agreement bin. Both models fall far below the calibration diagonal; Llama's highest-agreement bin is less accurate than its lowest, with no monotone trend across bins}{figure.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Pre-registered descriptive claims on the 69 unexposed problems. Both PASS. One-sided 95\% lower bounds, cluster bootstrap over problems. 64 of 69 problems carried at least three dissenting samples; 5 were excluded by the registered rule and are counted, not imputed. Answer rate on the store is 0.9950 $[0.9936, 0.9961]$.}}{9}{table.4}\protected@file@percent }
-\newlabel{tab:md}{{4}{9}{Pre-registered descriptive claims on the 69 unexposed problems. Both PASS. One-sided 95\% lower bounds, cluster bootstrap over problems. 64 of 69 problems carried at least three dissenting samples; 5 were excluded by the registered rule and are counted, not imputed. Answer rate on the store is 0.9950 $[0.9936, 0.9961]$}{table.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Calibration by agreement bin (pooled 198). Confidence is the plurality fraction over all samples.}}{9}{table.3}\protected@file@percent }
+\newlabel{tab:calibration}{{3}{9}{Calibration by agreement bin (pooled 198). Confidence is the plurality fraction over all samples}{table.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}The commitment result, registered and held out}{9}{subsection.4.5}\protected@file@percent }
 \newlabel{sec:commitment}{{4.5}{9}{The commitment result, registered and held out}{subsection.4.5}{}}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Pre-registered descriptive claims on the 69 unexposed problems. Both PASS. One-sided 95\% lower bounds, cluster bootstrap over problems. 64 of 69 problems carried at least three dissenting samples; 5 were excluded by the registered rule and are counted, not imputed. Answer rate on the store is 0.9950 $[0.9936, 0.9961]$.}}{10}{table.4}\protected@file@percent }
+\newlabel{tab:md}{{4}{10}{Pre-registered descriptive claims on the 69 unexposed problems. Both PASS. One-sided 95\% lower bounds, cluster bootstrap over problems. 64 of 69 problems carried at least three dissenting samples; 5 were excluded by the registered rule and are counted, not imputed. Answer rate on the store is 0.9950 $[0.9936, 0.9961]$}{table.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The same margin, the same statistic, two units. \textbf  {Pooled at sample level} across all 198 problems (4,283 correct and 8,322 incorrect samples carrying a measured margin), correct samples exceed 10 nats more often than incorrect ones and the interval excludes zero: this answers ``does the margin carry information about correctness across the benchmark?'', and the answer is yes. \textbf  {Per-problem and paired}, over the 186 problems carrying at least one sample of each kind, the difference cannot be distinguished from zero: this answers ``within a single problem, does the margin say which of several disagreeing samples to trust?'', and the answer is no. The 12 problems absent from the paired row are all-correct (2) or all-incorrect (10), where a paired difference is undefined. \textbf  {The two are not in conflict}: they are different questions, and only the second is the one a self-consistency router has to answer. Intervals are 95\% cluster bootstrap over problems.}}{10}{figure.5}\protected@file@percent }
+\newlabel{fig:twounits}{{5}{10}{The same margin, the same statistic, two units. \textbf {Pooled at sample level} across all 198 problems (4,283 correct and 8,322 incorrect samples carrying a measured margin), correct samples exceed 10 nats more often than incorrect ones and the interval excludes zero: this answers ``does the margin carry information about correctness across the benchmark?'', and the answer is yes. \textbf {Per-problem and paired}, over the 186 problems carrying at least one sample of each kind, the difference cannot be distinguished from zero: this answers ``within a single problem, does the margin say which of several disagreeing samples to trust?'', and the answer is no. The 12 problems absent from the paired row are all-correct (2) or all-incorrect (10), where a paired difference is undefined. \textbf {The two are not in conflict}: they are different questions, and only the second is the one a self-consistency router has to answer. Intervals are 95\% cluster bootstrap over problems}{figure.5}{}}
 \citation{rein2023gpqa}
 \citation{wang2023self}
 \citation{brown2024large}
@@ -60,18 +63,14 @@
 \citation{zhang2023sac3}
 \citation{cobbe2021training,lightman2023verify}
 \def\@LN@column{1}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The same margin, the same statistic, two units. \textbf  {Pooled at sample level} across all 198 problems (4,283 correct and 8,322 incorrect samples carrying a measured margin), correct samples exceed 10 nats more often than incorrect ones and the interval excludes zero: this answers ``does the margin carry information about correctness across the benchmark?'', and the answer is yes. \textbf  {Per-problem and paired}, over the 186 problems carrying at least one sample of each kind, the difference cannot be distinguished from zero: this answers ``within a single problem, does the margin say which of several disagreeing samples to trust?'', and the answer is no. The 12 problems absent from the paired row are all-correct (2) or all-incorrect (10), where a paired difference is undefined. \textbf  {The two are not in conflict}: they are different questions, and only the second is the one a self-consistency router has to answer. Intervals are 95\% cluster bootstrap over problems.}}{10}{figure.5}\protected@file@percent }
-\newlabel{fig:twounits}{{5}{10}{The same margin, the same statistic, two units. \textbf {Pooled at sample level} across all 198 problems (4,283 correct and 8,322 incorrect samples carrying a measured margin), correct samples exceed 10 nats more often than incorrect ones and the interval excludes zero: this answers ``does the margin carry information about correctness across the benchmark?'', and the answer is yes. \textbf {Per-problem and paired}, over the 186 problems carrying at least one sample of each kind, the difference cannot be distinguished from zero: this answers ``within a single problem, does the margin say which of several disagreeing samples to trust?'', and the answer is no. The 12 problems absent from the paired row are all-correct (2) or all-incorrect (10), where a paired difference is undefined. \textbf {The two are not in conflict}: they are different questions, and only the second is the one a self-consistency router has to answer. Intervals are 95\% cluster bootstrap over problems}{figure.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{10}{section.5}\protected@file@percent }
-\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{11}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Limitations}{11}{section.6}\protected@file@percent }
 \citation{guo2017calibration,kadavath2022language}
+\def\@LN@column{1}
 \citation{souza2026budget}
 \def\@LN@column{1}
-\@writefile{toc}{\contentsline {section}{\numberline {7}The reasoning wall, on hosted serverless inference}{12}{section.7}\protected@file@percent }
-\newlabel{sec:wall}{{7}{12}{The reasoning wall, on hosted serverless inference}{section.7}{}}
-\citation{souza2026budget}
-\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {7}The reasoning wall, on hosted serverless inference}{13}{section.7}\protected@file@percent }
+\newlabel{sec:wall}{{7}{13}{The reasoning wall, on hosted serverless inference}{section.7}{}}
 \def\@LN@column{1}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.1}A gated benchmark cannot have its chains published}{14}{subsection.7.1}\protected@file@percent }
 \newlabel{sec:cot-release}{{7.1}{14}{A gated benchmark cannot have its chains published}{subsection.7.1}{}}
@@ -83,6 +82,11 @@
 \newlabel{sec:threada}{{9}{15}{A reconstructed few-sample estimator}{section.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {10}Corrections and disclosures}{15}{section.10}\protected@file@percent }
 \newlabel{sec:corrections}{{10}{15}{Corrections and disclosures}{section.10}{}}
+\citation{souza2026budget}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Conclusion}{16}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Cost, accounting, and probe calibration}{16}{section.A}\protected@file@percent }
+\newlabel{app:accounting}{{A}{16}{Cost, accounting, and probe calibration}{section.A}{}}
 \bibdata{references}
 \bibcite{aggarwal2023adaptive}{{1}{2023}{{Aggarwal et~al.}}{{Aggarwal, Madaan, Yang, and Mausam}}}
 \bibcite{brown2024large}{{2}{2024}{{Brown et~al.}}{{Brown, Juravsky, Ehrlich, Clark, Le, R{\'e}, and Mirhoseini}}}
@@ -92,16 +96,15 @@
 \bibcite{souza2026budget}{{6}{2026}{{Guedes~de Souza \& Panisson}}{{Guedes~de Souza and Panisson}}}
 \bibcite{guo2017calibration}{{7}{2017}{{Guo et~al.}}{{Guo, Pleiss, Sun, and Weinberger}}}
 \bibcite{kadavath2022language}{{8}{2022}{{Kadavath et~al.}}{{}}}
-\def\@LN@column{1}
-\@writefile{toc}{\contentsline {section}{\numberline {11}Conclusion}{16}{section.11}\protected@file@percent }
 \bibcite{kumaran2026confidence}{{9}{2026}{{Kumaran}}{{}}}
 \bibcite{lightman2023verify}{{10}{2024}{{Lightman et~al.}}{{Lightman, Kosaraju, Burda, Edwards, Baker, Lee, Leike, Schulman, Sutskever, and Cobbe}}}
 \bibcite{murray2018correcting}{{11}{2018}{{Murray \& Chiang}}{{Murray and Chiang}}}
 \bibcite{rein2023gpqa}{{12}{2024}{{Rein et~al.}}{{Rein, Hou, Stickland, Petty, Pang, Dirani, Michael, and Bowman}}}
 \bibcite{tan2025consistent}{{13}{2025}{{Tan et~al.}}{{Tan, Sun, Liu, Su, Cao, Chen, Wang, Cai, Wang, Shen, and Cheng}}}
-\bibcite{fadeeva2025uncertaintyline}{{14}{2025}{{Vashurin et~al.}}{{Vashurin, Panov, and Shelmanov}}}
+\bibcite{fadeeva2025uncertaintyline}{{14}{2025}{{Vashurin et~al.}}{{Vashurin, Goloburda, Nakov, and Panov}}}
+\def\@LN@column{1}
 \bibcite{wang2023self}{{15}{2023}{{Wang et~al.}}{{Wang, Wei, Schuurmans, Le, Chi, Narang, Chowdhery, and Zhou}}}
 \bibcite{zhang2023sac3}{{16}{2023}{{Zhang et~al.}}{{Zhang, Li, Das, Malin, and Kumar}}}
 \bibstyle{colm2026_conference}
 \def\@LN@column{1}
-\gdef \@abspage@last{17}
+\gdef \@abspage@last{18}

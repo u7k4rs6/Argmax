@@ -1,9 +1,27 @@
 Rc files read (in order):
   NONE
 Latexmk: This is Latexmk, John Collins, 9 March 2026. Version 4.88.
+Latexmk: applying rule 'bibtex backfire_preprint'...
+Rule 'bibtex backfire_preprint':  Reasons for rerun
+Changed files or newly in use/created:
+  ./references.bib
+Category 'changed_user':
+  ./references.bib
+
+------------
+Run number 1 of rule 'bibtex backfire_preprint'
+------------
+------------
+Running 'bibtex  "backfire_preprint.aux"'
+------------
+This is BibTeX, Version 0.99e (TeX Live 2026)
+The top-level auxiliary file: backfire_preprint.aux
+The style file: colm2026_conference.bst
+Database file #1: references.bib
 Latexmk: applying rule 'pdflatex'...
 Rule 'pdflatex':  Reasons for rerun
 Changed files or newly in use/created:
+  backfire_preprint.bbl
   backfire_preprint.tex
 Category 'changed_user':
   backfire_preprint.tex
@@ -77,6 +95,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [6 <./pareto_both.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -119,6 +139,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [11]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -127,8 +149,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [12]
-Underfull \vbox (badness 10000) has occurred while \output is active
-Underfull \vbox (badness 10000) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -137,8 +157,9 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [13]
-Underfull \vbox (badness 3407) has occurred while \output is active
-Underfull \vbox (badness 3407) has occurred while \output is active
+
+LaTeX Warning: Reference `app:accounting' on page 14 undefined on input line 890.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -154,7 +175,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[15] (./backfire_preprint.bbl
+[15]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -162,25 +183,50 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[16]
-Underfull \hbox (badness 1845) in paragraph at lines 74--77
-\OT1/ppl/m/n/10 (+20) invariant es-ti-ma-tion of un-cer-tainty for large lan-guage mod-els.  \OT1/ppl/m/it/10 (+20) arXiv preprint
+[16] (./backfire_preprint.bbl
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[17])
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[18] (./backfire_preprint.aux
+
+Package natbib Warning: Citation(s) may have changed.
+(natbib)                Rerun to get citations correct.
+
 )
 
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+LaTeX Warning: There were undefined references.
 
-[17] (./backfire_preprint.aux) )
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `backfire_preprint.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
 (see the transcript file for additional information)</home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on backfire_preprint.pdf (17 pages, 556655 bytes).
+Output written on backfire_preprint.pdf (18 pages, 559616 bytes).
 Transcript written on backfire_preprint.log.
 Latexmk: Getting log file 'backfire_preprint.log'
 Latexmk: Examining 'backfire_preprint.fls'
 Latexmk: Examining 'backfire_preprint.log'
 Latexmk: Found input bbl file 'backfire_preprint.bbl'
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: References changed.
 Latexmk: Log file says output to 'backfire_preprint.pdf'
 Latexmk: Using bibtex to make bibliography file(s).
   ===Source file 'backfire_preprint.bbl' for 'pdflatex'
@@ -192,7 +238,7 @@ Changed files or newly in use/created:
   backfire_preprint.aux
 
 ------------
-Run number 1 of rule 'bibtex backfire_preprint'
+Run number 2 of rule 'bibtex backfire_preprint'
 ------------
 ------------
 Running 'bibtex  "backfire_preprint.aux"'
@@ -205,6 +251,7 @@ Latexmk: applying rule 'pdflatex'...
 Rule 'pdflatex':  Reasons for rerun
 Changed files or newly in use/created:
   backfire_preprint.aux
+  backfire_preprint.out
 
 ------------
 Run number 2 of rule 'pdflatex'
@@ -275,6 +322,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [6 <./pareto_both.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -317,6 +366,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [11]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -325,8 +376,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [12]
-Underfull \vbox (badness 10000) has occurred while \output is active
-Underfull \vbox (badness 10000) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -335,8 +384,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [13]
-Underfull \vbox (badness 3407) has occurred while \output is active
-Underfull \vbox (badness 3407) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -352,7 +399,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[15] (./backfire_preprint.bbl
+[15]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -360,10 +407,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[16]
-Underfull \hbox (badness 1845) in paragraph at lines 74--77
-\OT1/ppl/m/n/10 (+20) invariant es-ti-ma-tion of un-cer-tainty for large lan-guage mod-els.  \OT1/ppl/m/it/10 (+20) arXiv preprint
-)
+[16] (./backfire_preprint.bbl
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -371,9 +415,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[17] (./backfire_preprint.aux) )
+[17])
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[18] (./backfire_preprint.aux) )
 (see the transcript file for additional information)</home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on backfire_preprint.pdf (17 pages, 556655 bytes).
+Output written on backfire_preprint.pdf (18 pages, 559511 bytes).
 Transcript written on backfire_preprint.log.
 Latexmk: Getting log file 'backfire_preprint.log'
 Latexmk: Examining 'backfire_preprint.fls'

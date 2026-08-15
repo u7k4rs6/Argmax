@@ -300,6 +300,16 @@ the point estimate, and we report the intervals alongside it.}
 \label{tab:confirmatory}
 \end{table}
 
+\textbf{On PH2, added in v2 and leaving the published verdict untouched.} PH2
+is recorded above as PASS, which is the correct application of its
+pre-registered decision rule: that rule is stated on the point estimate, and
+the point estimates are 0.8\% and $-1.6\%$, both below the 10\% ceiling. The
+intervals around them are wide enough to be consistent with capture well above
+that ceiling. The verdict as published stands and is not revised here; what v2
+adds is that the interval, not the point estimate, is the honest measure of
+what this hypothesis established, and it established less than the PASS alone
+suggests.
+
 \section{Results (Pooled, 198 Problems)}
 
 \subsection{Backfire affects the majority of problems, precisely estimated}
@@ -509,13 +519,20 @@ explanation for the next result.
 \textbf{Signal 3: the answer-token margin. Fails on saturation, with a
 mechanism.} Measured at the answer token, where dilution cannot apply, the
 signal is saturated. Section~\ref{sec:commitment} gives the registered test.
-The mechanism it supports: \emph{the answer token is a near-deterministic
-readout of a chain that has already committed}. A sample whose answer
+What it supports, stated as an inference rather than an observation:
+\emph{the answer token behaves as a near-deterministic readout of a chain that
+has already committed}. We observe saturation downstream, at the answer
+position, and infer commitment upstream; we do not observe the commitment
+itself. The saturation is \emph{consistent with} a chain that fixed its answer
+before the answer token was emitted, and it \emph{supports} that reading over
+one in which the answer token is where the model decides, but it does not
+establish when or where the decision was made. A sample whose answer
 contradicts the plurality of its own problem still emits that answer at a
 median 20.52 nats, odds of roughly 800 million to one against the nearest
-alternative option. Dissenting samples are as committed as agreeing ones. The
-variance self-consistency exploits therefore does not live at the answer token;
-it lives upstream, in which chain got written. This is a mechanism rather than
+alternative option. Dissenting samples are as committed as agreeing ones. On this
+reading the variance self-consistency exploits is not expressed at the answer
+token, and is more plausibly carried by which chain got written, though that
+locus is inferred here and not measured. This is a mechanism rather than
 a restatement because it is falsifiable and was registered in advance: had
 dissenting samples been measurably less certain than agreeing ones, the
 thresholds in Section~\ref{sec:commitment} would have failed.
@@ -629,10 +646,22 @@ other because it never has two samples of one question to compare. Our pooled
 figure reproduces the direction that paper reports; our paired figure is the
 one it never measured.
 
-\textbf{No margin gate was built.} We measured the signal and report that it
-cannot support the routing decision. We did not construct a margin-thresholded
-gate and evaluate its accuracy, which is why Section~\ref{sec:gates} remains a
-two-gate result.
+\textbf{No margin gate was built, and this is not an evaluation of one.} We
+measured the signal's distribution and report that it does not separate the
+samples a within-question router would have to separate. \textbf{That is
+evidence against the signal supporting the required decision, not an empirical
+evaluation of a deployed margin gate}, and Section~\ref{sec:gates} accordingly
+remains a two-gate result.
+
+The objection this invites should be stated rather than left for a reader to
+find: \textbf{a signal with weak paired discrimination can still support useful
+routing if the routing rule is nonlinear} in it. A threshold that fires only in
+the extreme tail, a rule combining the margin with agreement or with length, or
+a per-problem rather than per-sample criterion could each extract value that a
+paired mean difference does not see. None of those is tested here. What we
+show is that the simplest reading, that a more certain sample is more likely to
+be the right one within its own problem, does not hold; what we do not show is
+that no rule built on this signal can work.
 
 \section{Discussion}
 
@@ -855,51 +884,13 @@ accuracy. This differs from post-hoc truncation filtering in when it applies:
 it is a design constraint on what to sample, not a repair applied to an
 existing comparison.
 
-\textbf{The bill, reconciled against the provider.} Our client-side ledger
-records \$4.697153 across 14,125 sampled requests. The provider's own billing
-export, filtered to this project's API key and summed from unrounded quantities
-times unit prices rather than the rounded per-line amounts, gives
-\textbf{\$4.701169} across six line items over two days. The difference is
-\textbf{\$0.004017, or 0.085\%}, and the ledger is the lower of the two.
-\citet{souza2026budget} report 56,476 API calls and no monetary cost. We report
-both figures because the negative results in this paper are only interpretable
-alongside what was affordable, and because a cost claim that is not reconciled
-against the counterparty is an assertion rather than an audit.
-
-\textbf{Where the 0.085\% goes, and why it is one-sided.} The residual is
-about 4,600 unrecorded tokens on one model and 11,000 on the other. A
-client-side ledger writes a row when a response \emph{arrives}, so it cannot
-see a request that was issued, billed, and then abandoned. This run has three
-such boundaries: a mid-run concurrency change, a \texttt{SIGTERM} that stopped
-the second-model run at concurrency 16, and an interrupted probe. Each leaves
-its in-flight requests billed by the provider and absent from the ledger.
-\textbf{This is a property of the accounting method rather than a discrepancy
-to explain away}: a client-side ledger undercounts any interrupted run by
-exactly its in-flight requests, always in the same direction, and the size of
-the undercount is the concurrency times the number of interruptions. Anyone
-reporting costs this way should expect a small one-sided gap and should say so
-rather than round it off.
-
-\textbf{The reconciliation is only possible because the key was dedicated.}
-Project security policy required a separate API key per project, for revocation
-rather than for accounting. The same billing account carries a second key with
-\$0.292479 of unrelated spend on 10 and 11 August, including a model this
-project never used, and all twelve line items across both keys sum to \$4.99.
-With a shared key the Argmax bill would not have been separable from that at
-all: no filter, no reconciliation, and the \$4.99 would have had to be reported
-as the project's cost or not reported. \textbf{A security rule turned out to be
-an accounting rule}, and we would not have discovered that had the second key's
-spend not happened to overlap in time.
-
-\textbf{Projecting cost from a small probe.} Mean completion length is a
-per-problem property at 119.66 times the variance a homogeneous null produces,
-so a probe over $k$ problems inherits that between-problem spread and taking
-more samples per problem does not reduce it. Resampling the 198 per-problem
-means, 20,000 trials per $k$, the multiplier needed for a projection to cover
-the truth 95\% of the time is 34.9\% at $k=4$, 22.7\% at $k=8$, 15.2\% at
-$k=16$ and 10.0\% at $k=32$. Probes are near-unbiased in the median, yet just
-over half underestimate at every $k$ because per-problem means are
-right-skewed, so a ceiling set at the projection is wrong about half the time.
+\textbf{Cost and accounting.} What this cost, how the ledger reconciles
+against the provider's own billing export, and how a small probe's cost
+projection should be calibrated are reported in
+Appendix~\ref{app:accounting}. The scientific claim of this section does not
+depend on them: it is that under the serverless budget available to us, these
+models could not be evaluated on a footing comparable to the non-reasoning
+models, for the three separately measured reasons above.
 
 \subsection{A gated benchmark cannot have its chains published}
 \label{sec:cot-release}
@@ -967,7 +958,7 @@ roughly 16,268 tokens and \$3.84. The replication was not lost by choosing
 
 \textbf{The point.} A methodological rule that never rejects anything is
 decoration. This one rejected a result its own authors had registered, sampled
-and paid for, and the alternative was a single dropped footnote away.
+and paid for.
 
 \section{A reconstructed few-sample estimator}
 \label{sec:threada}
@@ -1051,6 +1042,61 @@ likely requires a signal external to the model's own samples, or one read
 earlier in the chain than the answer. Whether reasoning-native models escape
 any of this remains open, and on hosted serverless inference at a small budget
 it is not measurable at all.
+
+\appendix
+
+\section{Cost, accounting, and probe calibration}
+\label{app:accounting}
+
+Lifted out of Section~\ref{sec:wall} so that the body carries the scientific
+claim and this carries the bookkeeping. Nothing is omitted.
+
+\textbf{The bill, reconciled against the provider.} Our client-side ledger
+records \$4.697153 across 14,125 sampled requests. The provider's own billing
+export, filtered to this project's API key and summed from unrounded quantities
+times unit prices rather than the rounded per-line amounts, gives
+\textbf{\$4.701169} across six line items over two days. The difference is
+\textbf{\$0.004017, or 0.085\%}, and the ledger is the lower of the two.
+\citet{souza2026budget} report 56,476 API calls and no monetary cost. We report
+both figures because the negative results in this paper are only interpretable
+alongside what was affordable, and because a cost claim that is not reconciled
+against the counterparty is an assertion rather than an audit.
+
+\textbf{Where the 0.085\% goes, and why it is one-sided.} The residual is
+about 4,600 unrecorded tokens on one model and 11,000 on the other. A
+client-side ledger writes a row when a response \emph{arrives}, so it cannot
+see a request that was issued, billed, and then abandoned. This run has three
+such boundaries: a mid-run concurrency change, a \texttt{SIGTERM} that stopped
+the second-model run at concurrency 16, and an interrupted probe. Each leaves
+its in-flight requests billed by the provider and absent from the ledger.
+\textbf{This is a property of the accounting method rather than a discrepancy
+to explain away}: a client-side ledger undercounts any interrupted run by
+exactly its in-flight requests, always in the same direction, and the size of
+the undercount is the concurrency times the number of interruptions. Anyone
+reporting costs this way should expect a small one-sided gap and should say so
+rather than round it off.
+
+\textbf{The reconciliation is only possible because the key was dedicated.}
+Project security policy required a separate API key per project, for revocation
+rather than for accounting. The same billing account carries a second key with
+\$0.292479 of unrelated spend on 10 and 11 August, including a model this
+project never used, and all twelve line items across both keys sum to \$4.99.
+With a shared key the Argmax bill would not have been separable from that at
+all: no filter, no reconciliation, and the \$4.99 would have had to be reported
+as the project's cost or not reported. \textbf{A security rule turned out to be
+an accounting rule}, and we would not have discovered that had the second key's
+spend not happened to overlap in time.
+
+\textbf{Projecting cost from a small probe.} Mean completion length is a
+per-problem property at 119.66 times the variance a homogeneous null produces,
+so a probe over $k$ problems inherits that between-problem spread and taking
+more samples per problem does not reduce it. Resampling the 198 per-problem
+means, 20,000 trials per $k$, the multiplier needed for a projection to cover
+the truth 95\% of the time is 34.9\% at $k=4$, 22.7\% at $k=8$, 15.2\% at
+$k=16$ and 10.0\% at $k=32$. Probes are near-unbiased in the median, yet just
+over half underestimate at every $k$ because per-problem means are
+right-skewed, so a ceiling set at the projection is wrong about half the time.
+
 
 \bibliography{references}
 \bibliographystyle{colm2026_conference}
