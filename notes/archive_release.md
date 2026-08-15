@@ -81,7 +81,54 @@ not evaluate an answer-token margin.
 `backfire_preprint.tex`, `.bbl`, `references.bib`, the COLM style and bst, and
 four figures. As expected, LaTeX and figures only.
 
-## Blocker 3: no Zenodo credentials, and no reserved DOIs exist
+## Uploaded, verified, NOT published
+
+Both records exist as drafts on zenodo.org with DOIs reserved. Recorded here
+because a reboot destroyed the scratchpad that held them once already.
+
+| record | deposition | reserved DOI | access | artifacts | verified |
+|---|---|---|---|---|---|
+| **public, derived-only** | 21933418 | **10.5281/zenodo.21933418** | Open | 16 files, 22.3 MB | **15/15 sha256 PASS** |
+| **restricted, raw** | 21933422 | **10.5281/zenodo.21933422** | Restricted, request-access | 8 files, 577.4 MB | **7/7 sha256 PASS** |
+
+**Neither is published.** `state=unsubmitted` on both. A published Zenodo
+record cannot be deleted, so publication is a separate, explicit step.
+
+### Zenodo caps a record at 100 files
+
+Found by hitting it, not by reading it. The restricted tree is 775 files and
+the upload failed at exactly 100 with "Uploading selected files will result in
+exceeding the max amount per record". The partial upload was deleted and the
+tree re-shipped as two archives, `argmax_raw.tar.gz` (568.2 MB) and
+`predecessor_raw.tar.gz` (9.0 MB), with the four top-level files uploaded
+loose.
+
+Two manifests therefore travel with it, and both were checked:
+
+- `MANIFEST.json` carries a sha256 for each of the **775 files inside the
+  archives**. Verified locally by streaming both tarballs and hashing every
+  member: **771 matched inside the archives and the remaining 4 are the
+  top-level files, each present as a standalone artifact with a matching
+  hash. 775 of 775 accounted for.**
+- `UPLOAD_MANIFEST.json` carries a sha256 for each **uploaded artifact**.
+  Verified after upload by streaming each file back from Zenodo: **7 of 7.**
+
+The public record needed no bundling at 15 files and was verified directly
+against its own `MANIFEST.json`.
+
+### The reboot, and what it cost
+
+The laptop powered off mid-upload. The scratchpad was on tmpfs and was wiped,
+taking both release trees, both manifests and the deposition ids with it. The
+public record had already completed and verified intact. The restricted record
+held 19 files of 775.
+
+Nothing was lost that could not be rebuilt, because every input is either in
+this repository or in `~/Desktop/Compute-Elasticity`. The rebuild is on
+persistent disk at `~/argmax-release/` this time, and the deposition ids and
+DOIs are in this file rather than only in a scratch directory.
+
+## Superseded blocker: no Zenodo credentials, and no reserved DOIs exist
 
 No `ZENODO_TOKEN`, `ZENODO_API_TOKEN`, `ZENODO_ACCESS_TOKEN` or sandbox
 equivalent in the environment. **And no reserved DOI is recorded anywhere in
