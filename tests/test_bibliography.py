@@ -147,3 +147,43 @@ def test_a_surname_particle_is_not_a_mismatch():
     e = BibEntry("x", "article", {"title": "T", "author": "Guedes de Souza, R", "year": "2026"})
     out = compare(e, {"title": "T", "authors": ["Rodrigo Guedes de Souza"], "year": "2026"})
     assert not [m for m in out if m.field_name == "authors"]
+
+
+# --- the generated submission package ---------------------------------------
+
+
+def test_the_arxiv_package_is_byte_identical_to_its_source():
+    """The document scan skips `paper/arxiv_v2/` as a copy. Prove it is one.
+
+    An exemption granted to a copy is only as good as the copy being a copy.
+    If the package drifts from `paper/tex/`, the scans stop covering what is
+    actually submitted, which is the one file that reaches a reader.
+    """
+    src = REPO / "paper" / "tex"
+    pkg = REPO / "paper" / "arxiv_v2"
+    if not pkg.exists():
+        pytest.skip("no submission package built")
+    pairs = {
+        "backfire_v2.tex": "backfire_preprint.tex",
+        "backfire_v2.bbl": "backfire_preprint.bbl",
+        "colm2026_conference.sty": "colm2026_conference.sty",
+        "colm2026_conference.bst": "colm2026_conference.bst",
+        "two_units.png": "two_units.png",
+        "backfire_both.png": "backfire_both.png",
+        "calibration_both.png": "calibration_both.png",
+        "gate_sweep_both.png": "gate_sweep_both.png",
+        "pareto_both.png": "pareto_both.png",
+    }
+    missing = [p for p in pairs if not (pkg / p).exists()]
+    assert not missing, f"package is missing files: {missing}"
+    drifted = [
+        p for p, s in pairs.items() if (pkg / p).read_bytes() != (src / s).read_bytes()
+    ]
+    assert not drifted, (
+        "submission package has drifted from paper/tex/ and is no longer a copy: "
+        f"{drifted}. Rebuild it or remove the scan exemption in argmax.repo."
+    )
+    assert len(list(pkg.iterdir())) == len(pairs), (
+        "package contains files not covered by this check: "
+        f"{sorted(p.name for p in pkg.iterdir() if p.name not in pairs)}"
+    )

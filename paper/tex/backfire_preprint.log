@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.8)  16 AUG 2026 03:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.8)  16 AUG 2026 03:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -454,10 +454,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [3]
-Underfull \vbox (badness 1472) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \vbox (badness 1472) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
@@ -468,16 +468,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [4]
-<backfire_both.png, id=137, 642.7212pt x 286.1892pt>
+<backfire_both.png, id=140, 642.7212pt x 286.1892pt>
 File: backfire_both.png Graphic file (type png)
 <use backfire_both.png>
-Package pdftex.def Info: backfire_both.png  used on input line 332.
+Package pdftex.def Info: backfire_both.png  used on input line 337.
 (pdftex.def)             Requested size: 397.48499pt x 176.99002pt.
-<pareto_both.png, id=142, 714.9912pt x 356.532pt>
-File: pareto_both.png Graphic file (type png)
-<use pareto_both.png>
-Package pdftex.def Info: pareto_both.png  used on input line 381.
-(pdftex.def)             Requested size: 397.48499pt x 198.20944pt.
+
+Underfull \vbox (badness 2753) has occurred while \output is active []
+
+
+Underfull \vbox (badness 2753) has occurred while \output is active []
+
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -487,6 +488,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [5 <./backfire_both.png>]
+<pareto_both.png, id=152, 714.9912pt x 356.532pt>
+File: pareto_both.png Graphic file (type png)
+<use pareto_both.png>
+Package pdftex.def Info: pareto_both.png  used on input line 386.
+(pdftex.def)             Requested size: 397.48499pt x 198.20944pt.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -495,10 +502,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [6 <./pareto_both.png>]
-<gate_sweep_both.png, id=163, 857.604pt x 498.663pt>
+<gate_sweep_both.png, id=166, 857.604pt x 498.663pt>
 File: gate_sweep_both.png Graphic file (type png)
 <use gate_sweep_both.png>
-Package pdftex.def Info: gate_sweep_both.png  used on input line 457.
+Package pdftex.def Info: gate_sweep_both.png  used on input line 462.
 (pdftex.def)             Requested size: 397.48499pt x 231.1226pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -514,11 +521,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[7 <./gate_sweep_both.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[7]
+Underfull \vbox (badness 5231) has occurred while \output is active []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 5231) has occurred while \output is active []
 
 
 
@@ -528,17 +535,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[8]
-<calibration_both.png, id=194, 425.9112pt x 352.1958pt>
+[8 <./gate_sweep_both.png>]
+<calibration_both.png, id=197, 425.9112pt x 352.1958pt>
 File: calibration_both.png Graphic file (type png)
 <use calibration_both.png>
-Package pdftex.def Info: calibration_both.png  used on input line 548.
+Package pdftex.def Info: calibration_both.png  used on input line 553.
 (pdftex.def)             Requested size: 238.49341pt x 197.21217pt.
-<two_units.png, id=196, 453.1329pt x 172.7253pt>
-File: two_units.png Graphic file (type png)
-<use two_units.png>
-Package pdftex.def Info: two_units.png  used on input line 616.
-(pdftex.def)             Requested size: 365.68546pt x 139.39278pt.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -548,6 +550,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [9 <./calibration_both.png>]
+<two_units.png, id=204, 453.1329pt x 172.7253pt>
+File: two_units.png Graphic file (type png)
+<use two_units.png>
+Package pdftex.def Info: two_units.png  used on input line 621.
+(pdftex.def)             Requested size: 365.68546pt x 139.39278pt.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -556,6 +564,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [10 <./two_units.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -609,7 +623,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[16] (./backfire_preprint.bbl
+[16]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -617,7 +631,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[17])
+[17] (./backfire_preprint.bbl
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -625,7 +639,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[18] (./backfire_preprint.aux)
+[18])
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[19] (./backfire_preprint.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-05-26>
@@ -634,18 +656,18 @@ Package rerunfilecheck Info: File `backfire_preprint.out' has not changed.
 (rerunfilecheck)             Checksum: 7F0B1B410545A2ADE115C83EA236B781;4414.
  ) 
 Here is how much of TeX's memory you used:
- 13524 strings out of 469157
- 213213 string characters out of 5460244
- 676593 words of memory out of 5000000
- 41934 multiletter control sequences out of 15000+600000
- 654952 words of font info for 294 fonts, out of 8000000 for 9000
+ 13591 strings out of 469157
+ 214112 string characters out of 5460244
+ 676627 words of memory out of 5000000
+ 41966 multiletter control sequences out of 15000+600000
+ 663155 words of font info for 328 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,11n,90p,1145b,597s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,12n,90p,1145b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on backfire_preprint.pdf (18 pages, 560589 bytes).
+Output written on backfire_preprint.pdf (19 pages, 563977 bytes).
 PDF statistics:
- 364 PDF objects out of 1000 (max. 8388607)
- 312 compressed objects within 4 object streams
- 75 named destinations out of 1000 (max. 500000)
- 41138 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 379 PDF objects out of 1000 (max. 8388607)
+ 326 compressed objects within 4 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 52914 words of extra memory for PDF output out of 61914 (max. 10000000)
 

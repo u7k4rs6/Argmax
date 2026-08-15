@@ -62,6 +62,15 @@ EXCLUSIONS: tuple[tuple[str, str], ...] = (
         "site-packages",
         "installed dependencies wherever they land",
     ),
+    # A generated submission package: byte-for-byte copies of files already
+    # scanned in paper/tex/. Scanning it checks the same document twice and
+    # reports a second offender for one defect. Safe ONLY because
+    # tests/test_bibliography.py asserts the copy is identical to its source;
+    # a divergent copy is a defect, not an exemption.
+    (
+        "paper/arxiv_v2",
+        "generated arXiv submission package; verified byte-identical to paper/tex/",
+    ),
 )
 
 

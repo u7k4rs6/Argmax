@@ -211,7 +211,12 @@ problem crossing the backfire boundary
 (\texttt{scripts/verify\_truncation\_invariance.py}).
 
 \textbf{Metrics.} $\text{MV\_acc}(N)$ is expected majority-vote accuracy over
-$N$ samples, ties broken uniformly at random independent of ground truth,
+$N$ samples, ties broken uniformly at random independent of ground truth,%
+\footnote{This v1 sentence is retained verbatim. The implementation breaks ties
+lexicographically rather than at random, and the published numbers follow the
+implementation; see disclosure 9 in Section~\ref{sec:corrections}, which
+quantifies the difference as a third-decimal effect that changes no
+conclusion.}
 estimated by Monte Carlo over subsets. Backfire is $\text{mv\_gain} < 0$.
 
 \textbf{Routing and gates.} The \textbf{oracle} routes each problem to the
@@ -664,6 +669,7 @@ be the right one within its own problem, does not hold; what we do not show is
 that no rule built on this signal can work.
 
 \section{Discussion}
+\label{sec:discussion}
 
 \textbf{Why backfire occurs.} On hard problems the model's sampling
 distribution concentrates on a wrong answer, so voting locks in the error.
@@ -698,7 +704,11 @@ ways. We measure the fraction of individual problems harmed rather than the
 shape of the aggregate curve, which matters because aggregate accuracy here
 looks nearly flat (0.342 to 0.369 for Qwen) while a majority of problems
 degrade underneath it. And our gate results sit in tension with few-sample
-estimation of an optimal call count: on a uniformly hard benchmark, the
+estimation of an optimal call count. v1 put this as a claim about a uniformly
+hard benchmark; the stored data does not support that description for these
+models (disclosure 10), so the claim is narrower than v1 stated. On this
+benchmark, whose per-problem difficulty is measurably mixed rather than
+uniform, the
 verifier-free signals such estimation would rely on do not recover the
 headroom. \citet{tan2025consistent} study self-consistent errors, where a
 model repeats the same wrong answer across samples, and find that
@@ -963,6 +973,28 @@ and paid for.
 \section{A reconstructed few-sample estimator}
 \label{sec:threada}
 
+\textbf{The premise was tested first, and the first formulation failed it.}
+An estimator that infers an optimal call count from a few samples relies on the
+task containing a mixture of easy and hard queries: without that mixture there
+is nothing for it to detect. We therefore tested whether GPQA Diamond carries
+one for these models before testing the estimator on it. It does.
+\textbf{Per-problem single-sample accuracy across all 198 problems varies at
+25.5 times a homogeneous null for Qwen and 17.1 times for Llama}, $p < 0.0001$
+in each case over 10,000 permutations, with 45 and 37 problems respectively
+sitting at or below 0.05 or at or above 0.95 against a null expectation near
+zero. GPQA Diamond is hard on average and is \emph{not} uniformly hard for
+these models: it carries exactly the easy/hard mixture~\citet{chen2024more}
+rely on. The estimator is therefore tested where the mixture is present and
+measured, rather than where its premise is absent, and a negative result here
+is informative about the estimator rather than about the benchmark.
+
+\textbf{Mixture presence turned out to be necessary but not sufficient.} The
+mixture is present, and the non-monotonicity it is supposed to produce is not:
+the confirmatory aggregate accuracy curve across the grid spans 0.52 points and
+does not fall. Whatever makes an aggregate curve rise and then decline, the
+presence of a per-problem difficulty mixture does not guarantee it, at least at
+this benchmark's difficulty and this scale of model.
+
 We reconstructed the few-sample call-count estimator that follows
 from~\citet{chen2024more} and pre-registered a comparison against a naive
 within-$k$ baseline on v1's confirmatory 151, using paired per-problem regret
@@ -1036,6 +1068,19 @@ third-decimal effect and changes no conclusion:} every seed leaves backfire far
 above the 33\% pre-registered threshold and still a majority, and every seed
 leaves $\text{MV\_acc}(64)$ above $\text{MV\_acc}(1)$ of 0.3419. v1's verdicts
 are not recomputed.
+
+\item \textbf{v1's Positioning describes the benchmark as uniformly hard; the
+stored data does not support that for these models.} Per-problem single-sample
+accuracy varies at 25.5 times a homogeneous null for Qwen and 17.1 times for
+Llama, $p < 0.0001$ over 10,000 permutations, with 45 and 37 problems at or
+below 0.05 or at or above 0.95. GPQA Diamond is hard \emph{on average} and is
+not uniform in difficulty for these models. \textbf{This touches no v1 result
+and no v1 number}: it bears only on the positioning against~\citet{chen2024more},
+whose account turns on exactly that mixture. It is disclosed rather than quietly
+corrected because Section~\ref{sec:threada} builds on the same positioning, and
+using a premise in one section while leaving its overstatement standing in
+another is the kind of quiet reliance this section exists to prevent. The
+sentence in Section~\ref{sec:discussion} is qualified accordingly.
 \end{enumerate}
 
 \section{Conclusion}
