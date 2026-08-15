@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.8)  16 AUG 2026 03:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.8)  16 AUG 2026 03:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -397,19 +397,19 @@ File: ot1zi4.fd 2018/01/14 OT1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `OT1/zi4/m/n' will be
 (Font)              scaled to size 10.0pt on input line 32.
-LaTeX Font Info:    Trying to load font information for OML+zplm on input line 58.
+LaTeX Font Info:    Trying to load font information for OML+zplm on input line 51.
  (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 58.
+LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 51.
  (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 58.
+LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 51.
  (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 58.
+LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 51.
  (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
@@ -423,55 +423,23 @@ Underfull \vbox (badness 5119) has occurred while \output is active []
 
 Underfull \vbox (badness 5119) has occurred while \output is active []
 
+ [1
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[1{/home/utkuputku/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}
-
-{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}]
-LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 93.
+{/home/utkuputku/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}]
+LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 86.
  (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
-)
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[2]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[3]
+) [2] [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[4]
+ [4]
 <backfire_both.png, id=140, 642.7212pt x 286.1892pt>
 File: backfire_both.png Graphic file (type png)
 <use backfire_both.png>
-Package pdftex.def Info: backfire_both.png  used on input line 337.
+Package pdftex.def Info: backfire_both.png  used on input line 330.
 (pdftex.def)             Requested size: 397.48499pt x 176.99002pt.
 
 Underfull \vbox (badness 2753) has occurred while \output is active []
@@ -479,33 +447,17 @@ Underfull \vbox (badness 2753) has occurred while \output is active []
 
 Underfull \vbox (badness 2753) has occurred while \output is active []
 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[5 <./backfire_both.png>]
+ [5 <./backfire_both.png>]
 <pareto_both.png, id=152, 714.9912pt x 356.532pt>
 File: pareto_both.png Graphic file (type png)
 <use pareto_both.png>
-Package pdftex.def Info: pareto_both.png  used on input line 386.
+Package pdftex.def Info: pareto_both.png  used on input line 379.
 (pdftex.def)             Requested size: 397.48499pt x 198.20944pt.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[6 <./pareto_both.png>]
+ [6 <./pareto_both.png>]
 <gate_sweep_both.png, id=166, 857.604pt x 498.663pt>
 File: gate_sweep_both.png Graphic file (type png)
 <use gate_sweep_both.png>
-Package pdftex.def Info: gate_sweep_both.png  used on input line 462.
+Package pdftex.def Info: gate_sweep_both.png  used on input line 455.
 (pdftex.def)             Requested size: 397.48499pt x 231.1226pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -513,141 +465,37 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[7]
+ [7]
 Underfull \vbox (badness 5231) has occurred while \output is active []
 
 
 Underfull \vbox (badness 5231) has occurred while \output is active []
 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[8 <./gate_sweep_both.png>]
+ [8 <./gate_sweep_both.png>]
 <calibration_both.png, id=197, 425.9112pt x 352.1958pt>
 File: calibration_both.png Graphic file (type png)
 <use calibration_both.png>
-Package pdftex.def Info: calibration_both.png  used on input line 553.
+Package pdftex.def Info: calibration_both.png  used on input line 546.
 (pdftex.def)             Requested size: 238.49341pt x 197.21217pt.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[9 <./calibration_both.png>]
+ [9 <./calibration_both.png>]
 <two_units.png, id=204, 453.1329pt x 172.7253pt>
 File: two_units.png Graphic file (type png)
 <use two_units.png>
-Package pdftex.def Info: two_units.png  used on input line 621.
+Package pdftex.def Info: two_units.png  used on input line 614.
 (pdftex.def)             Requested size: 365.68546pt x 139.39278pt.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[10 <./two_units.png>]
+ [10 <./two_units.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[11]
+ [11]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[12]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[13]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[14]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[15]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[16]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[17] (./backfire_preprint.bbl
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[18])
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.88495pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.88495pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
-
-[19] (./backfire_preprint.aux)
+ [12] [13] [14] [15] [16] [17] (./backfire_preprint.bbl [18]) [19] (./backfire_preprint.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-05-26>
@@ -664,7 +512,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  72i,12n,90p,1145b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on backfire_preprint.pdf (19 pages, 563977 bytes).
+Output written on backfire_preprint.pdf (19 pages, 562024 bytes).
 PDF statistics:
  379 PDF objects out of 1000 (max. 8388607)
  326 compressed objects within 4 object streams
