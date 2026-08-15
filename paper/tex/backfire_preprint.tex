@@ -855,22 +855,41 @@ accuracy. This differs from post-hoc truncation filtering in when it applies:
 it is a design constraint on what to sample, not a repair applied to an
 existing comparison.
 
-\textbf{The bill.} Probes across all phases cost \$0.1346 over 148 samples; the
-margin run on the v1 model cost \$3.4123 over 12,672 samples; the incomplete
-second-model run cost \$1.1207 over 1,253 samples. Realized total across all
-phases is \textbf{\$4.6676} over 14,073 samples, and the rows are disjoint.
+\textbf{The bill, reconciled against the provider.} Our client-side ledger
+records \$4.697153 across 14,125 sampled requests. The provider's own billing
+export, filtered to this project's API key and summed from unrounded quantities
+times unit prices rather than the rounded per-line amounts, gives
+\textbf{\$4.701169} across six line items over two days. The difference is
+\textbf{\$0.004017, or 0.085\%}, and the ledger is the lower of the two.
 \citet{souza2026budget} report 56,476 API calls and no monetary cost. We report
-the ledger because the negative results in this paper are only interpretable
-alongside what was affordable. The bill is computed, not confirmed: every row
-is stored token counts multiplied by a dated price snapshot, the ledger is
-complete against the raw store (14,073 rows against 14,073 sample records) and
-every row recomputes to \$4.667639 with no disagreements, and the ledger is
-published in the open record so the arithmetic is checkable. The provider
-documents no balance or usage endpoint, and a dashboard balance reading cannot
-close the loop: a balance alone cannot distinguish an undercounting ledger from
-an unrecorded starting figure. \textbf{A provider-issued total spend figure, to
-compare against \$4.667639, is not available and is the one number in this
-paper we could not obtain.}
+both figures because the negative results in this paper are only interpretable
+alongside what was affordable, and because a cost claim that is not reconciled
+against the counterparty is an assertion rather than an audit.
+
+\textbf{Where the 0.085\% goes, and why it is one-sided.} The residual is
+about 4,600 unrecorded tokens on one model and 11,000 on the other. A
+client-side ledger writes a row when a response \emph{arrives}, so it cannot
+see a request that was issued, billed, and then abandoned. This run has three
+such boundaries: a mid-run concurrency change, a \texttt{SIGTERM} that stopped
+the second-model run at concurrency 16, and an interrupted probe. Each leaves
+its in-flight requests billed by the provider and absent from the ledger.
+\textbf{This is a property of the accounting method rather than a discrepancy
+to explain away}: a client-side ledger undercounts any interrupted run by
+exactly its in-flight requests, always in the same direction, and the size of
+the undercount is the concurrency times the number of interruptions. Anyone
+reporting costs this way should expect a small one-sided gap and should say so
+rather than round it off.
+
+\textbf{The reconciliation is only possible because the key was dedicated.}
+Project security policy required a separate API key per project, for revocation
+rather than for accounting. The same billing account carries a second key with
+\$0.292479 of unrelated spend on 10 and 11 August, including a model this
+project never used, and all twelve line items across both keys sum to \$4.99.
+With a shared key the Argmax bill would not have been separable from that at
+all: no filter, no reconciliation, and the \$4.99 would have had to be reported
+as the project's cost or not reported. \textbf{A security rule turned out to be
+an accounting rule}, and we would not have discovered that had the second key's
+spend not happened to overlap in time.
 
 \textbf{Projecting cost from a small probe.} Mean completion length is a
 per-problem property at 119.66 times the variance a homogeneous null produces,

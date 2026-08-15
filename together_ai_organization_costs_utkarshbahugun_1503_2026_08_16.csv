@@ -1,0 +1,13 @@
+Date,Line Item,Dimensions,Quantity,Unit Price (USD),Amount (USD)
+Aug 10 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_CduwuxSMTC2rPJJQoyaHq,endpoint_name:LiquidAI/LFM2.5-8B-A1B,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.014163,$0.03,$0.00
+Aug 10 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_CduwuxSMTC2rPJJQoyaHq,endpoint_name:LiquidAI/LFM2.5-8B-A1B,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.061288,$0.12,$0.01
+Aug 10 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_CduwuxSMTC2rPJJQoyaHq,endpoint_name:Qwen/Qwen2.5-7B-Instruct-Turbo,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.006933,$0.30,$0.00
+Aug 10 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_CduwuxSMTC2rPJJQoyaHq,endpoint_name:Qwen/Qwen2.5-7B-Instruct-Turbo,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.000996,$0.30,$0.00
+Aug 11 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_CduwuxSMTC2rPJJQoyaHq,endpoint_name:Qwen/Qwen2.5-7B-Instruct-Turbo,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.844394,$0.30,$0.25
+Aug 11 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_CduwuxSMTC2rPJJQoyaHq,endpoint_name:Qwen/Qwen2.5-7B-Instruct-Turbo,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.096678,$0.30,$0.03
+Aug 13 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_Cdzao6ZtCwhKXNxZAFKC5,endpoint_name:Qwen/Qwen2.5-7B-Instruct-Turbo,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",3.744038,$0.30,$1.12
+Aug 13 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_Cdzao6ZtCwhKXNxZAFKC5,endpoint_name:Qwen/Qwen2.5-7B-Instruct-Turbo,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",7.634705,$0.30,$2.29
+Aug 13 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_Cdzao6ZtCwhKXNxZAFKC5,endpoint_name:Qwen/Qwen3.5-9B,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.369461,$0.17,$0.06
+Aug 13 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_Cdzao6ZtCwhKXNxZAFKC5,endpoint_name:Qwen/Qwen3.5-9B,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",4.776575,$0.25,$1.19
+Aug 14 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_Cdzao6ZtCwhKXNxZAFKC5,endpoint_name:Qwen/Qwen3.5-9B,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.012312,$0.17,$0.00
+Aug 14 2026,Token Based Inference (Per 1M Tokens),"api_key_id:key_Cdzao6ZtCwhKXNxZAFKC5,endpoint_name:Qwen/Qwen3.5-9B,is_lora:false,is_reserved_ptu:false,project_id:proj_CbCFZf4Xt8A3DhdApzewa",0.114005,$0.25,$0.03

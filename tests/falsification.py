@@ -208,6 +208,14 @@ ALLOWED_ARTIFACTS = (
     "paper/backfire_colm_submission.pdf",
 )
 
+#: Sources that ARE the cited artifact rather than documents quoting it.
+#: `backfire_preprint.tex` builds `backfire_preprint.pdf`, so requiring it to
+#: name that PDF is circular: the rule exists so a reader can check "the paper
+#: says X" against the paper, and for the paper itself there is nothing to
+#: check against. Kept to exact paths, never a directory, so a second document
+#: dropped into `paper/` is still scanned.
+SELF_ARTIFACT_SOURCES = ("paper/tex/backfire_preprint.tex",)
+
 #: Scanning is now a WALK with an explicit exclusion list, not an allow-list of
 #: remembered directories. `notes/` was missed once and `paper/` twice under
 #: the old default; see `argmax.repo` for the record and the exclusions.
@@ -252,11 +260,14 @@ def test_every_document_citing_the_paper_names_a_source_artifact():
     """
     offenders = []
     for path in _documents():
+        rel = str(path.relative_to(REPO))
+        if rel in SELF_ARTIFACT_SOURCES:
+            continue  # this file IS the artifact; see SELF_ARTIFACT_SOURCES
         text = path.read_text(encoding="utf-8")
         if CITATION not in text:
             continue
         if not any(artifact in text for artifact in ALLOWED_ARTIFACTS):
-            offenders.append(str(path.relative_to(REPO)))
+            offenders.append(rel)
     assert not offenders, (
         f"documents cite {CITATION} without naming the artifact they read "
         f"({', '.join(ALLOWED_ARTIFACTS)}): {offenders}"
@@ -271,3 +282,17 @@ def test_provenance_records_the_paper_and_its_unverified_version():
     assert CITATION in text
     assert "59d4dea8eba80b2a8bc05554c16b57fc854f5b3c6a7b0fd0e4e76b6c585ad6cc" in text
     assert "version number is not stamped" in text
+
+
+def test_the_self_artifact_exemption_stays_narrow():
+    """The exemption is a list of exact paths, not a directory pass.
+
+    A blanket `paper/` exemption would have hidden the next document dropped
+    there, which is the failure mode `argmax.repo` already records three
+    instances of.
+    """
+    for rel in SELF_ARTIFACT_SOURCES:
+        assert (REPO / rel).exists(), f"exempted path does not exist: {rel}"
+        assert rel.endswith((".tex", ".md")), rel
+        assert not rel.endswith("/"), f"exemption must not be a directory: {rel}"
+    assert len(SELF_ARTIFACT_SOURCES) <= 2, "exemption list is growing; justify each"

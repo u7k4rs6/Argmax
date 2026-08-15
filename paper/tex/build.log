@@ -96,9 +96,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [8]
 
-LaTeX Warning: Reference `fig:twounits' on page 9 undefined on input line 592.
-
-
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
 (fancyhdr)                \setlength{\headheight}{22.88495pt}.
@@ -140,8 +137,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [13]
-Underfull \vbox (badness 10000) has occurred while \output is active
-Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 3407) has occurred while \output is active
+Underfull \vbox (badness 3407) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -176,22 +173,14 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
-[17] (./backfire_preprint.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- )
+[17] (./backfire_preprint.aux) )
 (see the transcript file for additional information)</home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on backfire_preprint.pdf (17 pages, 554608 bytes).
+Output written on backfire_preprint.pdf (17 pages, 556655 bytes).
 Transcript written on backfire_preprint.log.
 Latexmk: Getting log file 'backfire_preprint.log'
 Latexmk: Examining 'backfire_preprint.fls'
 Latexmk: Examining 'backfire_preprint.log'
 Latexmk: Found input bbl file 'backfire_preprint.bbl'
-Latexmk: References changed.
 Latexmk: Log file says output to 'backfire_preprint.pdf'
 Latexmk: Using bibtex to make bibliography file(s).
   ===Source file 'backfire_preprint.bbl' for 'pdflatex'
@@ -346,8 +335,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
 
 [13]
-Underfull \vbox (badness 10000) has occurred while \output is active
-Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 3407) has occurred while \output is active
+Underfull \vbox (badness 3407) has occurred while \output is active
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.88495pt, for example:
@@ -384,7 +373,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [17] (./backfire_preprint.aux) )
 (see the transcript file for additional information)</home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on backfire_preprint.pdf (17 pages, 554432 bytes).
+Output written on backfire_preprint.pdf (17 pages, 556655 bytes).
 Transcript written on backfire_preprint.log.
 Latexmk: Getting log file 'backfire_preprint.log'
 Latexmk: Examining 'backfire_preprint.fls'

@@ -150,18 +150,41 @@ by more than a rounding difference. The shortfall conclusion above is
 unaffected and in fact strengthened: $1.71 to finish against $1.16 is short by
 $0.55, not $0.28.
 
-**The loop is not closed.** A balance alone cannot distinguish an
-undercounting ledger from a wrong starting figure: $1.16 is consistent with
-this project having spent more than $4.667639 from a $5.83 start, and equally
-consistent with having spent exactly $4.667639 from a $5.83 start that nobody
-recorded. The two cannot be separated without the number that sits on the
-other side of the subtraction.
+**THE LOOP IS NOW CLOSED, 2026-08-16.** The provider's billing export, filtered
+to this project's dedicated key and summed from unrounded quantities times unit
+prices:
 
-**What closes it:** the provider's own **total spend to date**, compared
-directly against the ledger's $4.667639. Until that figure is recorded here,
-the bill remains computed and unconfirmed, and the draft says so.
+| | |
+|---|---|
+| provider, unrounded | **$4.701169** |
+| provider, sum of rounded per-line amounts | $4.69 |
+| ledger, 14,125 rows | **$4.697153** |
+| **difference** | **$0.004017, 0.085 percent**, ledger lower |
 
-### The balances were reconstructed, and that is a defect in a claimed contribution
+The residual is about 4,600 unrecorded tokens on Qwen2.5-7B and 11,000 on
+Qwen3.5-9B. A client-side ledger writes a row when a response **arrives**, so
+it cannot see a request that was issued, billed and then abandoned, and this
+project has three such boundaries: the mid-run concurrency change, the SIGTERM
+on the v2 run at concurrency 16, and the interrupted probe above. The gap is
+one-sided by construction.
+
+**A figure quoted earlier in this note is superseded.** `$4.667639` is the
+ledger's **Aug 13 subtotal**, correct when written and stale the moment the
+Aug 14 probe ran. Comparing a two-day provider total against a one-day ledger
+subtotal produces an apparent gap of $0.033530, or 0.72 percent, of which 91
+percent is simply the Aug 14 rows that the ledger does contain. The real
+difference is 0.085 percent. Left visible rather than edited out, because the
+error is instructive: a stale subtotal and a complete total differ by exactly
+the work done in between, and nothing about either number looks wrong on its
+own.
+
+**The dedicated key is what made any of this possible.** The same account
+carries a second key with $0.292479 of unrelated Aug 10 to 11 spend, including
+a model this project never used, and all twelve line items sum to $4.99. Doc 3
+required a key per project for revocation. It turned out to be an accounting
+rule.
+
+## The balances were reconstructed, and that is a defect in a claimed contribution
 
 An itemised bill is one of this project's stated contributions, cited against
 the predecessor's unverifiable $3.9234. **It currently rests on the same kind
@@ -260,9 +283,41 @@ The v2 store is not waste. It is the measurement that shows a cap chosen from
 no successful run would have produced. It belongs in the reasoning-wall
 section, not in a replication section.
 
-## A random-draw cap probe: specified, costed, and not run
+## A random-draw cap probe: it DID run, and I recorded otherwise
 
-**Not run. No samples were drawn at 8192 or 12288, and none exist.**
+**CORRECTION, 2026-08-16. It ran. 52 samples exist at cap 8192.**
+
+I recorded this probe as not run. The provider's billing export forced a
+recheck, and the ledger settles it: `capprobe-rand-20260814T090347-cap8192`,
+**52 rows, 11,468 input and 110,255 output tokens, $0.029513**, timestamped
+2026-08-14. The launch was interrupted, not prevented: requests already issued
+completed, were billed, and were recorded. I read the interruption as a refusal
+and wrote that down without checking the ledger, which is the one place that
+knows.
+
+**What the 52 samples show**, and it is worth having: drawn at random from all
+198 with seed 20260814, reaching 7 problems before the interruption, at cap
+8192 with thinking disabled.
+
+| | |
+|---|---|
+| answer rate | **0.9808** [0.8988, 0.9966] |
+| truncation | 0.0192 |
+| mean completion | 2120.3 tokens |
+| $/sample | 0.000568 |
+| 198 x 16 projection | **$1.80** |
+
+Compare the three probes of the same model: the 8 lowest-id problems at cap
+6144 gave 1.0000, the full run at 6144 gave 0.8931, and **a random draw at
+8192 gives 0.9808**. The random draw sits between them and closer to the
+truth, which is the whole argument of doc 2 section 5.3.1 arriving as a
+measurement.
+
+**This does not reopen MD3 or MD4.** The guard below was written before any of
+this and holds exactly as written: a usable cap is not permission to evaluate
+claims on a store that does not exist. These 52 samples are at 8192; the 1,253
+confirmatory samples are at 6144 under 29 percent truncation. No probe result
+changes what those 1,253 are.
 
 The history, because it matters for what section 4.3 may claim. The probe was
 first authorised conditionally on the dashboard confirming enough balance,

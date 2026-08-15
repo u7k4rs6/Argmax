@@ -591,15 +591,28 @@ answer rate is published beside every accuracy.
 Rows are disjoint: the 148 probe samples are not counted again in the
 second-model row. Ledger total to full precision is $4.667639.
 
-**The bill is computed, not confirmed.** Every row is stored token counts times
-a dated price snapshot. The ledger is published in the open record (10.5281/zenodo.21933418) so
-the arithmetic is checkable. It is complete against the raw store (14,073
-rows against 14,073 sample records) and every row recomputes to $4.667639 with
-no disagreements. Together documents no balance or usage endpoint, and a
-dashboard balance reading ($1.16 on 2026-08-14) cannot close the loop: a
-balance alone cannot distinguish an undercounting ledger from an unrecorded
-starting figure. **Provider total spend, to compare against $4.667639:**
-`[BLANK]`.
+**The bill, reconciled against the provider.**
+
+| | |
+|---|---|
+| ledger, 14,125 sampled requests | **$4.697153** |
+| provider billing export, this key, unrounded quantity x unit price | **$4.701169** |
+| provider, sum of rounded per-line amounts | $4.69 |
+| **difference** | **$0.004017, 0.085 percent**, ledger lower |
+
+The residual is roughly 4,600 unrecorded tokens on one model and 11,000 on the
+other. A client-side ledger writes a row when a response **arrives**, so it
+cannot see a request that was issued, billed, and then abandoned. This project
+has three such boundaries: a mid-run concurrency change, the SIGTERM that
+stopped the v2 run at concurrency 16, and an interrupted probe. **That is a
+property of the accounting method, not a discrepancy to explain away**: the gap
+is one-sided by construction and scales with concurrency times interruptions.
+
+**The reconciliation is only possible because the key was dedicated.** The same
+billing account carries a second key with **$0.292479** of unrelated Aug 10 to
+11 spend, including a model this project never used, and all twelve line items
+across both keys sum to **$4.99**. A shared key would have made the Argmax bill
+unseparable from that. A security rule turned out to be an accounting rule.
 
 ### 5.6 A gated benchmark cannot have its chains published
 
