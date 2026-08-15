@@ -1,6 +1,399 @@
 Rc files read (in order):
   NONE
 Latexmk: This is Latexmk, John Collins, 9 March 2026. Version 4.88.
-Latexmk: Nothing to do for 'backfire_preprint.tex'.
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  backfire_preprint.tex
+Category 'changed_user':
+  backfire_preprint.tex
+
+------------
+Run number 1 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -recorder  "backfire_preprint.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./backfire_preprint.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-05-26>
+(/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/base/size10.clo)) (./colm2026_conference.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/tex-gyre/tgpagella.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/mathpazo.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/inconsolata/inconsolata.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex)))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/eso-pic/eso-pic.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/natbib/natbib.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/stringenc/stringenc.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/url/url.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/trig.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/lineno/lineno.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1ppl.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def) (./backfire_preprint.aux) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/mt-ppl.cfg) (./backfire_preprint.out) (./backfire_preprint.out) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/inconsolata/ot1zi4.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omlzplm.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omszplm.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omxzplm.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1zplm.fd)
+Underfull \vbox (badness 5119) has occurred while \output is active
+Underfull \vbox (badness 5119) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[1{/home/utkuputku/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}] (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd)
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[2]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[3]
+Underfull \vbox (badness 1472) has occurred while \output is active
+Underfull \vbox (badness 1472) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[4]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[5 <./backfire_both.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[6 <./pareto_both.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[7 <./gate_sweep_both.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[8]
+
+LaTeX Warning: Reference `fig:twounits' on page 9 undefined on input line 592.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[9 <./calibration_both.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[10 <./two_units.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[11]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[12]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[13]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[14]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[15] (./backfire_preprint.bbl
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[16]
+Underfull \hbox (badness 1845) in paragraph at lines 74--77
+\OT1/ppl/m/n/10 (+20) invariant es-ti-ma-tion of un-cer-tainty for large lan-guage mod-els.  \OT1/ppl/m/it/10 (+20) arXiv preprint
+)
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[17] (./backfire_preprint.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ )
+(see the transcript file for additional information)</home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on backfire_preprint.pdf (17 pages, 554608 bytes).
+Transcript written on backfire_preprint.log.
+Latexmk: Getting log file 'backfire_preprint.log'
+Latexmk: Examining 'backfire_preprint.fls'
+Latexmk: Examining 'backfire_preprint.log'
+Latexmk: Found input bbl file 'backfire_preprint.bbl'
+Latexmk: References changed.
+Latexmk: Log file says output to 'backfire_preprint.pdf'
+Latexmk: Using bibtex to make bibliography file(s).
+  ===Source file 'backfire_preprint.bbl' for 'pdflatex'
+Latexmk: Found bibliography file(s):
+  ./references.bib
+Latexmk: applying rule 'bibtex backfire_preprint'...
+Rule 'bibtex backfire_preprint':  Reasons for rerun
+Changed files or newly in use/created:
+  backfire_preprint.aux
+
+------------
+Run number 1 of rule 'bibtex backfire_preprint'
+------------
+------------
+Running 'bibtex  "backfire_preprint.aux"'
+------------
+This is BibTeX, Version 0.99e (TeX Live 2026)
+The top-level auxiliary file: backfire_preprint.aux
+The style file: colm2026_conference.bst
+Database file #1: references.bib
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  backfire_preprint.aux
+
+------------
+Run number 2 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -recorder  "backfire_preprint.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./backfire_preprint.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-05-26>
+(/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/base/size10.clo)) (./colm2026_conference.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/tex-gyre/tgpagella.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/mathpazo.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/inconsolata/inconsolata.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex)))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/eso-pic/eso-pic.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/natbib/natbib.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/stringenc/stringenc.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/url/url.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics/trig.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg))) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/lineno/lineno.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1ppl.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def) (./backfire_preprint.aux) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg)) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/microtype/mt-ppl.cfg) (./backfire_preprint.out) (./backfire_preprint.out) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/inconsolata/ot1zi4.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omlzplm.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omszplm.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/omxzplm.fd) (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1zplm.fd)
+Underfull \vbox (badness 5119) has occurred while \output is active
+Underfull \vbox (badness 5119) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[1{/home/utkuputku/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/home/utkuputku/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}] (/home/utkuputku/.TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd)
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[2]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[3]
+Underfull \vbox (badness 1472) has occurred while \output is active
+Underfull \vbox (badness 1472) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[4]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[5 <./backfire_both.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[6 <./pareto_both.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[7 <./gate_sweep_both.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[8]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[9 <./calibration_both.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[10 <./two_units.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[11]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[12]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[13]
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[14]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[15] (./backfire_preprint.bbl
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[16]
+Underfull \hbox (badness 1845) in paragraph at lines 74--77
+\OT1/ppl/m/n/10 (+20) invariant es-ti-ma-tion of un-cer-tainty for large lan-guage mod-els.  \OT1/ppl/m/it/10 (+20) arXiv preprint
+)
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.88495pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.88495pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-10.88495pt}.
+
+[17] (./backfire_preprint.aux) )
+(see the transcript file for additional information)</home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/utkuputku/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on backfire_preprint.pdf (17 pages, 554432 bytes).
+Transcript written on backfire_preprint.log.
+Latexmk: Getting log file 'backfire_preprint.log'
+Latexmk: Examining 'backfire_preprint.fls'
+Latexmk: Examining 'backfire_preprint.log'
+Latexmk: Found input bbl file 'backfire_preprint.bbl'
+Latexmk: Log file says output to 'backfire_preprint.pdf'
+Latexmk: Using bibtex to make bibliography file(s).
+  ===Source file 'backfire_preprint.bbl' for 'pdflatex'
+Latexmk: Found bibliography file(s):
+  ./references.bib
 Latexmk: All targets (backfire_preprint.pdf) are up-to-date
 

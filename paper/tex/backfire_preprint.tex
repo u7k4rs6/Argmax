@@ -32,9 +32,10 @@ Scaler School of Technology \\
 
 % The style file sets \lhead inside the \vbox in \@maketitle, where the
 % assignment is group-local and discarded. Set it here at top level instead.
-% Wording differs from the camera-ready: this source also builds the arXiv
-% version, where "Accepted at" reads correctly alongside arXiv's own stamp.
-\lhead{Accepted at the COLM 2026 Workshop on Efficient Reasoning}
+% The header is qualified for v2: the workshop accepted v1, and v2 carries
+% material no reviewer saw, including a correction to the accepted version's
+% mechanism section. See the acceptance note below the title.
+\lhead{v1 accepted at the COLM 2026 Workshop on Efficient Reasoning; v2 additions not peer reviewed}
 
 \begin{abstract}
 Self-consistency (SC) via majority vote reduces per-problem accuracy on most
@@ -71,6 +72,18 @@ metered per-token API buys rather than what is knowable.
 \end{abstract}
 
 \section*{Changes from v1}
+
+\textbf{Peer-review status.} \textbf{The COLM 2026 Workshop on Efficient
+Reasoning accepted v1 of this paper} (arXiv:2608.11403), whose content is
+the original Introduction, Setup, Results and
+Discussion. \textbf{No reviewer saw the material added in v2}: the
+answer-token margin and the commitment result, the reasoning wall, the
+rejected second-model replication, the reconstructed estimator, and the
+corrections section. v2 also \emph{corrects} the accepted version:
+Section~\ref{sec:why} replaces the accepted paper's mechanism section, and one
+Discussion sentence is withdrawn as stated. Readers relying on peer review
+should treat the accepted claims and the new ones differently, and the list
+below marks which is which.
 
 For readers who cited the original. \textbf{The headline results are
 unchanged: no v1 result was recomputed, re-estimated, or withdrawn.} What
@@ -575,11 +588,31 @@ problems (4,283 correct and 8,322 incorrect samples with measured margins), the
 fraction above 10 nats is 0.8228 for correct samples against 0.7624 for
 incorrect, a difference of $+0.0604$ $[+0.0183, +0.1017]$, which excludes zero.
 Per-problem and paired, over the 186 problems carrying at least one of each,
-the mean difference is $-0.0168$ $[-0.0527, +0.0182]$, which crosses zero. The
-population differs because a paired difference is undefined where a problem has
+the mean difference is $-0.0168$ $[-0.0527, +0.0182]$, which crosses zero
+(Figure~\ref{fig:twounits}). The population differs because a paired difference is undefined where a problem has
 no correct or no incorrect sample: 2 problems are all-correct and 10
 all-incorrect, and those 12 contribute to the pooled figure and not the paired
 one.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\linewidth]{two_units.png}
+\end{center}
+\caption{The same margin, the same statistic, two units. \textbf{Pooled at
+sample level} across all 198 problems (4,283 correct and 8,322 incorrect
+samples carrying a measured margin), correct samples exceed 10 nats more often
+than incorrect ones and the interval excludes zero: this answers ``does the
+margin carry information about correctness across the benchmark?'', and the
+answer is yes. \textbf{Per-problem and paired}, over the 186 problems carrying
+at least one sample of each kind, the difference cannot be distinguished from
+zero: this answers ``within a single problem, does the margin say which of
+several disagreeing samples to trust?'', and the answer is no. The 12 problems
+absent from the paired row are all-correct (2) or all-incorrect (10), where a
+paired difference is undefined. \textbf{The two are not in conflict}: they are
+different questions, and only the second is the one a self-consistency router
+has to answer. Intervals are 95\% cluster bootstrap over problems.}
+\label{fig:twounits}
+\end{figure}
 
 \textbf{We therefore do not claim that token log-probabilities are
 uninformative}, and any reading of this paper reaching that conclusion has
